@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Cuaderno de Mates 1º ESO</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#173f5f">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&display=swap">
+</head>
+<body>
+
+<div class="wrap">
+  <div class="top">
+    <button class="brand" id="home-btn" type="button">Cuaderno de Mates 1º<sup>ESO</sup></button>
+    <span class="crumb" id="crumb"></span>
+  </div>
+  <main id="app" tabindex="-1" aria-live="polite"></main>
+  <input id="import-file" type="file" accept="application/json" hidden>
+  <footer>
+    <span>Tu progreso se guarda en este navegador.</span>
+    <span id="foot-actions"></span>
+  </footer>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
