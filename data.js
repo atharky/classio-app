@@ -3,8 +3,10 @@ const $=s=>document.querySelector(s);
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
-const fmt=n=>{const neg=n<0;let s=String(Math.abs(n));if(s.length>=5)s=s.replace(/\B(?=(\d{3})+(?!\d))/g,' ');return (neg?'−':'')+s};
+const fmt=n=>{const neg=n<0;let [s,d]=String(Math.abs(n)).split('.');if(s.length>=5)s=s.replace(/\B(?=(\d{3})+(?!\d))/g,' ');return (neg?'−':'')+s+(d?','+d:'')};
 const P=(b,e)=>{const bs=typeof b==='number'?(b<0?`(${fmt(b)})`:fmt(b)):b;return `<span class="pw">${bs}<sup>${e}</sup></span>`};
+const R=x=>`<span class="rt"><span class="rad" aria-hidden="true">√</span><span class="sr">raíz de </span><span class="rc">${typeof x==='number'?fmt(x):x}</span></span>`;
+const isqrt=n=>{let r=Math.floor(Math.sqrt(n));while(r*r>n)r--;while((r+1)*(r+1)<=n)r++;return r};
 const expand=(b,e)=>Array(e).fill(typeof b==='number'&&b<0?`(${fmt(b)})`:b).join(' · ');
 const W=['cero','uno','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez'];
 function mc(prompt,correct,wrongs,explain){const ws=[...new Set(wrongs.filter(w=>w!==correct))].slice(0,3);const opts=shuffle([correct,...ws]);return {type:'mc',prompt,options:opts,answer:opts.indexOf(correct),explain}}
@@ -138,4 +140,4 @@ const MODULES=[
   {id:'enteros',name:'Números enteros',sym:'ℤ',desc:'Operaciones con signo y recta numérica.',soon:true}
 ];
 
-export { $, ri, pick, shuffle, fmt, P, expand, W, mc, num, parseNum, POT_LEVELS, MODULES };
+export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, MODULES };

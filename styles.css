@@ -32,6 +32,10 @@ p{margin:0}
 .hl{background:linear-gradient(transparent 58%,var(--hl) 58%);padding:0 2px}
 .pw{white-space:nowrap;font-variant-numeric:tabular-nums}
 .pw sup{color:var(--pen);font-weight:700;font-size:.66em;margin-left:1px}
+.rt{white-space:nowrap;font-variant-numeric:tabular-nums}
+.rt .rad{color:var(--pen);font-weight:700}
+.rt .rc{border-top:2px solid currentColor;padding:0 2px;margin-left:1px}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 b,strong{font-weight:700}
 
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}
@@ -104,7 +108,7 @@ b,strong{font-weight:700}
 .dots i.ko{background:var(--bad);border-color:var(--bad)}
 .dots i.ans{background:var(--pen);border-color:var(--pen)}
 .prompt{font-size:1.3rem;line-height:1.5;font-variant-numeric:tabular-nums}
-.prompt .pw{font-size:1.15em}
+.prompt .pw,.prompt .rt{font-size:1.15em}
 .opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 .opt{font:inherit;font-size:1.15rem;text-align:left;padding:12px 14px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;font-variant-numeric:tabular-nums}
 .opt[aria-pressed="true"]{border-color:var(--pen);background:var(--pen-soft)}
