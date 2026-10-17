@@ -168,6 +168,26 @@ const tts=window.speechSynthesis||null;
 tts&&tts.getVoices(); // Chrome carga las voces de forma diferida
 const esVoice=()=>{const vs=tts?tts.getVoices():[];return vs.find(v=>/^es[-_]ES/i.test(v.lang))||vs.find(v=>/^es\b/i.test(v.lang))||null};
 
+// Rotulador de pizarra: sigue cada trazo SVG punto a punto y cada texto de izquierda a derecha.
+const PEN_SVG='<svg viewBox="0 0 44 44"><g transform="rotate(35 22 22)"><rect x="16" y="1" width="12" height="28" rx="3" fill="#2d3748"/><rect x="16" y="6" width="12" height="6" fill="#1f4fd1"/><path d="M17 29h10l-3 10h-4z" fill="#1f4fd1"/></g></svg>';
+function followPen(stage){
+  const pen=document.createElement('div');pen.className='pen';pen.setAttribute('aria-hidden','true');pen.innerHTML=PEN_SVG;
+  let raf=0,hide=0;
+  const onStart=e=>{const el=e.target,name=e.animationName;
+    if(!['wb-write','wb-draw','x-in'].includes(name)||!el.isConnected)return;
+    const dur=(parseFloat(getComputedStyle(el,e.pseudoElement||null).animationDuration)||.5)*1000;
+    if(pen.parentNode!==stage)stage.appendChild(pen); // repintar la escena lo quita
+    const sr=stage.getBoundingClientRect(),ox=stage.scrollLeft-sr.left,oy=stage.scrollTop-sr.top;let at;
+    if(name==='wb-draw'&&el.getTotalLength){const len=el.getTotalLength(),m=el.getScreenCTM();
+      at=t=>{const p=el.getPointAtLength(t*len);return [m.a*p.x+m.c*p.y+m.e+ox,m.b*p.x+m.d*p.y+m.f+oy]}}
+    else{const r=el.getBoundingClientRect(),y=name==='x-in'?r.top+r.height/2:r.bottom-6;at=t=>[r.left+t*r.width+ox,y+oy]}
+    cancelAnimationFrame(raf);clearTimeout(hide);pen.classList.add('on');const t0=performance.now();
+    const tick=now=>{const t=Math.min(1,(now-t0)/dur),[x,y]=at(t);pen.style.transform=`translate(${x}px,${y}px)`;
+      if(t<1)raf=requestAnimationFrame(tick);else hide=setTimeout(()=>pen.classList.remove('on'),700)};
+    raf=requestAnimationFrame(tick)};
+  stage.addEventListener('animationstart',onStart);
+  return ()=>{cancelAnimationFrame(raf);clearTimeout(hide);stage.removeEventListener('animationstart',onStart)}}
+
 function animPlayer(root,steps){
   let idx=0,playing=false,started=false,pending=false,ended=false,token=0,timer=null,watchdog=null,audio=null;
   root.innerHTML=`<section class="card anim stack" aria-label="Explicación animada">
@@ -224,7 +244,8 @@ function animPlayer(root,steps){
   snd.onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('mates1eso.sound',soundOn?'on':'off')}catch(e){}
     if(playing&&!pending)show(idx);else{if(!soundOn)silence();paintControls()}};
   if(tts)tts.onvoiceschanged=paintControls;
-  animStop=()=>{playing=false;silence();if(tts)tts.onvoiceschanged=null};
+  const stopPen=followPen(stage);
+  animStop=()=>{playing=false;silence();stopPen();if(tts)tts.onvoiceschanged=null};
   show(0)}
 
 /* ---------- prueba de nivel ---------- */

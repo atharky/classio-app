@@ -57,6 +57,7 @@ for (const mod of WITH_CONTENT) {
       assert.ok(steps.length >= 4, `${where}: pocos pasos`);
       assert.ok(!steps[0].ask, `${where}: debe empezar explicando, no preguntando`);
       assert.ok(steps.filter(s => s.ask).length >= 2, `${where}: al menos 2 preguntas`);
+      assert.ok(steps.some(s => /class="real-tag"/.test(s.show || '')), `${where}: falta un ejemplo «En la vida real»`);
       for (const [k, step] of steps.entries()) {
         const at = `${where} paso ${k + 1}`;
         assert.ok(typeof step.say === 'string' && step.say.trim(), `${at}: sin narración`);

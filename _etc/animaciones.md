@@ -1,6 +1,29 @@
 # Explicaciones animadas con audio
 
-Cada nivel empieza, en la pestaña **Aprende**, con una explicación animada por pasos: una escena que se va dibujando, una narración en voz alta y subtítulos siempre visibles. En algunos pasos la explicación se detiene y el alumno tiene que responder una pregunta para seguir. Si falla dos veces se le muestra la respuesta explicada y puede continuar. Debajo se mantiene la lección escrita como **Resumen escrito**.
+Cada nivel empieza, en la pestaña **Aprende**, con una explicación animada por pasos en estilo **pizarra blanca** (*whiteboard animation*): el texto se escribe a mano de izquierda a derecha, los dibujos se trazan línea a línea y un rotulador sigue cada trazo. Hay narración en voz alta y subtítulos siempre visibles. En algunos pasos la explicación se detiene y el alumno tiene que responder una pregunta para seguir. Si falla dos veces se le muestra la respuesta explicada y puede continuar. Debajo se mantiene la lección escrita como **Resumen escrito**.
+
+## Estilo pizarra
+
+- La escena es una pizarra blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (Google Fonts; sin conexión cae en una letra manuscrita del sistema) y rotulador negro, azul, rojo y verde.
+- El texto aparece «escribiéndose» (recorte animado) y los dibujos SVG se trazan con `stroke-dashoffset`; las líneas tienen un pequeño temblor de mano alzada, siempre el mismo para que las escenas no cambien entre visitas.
+- El rotulador sigue cada trazo punto a punto (`getPointAtLength`) y cada texto de izquierda a derecha, y se esconde cuando no dibuja.
+- Con «reducir movimiento» activado en el sistema no hay animaciones ni rotulador: cada escena aparece terminada.
+
+## Ejemplos de la vida real
+
+Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta práctica:
+
+| Nivel | Ejemplo |
+|---|---|
+| Potencias 1 | Doblar un folio: cada doblez duplica las capas (2⁵ = 32) |
+| Potencias 2 | Baldosas de un patio (6² = 36) y cubo de Rubik (3³ = 27) |
+| Potencias 3 | El signo menos como «media vuelta» |
+| Potencias 4 | Almacén: 10² cajas con 10³ clips = 10⁵ |
+| Potencias 5 | Tablero de ajedrez: (2³)² = 2⁶ = 64 casillas |
+| Potencias 6 | Caja de bombones: 4² − 3 = 13, primero la potencia |
+| Raíces 1 | Huerto cuadrado de 49 m² → lado de 7 m |
+| Raíces 2 | Formar un cuadrado con 36 alumnos (con 40 no se puede) |
+| Raíces 3 | 30 alumnos → cuadrado de 5 × 5 y sobran 5 (el resto) |
 
 ## Controles
 
@@ -28,6 +51,8 @@ El contenido está en [`anim.js`](../anim.js), un array de pasos por nivel y mó
   audio: 'audio/rai-1-2.mp3' }                                         // opcional: grabación
 ```
 
-Piezas de escena: `at(retraso, html)` hace aparecer algo a los `retraso` segundos; `seq([...])` hace aparecer piezas una tras otra; `line(html, 'big')` es una línea de la escena; `lab(html, etiqueta, retraso, arriba)` pone una etiqueta debajo (o encima); `grid(n)` dibuja un cuadrado de n×n cuadraditos; `strike(html, retraso)` tacha algo. Con «reducir movimiento» activado en el sistema, las escenas se muestran directamente en su estado final.
+Piezas de texto: `at(retraso, html)` escribe algo a los `retraso` segundos (tarda más cuanto más largo); `seq([...])` escribe piezas una tras otra; `line(html, 'big')` es una línea de la pizarra; `lab(html, etiqueta, retraso, arriba)` pone una etiqueta debajo (o encima); `strike(html, retraso)` tacha algo; `real(título, html)` marca el paso como ejemplo «En la vida real».
 
-Las pruebas (`npm test`) exigen para cada nivel de cada módulo con contenido: una animación, al menos 4 pasos, empezar explicando, al menos 2 preguntas válidas, y narraciones de 220 caracteres como máximo **escritas con palabras, sin cifras ni HTML** (la voz lee mejor «veinticinco» que «25»).
+Piezas de dibujo (SVG): `sk(ancho, alto, trazos)` crea el dibujo; dentro, `ln` (línea), `box` (rectángulo), `circ` (círculo), `arrow` (flecha) se trazan con el rotulador; `fill` y `dot` rellenan; `tx` escribe texto. Atajos: `grid(n)` (cuadrícula de n × n que se rellena casilla a casilla) y `dots(n, sobran)` (formación de n × n puntos con puntos sueltos en rojo).
+
+Las pruebas (`npm test`) exigen para cada nivel de cada módulo con contenido: una animación, al menos 4 pasos, empezar explicando, al menos 2 preguntas válidas, un ejemplo «En la vida real», y narraciones de 220 caracteres como máximo **escritas con palabras, sin cifras ni HTML** (la voz lee mejor «veinticinco» que «25»).
