@@ -1,8 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MODULES, parseNum, num, fmt, isqrt, R } from '../data.js';
+import { MODULES, RAI_LEVELS, parseNum, num, fmt, isqrt, R } from '../data.js';
 
 const ACTIVE = MODULES.filter(m => !m.soon);
+// También se prueban los módulos aún ocultos que ya tienen niveles.
+const WITH_CONTENT = MODULES.filter(m => m.levels);
 const RUNS = 200;
 
 test('hay al menos un módulo activo con niveles y exámenes', () => {
@@ -13,7 +15,7 @@ test('hay al menos un módulo activo con niveles y exámenes', () => {
   }
 });
 
-for (const mod of ACTIVE) {
+for (const mod of WITH_CONTENT) {
   test(`${mod.id}: los niveles tienen lección y generadores`, () => {
     for (const [i, level] of mod.levels.entries()) {
       const where = `${mod.id} nivel ${i + 1}`;
@@ -45,7 +47,7 @@ for (const mod of ACTIVE) {
 
   test(`${mod.id}: los exámenes apuntan a niveles existentes`, () => {
     const ids = new Set();
-    for (const ex of mod.exams) {
+    for (const ex of mod.exams || []) {
       assert.ok(!ids.has(ex.id), `${mod.id}: examen ${ex.id} repetido`);
       ids.add(ex.id);
       assert.ok(ex.levels.length > 0 && ex.n >= ex.levels.length, `${mod.id}:${ex.id}`);
@@ -56,6 +58,39 @@ for (const mod of ACTIVE) {
 
 test('los identificadores de módulo son únicos', () => {
   assert.equal(new Set(MODULES.map(m => m.id)).size, MODULES.length);
+});
+
+// Recalcula la respuesta de cada pregunta de raíces a partir del enunciado.
+const radicand = q => Number(q.prompt.match(/class="rc">([\d\u202f]+)</)[1].replace(/\u202f/g, ''));
+const ints = q => q.prompt.replace(/<[^>]+>/g, ' ').match(/\d+/g).map(Number);
+const isSquare = n => isqrt(n) ** 2 === n;
+const NUM_CHECKS = [
+  [/cifra decimal/, q => { const n = radicand(q), d = Math.round(q.answer * 10); return d * d <= 100 * n && 100 * n < (d + 1) ** 2; }],
+  [/^¿Cuál es la raíz entera/, q => q.answer === isqrt(radicand(q))],
+  [/^Calcula el resto/, q => q.answer === radicand(q) - isqrt(radicand(q)) ** 2],
+  [/^La raíz entera de un número es/, q => { const [r, s] = ints(q); return q.answer === r * r + s && s <= 2 * r; }],
+  [/cm²/, q => q.answer ** 2 === ints(q)[0]],
+  [/^¿Qué número natural/, q => q.answer ** 2 === ints(q)[0]],
+  [/^Calcula /, q => q.answer ** 2 === radicand(q)],
+];
+const MC_CHECKS = [
+  [/^¿Cuánto vale/, q => Number(q.options[q.answer]) ** 2 === radicand(q)],
+  [/está entre/, q => { const r = isqrt(radicand(q)); return q.options[q.answer] === `${r} y ${r + 1}`; }],
+  [/^¿Es \d+ un cuadrado perfecto/, q => (q.options[q.answer] === 'Sí') === isSquare(ints(q)[0])],
+  [/no<\/b> es un cuadrado perfecto/, q => q.options.every((o, k) => isSquare(Number(o)) === (k !== q.answer))],
+  [/es un cuadrado perfecto\?$/, q => q.options.every((o, k) => isSquare(Number(o)) === (k === q.answer))],
+  [/^¿Por qué|¿cuál es (el|la) <b>/, () => true],
+];
+
+test('raíces: las respuestas son matemáticamente correctas', () => {
+  for (const [i, level] of RAI_LEVELS.entries()) for (const [g, gen] of level.gens.entries()) for (let r = 0; r < RUNS; r++) {
+    const q = gen();
+    const checks = q.type === 'num' ? NUM_CHECKS : MC_CHECKS;
+    const found = checks.find(([re]) => re.test(q.prompt));
+    const where = `nivel ${i + 1} gen ${g + 1}: ${q.prompt}`;
+    assert.ok(found, `${where}: no hay comprobación para este enunciado`);
+    assert.ok(found[1](q), `${where} → ${q.type === 'num' ? q.answer : q.options[q.answer]}`);
+  }
 });
 
 test('parseNum acepta respuestas numéricas y rechaza texto', () => {

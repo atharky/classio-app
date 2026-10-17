@@ -132,12 +132,68 @@ const POT_LEVELS=[
   ]}
 ];
 
+/* ---------- contenido: módulo Raíces cuadradas ---------- */
+const nonSquare=(a,b)=>{let n;do n=ri(a,b);while(isqrt(n)**2===n);return n};
+const squaresRow=(from,to)=>{const ns=Array.from({length:to-from+1},(_,i)=>from+i);return `<tr><th>n</th>${ns.map(n=>`<th>${n}</th>`).join('')}</tr><tr><th>n²</th>${ns.map(n=>`<td>${n*n}</td>`).join('')}</tr>`};
+const RAI_LEVELS=[
+{ title:'¿Qué es una raíz cuadrada?', sub:'La operación inversa de elevar al cuadrado',
+  lesson:[
+    ['Deshacer un cuadrado',`<p>Elevar al cuadrado es multiplicar un número por sí mismo: ${P(7,2)} = 7 · 7 = 49. La <span class="hl">raíz cuadrada</span> hace el camino contrario: busca el número que, multiplicado por sí mismo, da 49.</p>
+     <div class="ex">${R(49)} = 7 &nbsp;porque&nbsp; ${P(7,2)} = 49</div>
+     <p>El símbolo √ se llama <b>radical</b>, el número de dentro es el <span class="hl">radicando</span> y el resultado es la <span class="hl">raíz</span>.</p>`],
+    ['El lado de un cuadrado',`<p>Si un cuadrado tiene un área de 36 cm², su lado mide ${R(36)} = <b>6 cm</b>, porque 6 · 6 = 36. Por eso se llama raíz <i>cuadrada</i>.</p>`],
+    ['Cómo se lee',`<p>${R(25)} se lee <b>«raíz cuadrada de veinticinco»</b> o, más corto, <b>«raíz de veinticinco»</b>.</p>`],
+    ['Error típico',`<div class="ex warn">${R(16)} no es 8</div><p>La raíz no es la mitad del número. ${R(16)} = 4 porque 4 · 4 = 16. En cambio, 8 · 8 = 64, así que ${R(64)} = 8.</p>`]
+  ],
+  gens:[
+    ()=>{const n=ri(1,12);return num(`Calcula ${R(n*n)}`,n,`${n} · ${n} = ${n*n}, así que ${R(n*n)} = ${n}.`)},
+    ()=>{const n=ri(3,10);return mc(`¿Por qué ${R(n*n)} = ${n}?`,`Porque ${n} · ${n} = ${n*n}`,[`Porque ${n} · 2 = ${2*n}`,`Porque ${n} + ${n} = ${2*n}`,`Porque ${n*n} es la mitad de ${2*n*n}`],`La raíz cuadrada busca el número que multiplicado por sí mismo da el radicando: ${P(n,2)} = ${n*n}.`)},
+    ()=>{const n=ri(3,12),q=Math.random()<.5;return mc(`En ${R(n*n)} = ${n}, ¿cuál es ${q?'el <b>radicando</b>':'la <b>raíz</b>'}?`,String(q?n*n:n),[String(q?n:n*n),'√',String(2*n)],`El radicando es el número de dentro del radical (${n*n}). La raíz es el resultado (${n}).`)},
+    ()=>{const n=ri(2,12);return num(`Un cuadrado tiene un área de ${n*n} cm². ¿Cuánto mide su lado?`,n,`El lado mide ${R(n*n)} = ${n} cm, porque ${n} · ${n} = ${n*n}.`,'Escribe solo el número de centímetros.')},
+    ()=>{const n=pick([4,6,8,10,12,14,16]);return mc(`¿Cuánto vale ${R(n*n)}?`,String(n),[String(n*n/2),String(n*n),String(n-1)],`${n} · ${n} = ${n*n}. Ojo: no es la mitad de ${n*n}.`)}
+  ]},
+{ title:'Cuadrados perfectos y raíces exactas', sub:'Reconocer cuadrados perfectos y calcular su raíz',
+  lesson:[
+    ['Cuadrados perfectos',`<p>Un número es un <span class="hl">cuadrado perfecto</span> si es el cuadrado de un número natural. Su raíz cuadrada es <b>exacta</b>. Conviene saberse estos:</p>
+     <div class="tbl"><table>${squaresRow(1,10)}${squaresRow(11,20)}</table></div>`],
+    ['Con ceros detrás',`<p>Si el radicando acaba en un número <b>par</b> de ceros, la raíz lleva <span class="hl">la mitad de ceros</span>:</p>
+     <div class="ex">${R(900)} = 30 &nbsp;·&nbsp; ${R(10000)} = 100 &nbsp;·&nbsp; ${R(250000)} = 500</div>
+     <p>Compruébalo: 30 · 30 = 900.</p>`],
+    ['¿Es cuadrado perfecto?',`<p>Un cuadrado perfecto <b>nunca acaba en 2, 3, 7 u 8</b>. Si acaba en otra cifra, busca entre qué cuadrados de la tabla está: si no coincide con ninguno, no es cuadrado perfecto.</p>`],
+    ['Error típico',`<div class="ex warn">${R(90)} no es 30</div><p>30 · 30 = 900, no 90. Los ceros tienen que ir <b>por parejas</b>: 90 tiene un solo cero y no es cuadrado perfecto.</p>`]
+  ],
+  gens:[
+    ()=>{const n=ri(11,20);return num(`Calcula ${R(n*n)}`,n,`${n} · ${n} = ${n*n}, así que ${R(n*n)} = ${n}.`)},
+    ()=>{const k=ri(4,15);return mc(`¿Cuál de estos números es un cuadrado perfecto?`,String(k*k),[String(k*k+1),String(k*k-1),String(k*k+k)],`${k*k} = ${k} · ${k}. Los otros quedan entre dos cuadrados seguidos de la tabla, así que no son cuadrados perfectos.`)},
+    ()=>{const k=ri(2,9),z=pick([2,4]);const n=k*k*10**z;return num(`Calcula ${R(n)}`,k*10**(z/2),`${R(n)} = ${fmt(k*10**(z/2))}: la raíz de ${k*k} es ${k} y de ${z} ceros pasamos a ${z/2}. Compruébalo: ${fmt(k*10**(z/2))} · ${fmt(k*10**(z/2))} = ${fmt(n)}.`)},
+    ()=>{const k=ri(5,20),yes=Math.random()<.5,n=yes?k*k:k*k+ri(1,2*k);const r=isqrt(n);return mc(`¿Es ${n} un cuadrado perfecto?`,yes?'Sí':'No',['Sí','No'],yes?`Sí: ${n} = ${k} · ${k}.`:`No: ${P(r,2)} = ${r*r} y ${P(r+1,2)} = ${(r+1)**2}, y ${n} está entre los dos.`)},
+    ()=>{const n=ri(6,20);return num(`¿Qué número natural elevado al cuadrado da ${n*n}?`,n,`${P(n,2)} = ${n*n}, así que es ${R(n*n)} = ${n}.`)},
+    ()=>{const d=pick([2,3,7,8]),bad=ri(10,99)*10+d;const sq=shuffle([11,12,13,14,15,16,17,18,19,21,22,23,24,25]).slice(0,3);return mc(`¿Cuál de estos números <b>no</b> es un cuadrado perfecto?`,String(bad),sq.map(k=>String(k*k)),`${bad} acaba en ${d}, y ningún cuadrado perfecto acaba en 2, 3, 7 u 8. Los otros sí lo son: ${sq.map(k=>`${k*k} = ${P(k,2)}`).join(', ')}.`)}
+  ]},
+{ title:'Raíces enteras y aproximadas', sub:'Raíz entera, resto y estimación',
+  lesson:[
+    ['Entre dos cuadrados',`<p>30 no es un cuadrado perfecto, pero está entre dos: ${P(5,2)} = 25 &lt; 30 &lt; 36 = ${P(6,2)}. Por eso ${R(30)} está <b>entre 5 y 6</b>.</p>`],
+    ['Raíz entera y resto',`<p>La <span class="hl">raíz entera</span> (por defecto) es el mayor número cuyo cuadrado no pasa del radicando. El <span class="hl">resto</span> es lo que sobra:</p>
+     <div class="ex">${R(30)}: raíz entera 5 y resto 30 − 25 = 5</div>
+     <p>Se comprueba así: radicando = raíz² + resto → 30 = ${P(5,2)} + 5.</p>`],
+    ['Aproximar a las décimas',`<p>Para afinar se prueba con décimas: 5,4 · 5,4 = 29,16 y 5,5 · 5,5 = 30,25. Como 30 está entre los dos, ${R(30)} ≈ <b>5,4</b> por defecto.</p>`],
+    ['Error típico',`<div class="ex warn">El resto nunca pasa del doble de la raíz</div><p>Si la raíz entera es 5, el resto puede ser como mucho 10: con 25 + 11 = 36 = ${P(6,2)} ya llegamos al siguiente cuadrado y la raíz entera sería 6.</p>`]
+  ],
+  gens:[
+    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`¿Cuál es la raíz entera de ${R(n)}?`,r,`${P(r,2)} = ${r*r} ≤ ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}, así que la raíz entera es ${r}.`)},
+    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`Calcula el resto de la raíz entera de ${R(n)}`,n-r*r,`La raíz entera es ${r} porque ${P(r,2)} = ${r*r}. El resto es ${n} − ${r*r} = ${n-r*r}.`)},
+    ()=>{const n=nonSquare(10,150),r=isqrt(n),h=Math.floor(n/2);return mc(`${R(n)} está entre…`,`${r} y ${r+1}`,[`${r-1} y ${r}`,`${r+1} y ${r+2}`,`${h} y ${h+1}`],`${P(r,2)} = ${r*r} &lt; ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}.`)},
+    ()=>{const r=ri(3,15),s=ri(1,2*r);return num(`La raíz entera de un número es ${r} y el resto es ${s}. ¿Cuál es el número?`,r*r+s,`Radicando = raíz² + resto = ${P(r,2)} + ${s} = ${r*r} + ${s} = ${r*r+s}.`)},
+    ()=>{const n=nonSquare(2,99),d=isqrt(n*100);return num(`Calcula ${R(n)} con una cifra decimal (por defecto)`,d/10,`${fmt(d/10)} · ${fmt(d/10)} = ${fmt(d*d/100)} y ${fmt((d+1)/10)} · ${fmt((d+1)/10)} = ${fmt((d+1)**2/100)}. Como ${n} está entre los dos, ${R(n)} ≈ ${fmt(d/10)}.`,'Usa la coma decimal: por ejemplo, 5,4.')}
+  ]}
+];
+
 const MODULES=[
   {id:'potencias',name:'Potencias',sym:P('a','n'),desc:'Qué son, sus propiedades y cómo operar con ellas.',levels:POT_LEVELS,
    exams:[{id:'p1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'p2',name:'Examen parcial B',sub:'Niveles 4 a 6',levels:[3,4,5],n:10},{id:'pf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4,5],n:12}]},
-  {id:'raices',name:'Raíces cuadradas',sym:'√',desc:'Raíces exactas y aproximadas.',soon:true},
+  {id:'raices',name:'Raíces cuadradas',sym:'√',desc:'Raíces exactas y aproximadas.',levels:RAI_LEVELS,soon:true},
   {id:'divis',name:'Divisibilidad',sym:'m.c.m.',desc:'Múltiplos, divisores, mcm y mcd.',soon:true},
   {id:'enteros',name:'Números enteros',sym:'ℤ',desc:'Operaciones con signo y recta numérica.',soon:true}
 ];
 
-export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, MODULES };
+export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS, MODULES };
