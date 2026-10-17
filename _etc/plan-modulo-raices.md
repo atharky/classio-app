@@ -132,6 +132,8 @@ Añadir una sección breve con el estado del nuevo módulo y la validación real
 
 ## 4. Orden de trabajo (commits)
 
+> Entre los commits 2 y 3 se añadió la sincronización entre dispositivos por código (ver [`sincronizacion.md`](sincronizacion.md)). Ya sube la caché del service worker a `v2` y añade `sync.js` a `ASSETS`; al activar Raíces hay que subirla otra vez (`v3`).
+
 1. **Infraestructura:** `R`, `isqrt`, `.rt`/`.sr` en CSS, `fmt` con coma decimal + pruebas de estos helpers. `npm test` en verde, Potencias sin cambios visibles.
 2. **Pruebas generales:** generalizar `tests/data.test.mjs` a todos los módulos (debe seguir pasando solo con Potencias).
 3. **Contenido niveles 1–3** de `RAI_LEVELS` (el módulo todavía con `soon:true` para no publicarlo a medias).

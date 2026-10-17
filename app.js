@@ -1,4 +1,5 @@
 import { $, fmt, P, mc, num, parseNum, POT_LEVELS, MODULES, pick, shuffle } from './data.js';
+import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
@@ -14,10 +15,31 @@ function migrateState(raw){
 }
 let storageWarning='';
 let S=(()=>{try{return migrateState(JSON.parse(localStorage.getItem(KEY)))}catch(e){storageWarning='No se pudo leer el progreso guardado.';return emptyState()}})();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));storageWarning='';return true}catch(e){storageWarning='No se pudo guardar el progreso en este navegador.';return false}};
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));storageWarning='';return true}catch(e){storageWarning='No se pudo guardar el progreso en este navegador.';return false}};
+const save=()=>{const ok=persist();scheduleSync();return ok};
 const mp=id=>S.mods[id]||(S.mods[id]={unlocked:1,best:{}});
 const isOpen=(mod,i)=>S.open||i<mp(mod.id).unlocked;
 const QUIZ_N=5,PASS=4;
+
+/* ---------- sincronización ---------- */
+let link=loadLink(),syncStatus='',syncTimer=null,syncing=false;
+const progressJSON=st=>JSON.stringify({mods:st.mods,exams:st.exams});
+function setSyncStatus(t){syncStatus=t;const m=$('#sync-msg');m?m.textContent=t:renderFoot()}
+function scheduleSync(){if(!link)return;clearTimeout(syncTimer);syncTimer=setTimeout(syncNow,2000)}
+async function syncNow(){if(!link)return;if(syncing){scheduleSync();return}
+  clearTimeout(syncTimer);syncing=true;const code=link.code,sent=progressJSON(S);
+  try{const r=await pushState(code,S);
+    if(!link||link.code!==code)return;
+    link.at=Date.now();saveLink(link);syncStatus='';
+    // Si hubo progreso nuevo mientras viajaba la petición, no se pisa: se envía en la siguiente.
+    if(progressJSON(S)!==sent){scheduleSync();renderFoot();return}
+    const changed=progressJSON(r.state)!==sent;
+    if(changed){S.mods=r.state.mods;S.exams=r.state.exams;persist()}
+    if(changed||currentView.fn===viewSync)refresh();else renderFoot()}
+  catch(e){setSyncStatus(syncMessage(e))}
+  finally{syncing=false}}
+// Repinta solo vistas sin ejercicios en curso, sin mover el foco ni el scroll.
+function refresh(){if([viewHome,viewModule,viewSync].includes(currentView.fn))currentView.fn(...currentView.args);renderFoot()}
 
 function makeSet(gens,n,tag){const out=[],seen=new Set();let order=shuffle(gens.map((g,i)=>i));let k=0;
   while(out.length<n){const gi=order[k%order.length];k++;if(k%order.length===0)order=shuffle(order);
@@ -31,12 +53,13 @@ function setCrumb(t){$('#crumb').textContent=t||''}
 function go(view,...args){clearInterval(timerId);window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
 $('#home-btn').onclick=()=>go(viewHome);
 
-function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}`;
+function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${link?'Sincronización activada':'Sincronizar entre dispositivos'}</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}${syncStatus&&currentView.fn!==viewSync?`<span class="storage-warning" role="alert"> ${syncStatus}</span>`:''}`;
+  $('#sync').onclick=()=>go(viewSync);
   $('#export').onclick=exportProgress;
   $('#import').onclick=()=>$('#import-file').click();
   $('#open-all').onclick=()=>{S.open=!S.open;save();go(currentView.fn,...currentView.args)};
-  $('#reset').onclick=()=>{const fa=$('#foot-actions');fa.innerHTML=`¿Seguro? Se borrarán niveles y notas. <button class="link" id="r-yes" type="button">Sí, borrar</button> · <button class="link" id="r-no" type="button">Cancelar</button>`;
-    $('#r-yes').onclick=()=>{S=emptyState();save();go(viewHome)};$('#r-no').onclick=renderFoot}}
+  $('#reset').onclick=()=>{const fa=$('#foot-actions');fa.innerHTML=`¿Seguro? Se borrarán niveles y notas${link?' de este dispositivo y dejará de sincronizarse (tu código conserva el progreso en la nube)':''}. <button class="link" id="r-yes" type="button">Sí, borrar</button> · <button class="link" id="r-no" type="button">Cancelar</button>`;
+    $('#r-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';S=emptyState();save();go(viewHome)};$('#r-no').onclick=renderFoot}}
 let currentView={fn:null,args:[]};
 const track=(fn,args)=>currentView={fn,args};
 
@@ -84,6 +107,37 @@ function viewLevel(mod,i,tab){track(viewLevel,[mod,i,tab]);const lv=mod.levels[i
      <div class="card row" style="justify-content:space-between"><span>¿Lo tienes? Responde ${QUIZ_N} preguntas. Con ${PASS} bien ${i+1<mod.levels.length?'desbloqueas el siguiente nivel':'completas el módulo'}.</span><button class="btn" type="button" id="go-quiz">Hacer la prueba</button></div></div>`;
     $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz')}
   else levelQuiz(pane,mod,i)}
+
+function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
+  app.innerHTML=`<div class="stack">
+   <div><p class="eyebrow">Tu progreso</p><h1>Sincronizar entre dispositivos</h1></div>
+   ${link?`<section class="card stack"><h3>Este dispositivo está sincronizado</h3>
+     <p class="muted">Tu código de sincronización es:</p><p class="code">${link.code}</p>
+     <p>Apúntalo en un lugar seguro: es la única forma de recuperar tu progreso en otro dispositivo. Quien tenga el código puede ver y cambiar tu progreso, así que no lo compartas.</p>
+     <p class="hint">${link.at?`Última sincronización: ${new Date(link.at).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}`:'Aún sin sincronizar'}</p>
+     <div class="row" id="sync-actions"><button class="btn" type="button" id="sync-now">Sincronizar ahora</button><button class="btn ghost" type="button" id="unlink">Desvincular este dispositivo</button></div></section>`
+   :`<section class="card stack"><h3>Continúa en otro dispositivo</h3>
+     <p>Ahora tu progreso solo está en este navegador. Crea un código para seguir en otro ordenador, tablet o móvil. No pedimos nombre, correo ni contraseña.</p>
+     <div class="row"><button class="btn" type="button" id="create">Crear código</button></div></section>
+    <section class="card stack"><h3>Ya tengo un código</h3>
+     <p class="muted">Escríbelo para traer aquí tu progreso. Se juntará con lo que ya tengas en este dispositivo: no se pierde nada.</p>
+     <form class="row" id="link-form"><input id="code-in" class="codein" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="13" aria-label="Código de sincronización" placeholder="XXXXX-XXXXX"><button class="btn" type="submit" id="link-btn">Vincular</button></form></section>`}
+   <p class="storage-warning" id="sync-msg" role="alert">${syncStatus}</p></div>`;
+  const busy=(b,on,text)=>{b.disabled=on;b.textContent=text};
+  const stay=()=>currentView.fn===viewSync?go(viewSync):renderFoot(); // no saca al alumno de otra pantalla
+  if(link){
+    $('#sync-now').onclick=async e=>{busy(e.target,true,'Sincronizando…');await syncNow();const b=$('#sync-now');b&&busy(b,false,'Sincronizar ahora')};
+    $('#unlink').onclick=()=>{$('#sync-actions').innerHTML=`<span>¿Seguro? Apunta antes tu código: sin él no podrás recuperar el progreso en otro dispositivo.</span><button class="btn" type="button" id="u-yes">Sí, desvincular</button><button class="btn ghost" type="button" id="u-no">Cancelar</button>`;
+      $('#u-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';go(viewSync)};$('#u-no').onclick=()=>go(viewSync)}}
+  else{
+    $('#create').onclick=async e=>{busy(e.target,true,'Creando…');
+      try{const r=await createCode(S);link={code:r.code,at:Date.now()};saveLink(link);syncStatus='';stay()}
+      catch(err){busy(e.target,false,'Crear código');setSyncStatus(syncMessage(err))}};
+    $('#link-form').onsubmit=async e=>{e.preventDefault();const inp=$('#code-in'),b=$('#link-btn'),code=normalizeCode(inp.value);
+      if(!code){setSyncStatus(syncMessage({kind:'invalid_code'}));inp.focus();return}
+      busy(b,true,'Vinculando…');
+      try{const r=await pushState(code,S);link={code,at:Date.now()};saveLink(link);S.mods=r.state.mods;S.exams=r.state.exams;persist();syncStatus='';stay()}
+      catch(err){busy(b,false,'Vincular');setSyncStatus(syncMessage(err));inp.focus()}}}}
 
 /* ---------- pregunta ---------- */
 function qBody(q){
@@ -177,6 +231,7 @@ function viewExam(mod,ex){track(viewExam,[mod,ex]);setCrumb(`${mod.name} · ${ex
   show()}
 
 go(viewHome);
+syncNow();
 
 
 function exportProgress(){

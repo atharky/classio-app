@@ -52,6 +52,9 @@ b,strong{font-weight:700}
 .btn:focus-visible,.opt:focus-visible,.lvl:focus-visible,.mod:focus-visible,input:focus-visible,.tab:focus-visible,.link:focus-visible{outline:3px solid var(--hl);outline-offset:2px}
 .link{font:inherit;background:none;border:0;color:var(--pen);text-decoration:underline;cursor:pointer;padding:0}
 .storage-warning{display:inline-block;color:#9b2c2c;font-weight:600;margin-left:.35rem}
+.storage-warning:empty{display:none}
+.code{font-family:var(--f-display);font-weight:800;font-size:clamp(1.8rem,8vw,2.6rem);letter-spacing:.08em;color:var(--pen);font-variant-numeric:tabular-nums;user-select:all}
+.codein{font:inherit;font-size:1.3rem;letter-spacing:.08em;text-transform:uppercase;width:14ch;max-width:100%;padding:8px 12px;border-radius:10px;border:2px solid var(--line);background:var(--card);color:var(--ink)}
 
 /* Portada */
 .hero{padding:6px 0 10px}
