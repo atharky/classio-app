@@ -1,5 +1,5 @@
 const CACHE = 'cuaderno-mates-v2';
-const ASSETS = ['./', './index.html', './styles.css', './data.js', './sync.js', './app.js', './manifest.webmanifest', './icon.svg'];
+const ASSETS = ['./', './index.html', './styles.css', './data.js', './sync.js', './anim.js', './app.js', './manifest.webmanifest', './icon.svg'];
 self.addEventListener('install', event => event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(ASSETS))));
 self.addEventListener('activate', event => event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))));
 self.addEventListener('fetch', event => {

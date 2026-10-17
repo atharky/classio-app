@@ -1,5 +1,6 @@
 import { $, fmt, P, mc, num, parseNum, POT_LEVELS, MODULES, pick, shuffle } from './data.js';
 import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
+import { ANIMS } from './anim.js';
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
@@ -50,7 +51,7 @@ function makeSet(gens,n,tag){const out=[],seen=new Set();let order=shuffle(gens.
 const app=$('#app');
 let timerId=null;
 function setCrumb(t){$('#crumb').textContent=t||''}
-function go(view,...args){clearInterval(timerId);window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
+function go(view,...args){clearInterval(timerId);stopAnim();window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
 $('#home-btn').onclick=()=>go(viewHome);
 
 function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${link?'Sincronización activada':'Sincronizar entre dispositivos'}</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}${syncStatus&&currentView.fn!==viewSync?`<span class="storage-warning" role="alert"> ${syncStatus}</span>`:''}`;
@@ -103,9 +104,10 @@ function viewLevel(mod,i,tab){track(viewLevel,[mod,i,tab]);const lv=mod.levels[i
   $('#t-quiz').onclick=()=>go(viewLevel,mod,i,'quiz');
   const pane=$('#pane');
   if(tab==='learn'){
-    pane.innerHTML=`<div class="stack lesson">${lv.lesson.map(([t,h])=>`<section class="card"><h3>${t}</h3>${h}</section>`).join('')}
+    pane.innerHTML=`<div class="stack lesson"><div id="anim"></div>${ANIMS[mod.id]?.[i]?'<h2>Resumen escrito</h2>':''}${lv.lesson.map(([t,h])=>`<section class="card"><h3>${t}</h3>${h}</section>`).join('')}
      <div class="card row" style="justify-content:space-between"><span>¿Lo tienes? Responde ${QUIZ_N} preguntas. Con ${PASS} bien ${i+1<mod.levels.length?'desbloqueas el siguiente nivel':'completas el módulo'}.</span><button class="btn" type="button" id="go-quiz">Hacer la prueba</button></div></div>`;
-    $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz')}
+    $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz');
+    const steps=ANIMS[mod.id]?.[i];if(steps)animPlayer($('#anim'),steps)}
   else levelQuiz(pane,mod,i)}
 
 function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
@@ -154,6 +156,76 @@ const isRight=q=>q.type==='mc'?q.sel===q.answer:parseNum(q.raw)===q.answer;
 const rightText=q=>q.type==='mc'?q.options[q.answer]:fmt(q.answer);
 const userText=q=>q.type==='mc'?(q.sel!==undefined?q.options[q.sel]:'(sin responder)'):(q.raw&&q.raw.trim()?q.raw:'(sin responder)');
 const PRAISE=['¡Correcto!','¡Muy bien!','¡Exacto!','¡Eso es!'];
+function lockQ(qb,q,ok){
+  if(q.type==='mc')qb.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.k;if(k===q.answer)b.classList.add('right');else if(k===q.sel)b.classList.add('wrong')});
+  else{const inp=qb.querySelector('#ans');inp.disabled=true;inp.classList.add(ok?'right':'wrong');qb.querySelector('.pm').disabled=true}}
+
+/* ---------- explicación animada con audio ---------- */
+let animStop=null;
+function stopAnim(){if(animStop){animStop();animStop=null}}
+let soundOn=(()=>{try{return localStorage.getItem('mates1eso.sound')!=='off'}catch(e){return true}})();
+const tts=window.speechSynthesis||null;
+tts&&tts.getVoices(); // Chrome carga las voces de forma diferida
+const esVoice=()=>{const vs=tts?tts.getVoices():[];return vs.find(v=>/^es[-_]ES/i.test(v.lang))||vs.find(v=>/^es\b/i.test(v.lang))||null};
+
+function animPlayer(root,steps){
+  let idx=0,playing=false,started=false,pending=false,ended=false,token=0,timer=null,watchdog=null,audio=null;
+  root.innerHTML=`<section class="card anim stack" aria-label="Explicación animada">
+    <div class="qhead"><h3>Explicación animada</h3><span class="dots" id="a-dots"></span></div>
+    <div class="stage" id="a-stage"></div>
+    <p class="caption" id="a-cap"></p>
+    <div class="row"><button class="btn" type="button" id="a-play">▶ Empezar</button><button class="btn ghost" type="button" id="a-again">↺ Repetir paso</button><button class="btn ghost" type="button" id="a-next">Siguiente →</button></div>
+    <div class="row"><button class="link" type="button" id="a-sound"></button><span class="hint" id="a-note"></span></div></section>`;
+  const el=id=>root.querySelector('#'+id),stage=el('a-stage'),cap=el('a-cap'),play=el('a-play'),next=el('a-next'),again=el('a-again'),snd=el('a-sound'),note=el('a-note');
+  function silence(){token++;clearTimeout(timer);clearTimeout(watchdog);if(tts)tts.cancel();if(audio){audio.pause();audio=null}}
+  // Narra el texto (grabación si existe, si no la voz del navegador) y llama a done al acabar.
+  // Sin sonido o sin voz en español se espera un tiempo proporcional al texto, para leer los subtítulos.
+  function speak(text,src,done){silence();const t=token,wait=Math.max(2500,text.length*65);
+    const finish=()=>{if(t!==token)return;clearTimeout(timer);clearTimeout(watchdog);done&&done()};
+    const v=soundOn&&!src&&esVoice();
+    if(soundOn&&src){audio=new Audio(src);audio.onended=finish;audio.onerror=()=>{timer=setTimeout(finish,wait)};audio.play().catch(audio.onerror)}
+    else if(v){const u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=v.lang;u.rate=.95;u.onend=finish;u.onerror=finish;tts.speak(u);watchdog=setTimeout(finish,wait*2+3000)}
+    else timer=setTimeout(finish,wait)}
+  function paintControls(){
+    play.textContent=ended?'↺ Ver otra vez':playing?'Pausar':started?'▶ Continuar':'▶ Empezar';
+    next.disabled=pending||ended;again.disabled=ended;
+    snd.textContent=soundOn?'🔊 Sonido activado':'🔇 Sonido desactivado';snd.setAttribute('aria-pressed',String(soundOn));
+    note.textContent=soundOn&&!tts?'Tu navegador no permite audio: sigue los subtítulos.':soundOn&&tts&&tts.getVoices().length&&!esVoice()?'Tu navegador no tiene voz en español: sigue los subtítulos.':'';
+    el('a-dots').innerHTML=steps.map((s,k)=>`<i class="${ended||k<idx?'ok':k===idx?'cur':''}"></i>`).join('')}
+  function show(k,force){idx=k;ended=false;const s=steps[k];cap.textContent=s.say;pending=Boolean(s.ask);
+    if(s.ask)askStep(s);else stage.innerHTML=s.show; // repintar reinicia las animaciones CSS
+    if(playing||force)speak(s.say,s.audio,s.ask||!playing?null:advance);
+    paintControls()}
+  function advance(){idx+1<steps.length?show(idx+1):end()}
+  function end(){const wasPlaying=playing;playing=false;pending=false;ended=true;
+    stage.innerHTML='<div class="sl big"><span class="a" style="--d:0">¡Fin de la explicación!</span></div>';
+    cap.textContent='Repasa el resumen escrito de abajo o haz la prueba del nivel.';
+    wasPlaying?speak('¡Fin de la explicación! Ahora puedes hacer la prueba del nivel.',null,null):silence();paintControls()}
+  function askStep(s){const q=s.ask();let tries=0;
+    stage.innerHTML=`<div class="stack aq"><span class="eyebrow">Tu turno</span><div class="prompt">${q.prompt}</div><div id="a-qb">${qBody(q)}</div><div id="a-fb"></div>
+      <div class="row"><button class="btn" type="button" id="a-check" disabled>Comprobar</button></div></div>`;
+    const qb=stage.querySelector('#a-qb'),btn=stage.querySelector('#a-check'),fb=stage.querySelector('#a-fb');
+    wireQ(qb,q,()=>{if(pending)btn.disabled=!answered(q)});
+    const inp=qb.querySelector('#ans');if(inp)inp.onkeydown=e=>{if(e.key==='Enter'&&!btn.disabled)btn.click()};
+    btn.onclick=()=>{if(!pending){advance();return}
+      tries++;const ok=isRight(q);
+      if(ok||tries>=2){pending=false;lockQ(qb,q,ok);const v=ok?pick(PRAISE):`La respuesta es ${rightText(q)}.`;
+        fb.innerHTML=`<div class="fb ${ok?'ok':'ko'}"><span class="v">${v}</span>${q.explain}</div>`;
+        btn.textContent=idx+1<steps.length?'Continuar':'Terminar';btn.focus();
+        speak(ok?v:'Fíjate en la explicación.',null,null);paintControls()}
+      else{fb.innerHTML=`<div class="fb ko"><span class="v">Casi. Inténtalo otra vez.</span>${q.hint||'Repasa lo que acabas de ver.'}</div>`;
+        if(q.type==='mc'){q.sel=undefined;qb.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'))}
+        btn.disabled=true;speak('Casi. Inténtalo otra vez.',null,null)}}}
+  play.onclick=()=>{started=true;if(ended){playing=true;show(0);return}
+    if(playing){playing=false;silence();paintControls();return}
+    playing=true;pending?(speak(steps[idx].say,steps[idx].audio,null),paintControls()):show(idx)};
+  again.onclick=()=>show(idx,true);
+  next.onclick=()=>{if(!pending)advance()};
+  snd.onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('mates1eso.sound',soundOn?'on':'off')}catch(e){}
+    if(playing&&!pending)show(idx);else{if(!soundOn)silence();paintControls()}};
+  if(tts)tts.onvoiceschanged=paintControls;
+  animStop=()=>{playing=false;silence();if(tts)tts.onvoiceschanged=null};
+  show(0)}
 
 /* ---------- prueba de nivel ---------- */
 function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,QUIZ_N);let idx=0;
@@ -167,8 +239,7 @@ function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,Q
     const inp=qb.querySelector('#ans');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'&&!btn.disabled)btn.click()}}
     btn.onclick=()=>{if(q.done){idx++;idx<QUIZ_N?show():finish();return}
       q.done=true;q.ok=isRight(q);
-      if(q.type==='mc'){qb.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.k;if(k===q.answer)b.classList.add('right');else if(k===q.sel)b.classList.add('wrong')})}
-      else{inp.disabled=true;inp.classList.add(q.ok?'right':'wrong');qb.querySelector('.pm').disabled=true}
+      lockQ(qb,q,q.ok);
       $('#fb').innerHTML=`<div class="fb ${q.ok?'ok':'ko'}"><span class="v">${q.ok?pick(PRAISE):`No es correcto. La respuesta es ${rightText(q)}.`}</span>${q.explain}</div>`;
       btn.textContent=idx+1<QUIZ_N?'Siguiente':'Ver resultado';btn.focus()}}
   function finish(){const ok=qs.filter(q=>q.ok).length,pass=ok>=PASS,p=mp(mod.id);

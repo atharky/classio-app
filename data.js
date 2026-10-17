@@ -180,8 +180,8 @@ const RAI_LEVELS=[
     ['Error típico',`<div class="ex warn">El resto nunca pasa del doble de la raíz</div><p>Si la raíz entera es 5, el resto puede ser como mucho 10: con 25 + 11 = 36 = ${P(6,2)} ya llegamos al siguiente cuadrado y la raíz entera sería 6.</p>`]
   ],
   gens:[
-    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`¿Cuál es la raíz entera de ${R(n)}?`,r,`${P(r,2)} = ${r*r} ≤ ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}, así que la raíz entera es ${r}.`)},
-    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`Calcula el resto de la raíz entera de ${R(n)}`,n-r*r,`La raíz entera es ${r} porque ${P(r,2)} = ${r*r}. El resto es ${n} − ${r*r} = ${n-r*r}.`)},
+    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`¿Cuál es la raíz entera de ${n}?`,r,`${P(r,2)} = ${r*r} ≤ ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}, así que la raíz entera es ${r}.`)},
+    ()=>{const n=nonSquare(10,400),r=isqrt(n);return num(`Calcula el resto de la raíz entera de ${n}`,n-r*r,`La raíz entera es ${r} porque ${P(r,2)} = ${r*r}. El resto es ${n} − ${r*r} = ${n-r*r}.`)},
     ()=>{const n=nonSquare(10,150),r=isqrt(n),h=Math.floor(n/2);return mc(`${R(n)} está entre…`,`${r} y ${r+1}`,[`${r-1} y ${r}`,`${r+1} y ${r+2}`,`${h} y ${h+1}`],`${P(r,2)} = ${r*r} &lt; ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}.`)},
     ()=>{const r=ri(3,15),s=ri(1,2*r);return num(`La raíz entera de un número es ${r} y el resto es ${s}. ¿Cuál es el número?`,r*r+s,`Radicando = raíz² + resto = ${P(r,2)} + ${s} = ${r*r} + ${s} = ${r*r+s}.`)},
     ()=>{const n=nonSquare(2,99),d=isqrt(n*100);return num(`Calcula ${R(n)} con una cifra decimal (por defecto)`,d/10,`${fmt(d/10)} · ${fmt(d/10)} = ${fmt(d*d/100)} y ${fmt((d+1)/10)} · ${fmt((d+1)/10)} = ${fmt((d+1)**2/100)}. Como ${n} está entre los dos, ${R(n)} ≈ ${fmt(d/10)}.`,'Usa la coma decimal: por ejemplo, 5,4.')}
