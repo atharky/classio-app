@@ -1,16 +1,61 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { POT_LEVELS, parseNum, num, fmt, isqrt, R } from '../data.js';
+import { MODULES, parseNum, num, fmt, isqrt, R } from '../data.js';
 
-test('los niveles de potencias generan preguntas válidas', () => {
-  for (const level of POT_LEVELS) for (const question of level.gens.map(fn => fn())) {
-    assert.equal(typeof question.prompt, 'string');
-    if (question.type === 'mc') {
-      assert.ok(question.options.length >= 2);
-      assert.ok(Number.isInteger(question.answer));
-      assert.ok(question.answer >= 0 && question.answer < question.options.length);
-    }
+const ACTIVE = MODULES.filter(m => !m.soon);
+const RUNS = 200;
+
+test('hay al menos un módulo activo con niveles y exámenes', () => {
+  assert.ok(ACTIVE.length >= 1);
+  for (const mod of ACTIVE) {
+    assert.ok(Array.isArray(mod.levels) && mod.levels.length > 0, mod.id);
+    assert.ok(Array.isArray(mod.exams) && mod.exams.length > 0, mod.id);
   }
+});
+
+for (const mod of ACTIVE) {
+  test(`${mod.id}: los niveles tienen lección y generadores`, () => {
+    for (const [i, level] of mod.levels.entries()) {
+      const where = `${mod.id} nivel ${i + 1}`;
+      assert.ok(level.title && level.sub, where);
+      assert.ok(level.lesson.length > 0, where);
+      for (const [title, html] of level.lesson) assert.ok(title && html && !/undefined|NaN/.test(html), `${where}: ${title}`);
+      assert.ok(level.gens.length >= 4, `${where}: pocos generadores`);
+    }
+  });
+
+  test(`${mod.id}: los generadores producen preguntas válidas`, () => {
+    for (const [i, level] of mod.levels.entries()) for (const [g, gen] of level.gens.entries()) for (let r = 0; r < RUNS; r++) {
+      const q = gen();
+      const where = `${mod.id} nivel ${i + 1} gen ${g + 1}: ${q && q.prompt}`;
+      assert.ok(q.prompt && typeof q.prompt === 'string', where);
+      assert.ok(q.explain && typeof q.explain === 'string', where);
+      assert.doesNotMatch(q.prompt + q.explain, /undefined|NaN|Infinity/, where);
+      if (q.type === 'mc') {
+        assert.ok(q.options.length >= 2, where);
+        assert.equal(new Set(q.options).size, q.options.length, `${where}: opciones repetidas`);
+        assert.ok(Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.options.length, where);
+      } else {
+        assert.equal(q.type, 'num', where);
+        assert.ok(Number.isFinite(q.answer), where);
+        assert.equal(parseNum(fmt(q.answer)), q.answer, `${where}: la respuesta mostrada no se acepta`);
+      }
+    }
+  });
+
+  test(`${mod.id}: los exámenes apuntan a niveles existentes`, () => {
+    const ids = new Set();
+    for (const ex of mod.exams) {
+      assert.ok(!ids.has(ex.id), `${mod.id}: examen ${ex.id} repetido`);
+      ids.add(ex.id);
+      assert.ok(ex.levels.length > 0 && ex.n >= ex.levels.length, `${mod.id}:${ex.id}`);
+      for (const li of ex.levels) assert.ok(Number.isInteger(li) && li >= 0 && li < mod.levels.length, `${mod.id}:${ex.id} nivel ${li}`);
+    }
+  });
+}
+
+test('los identificadores de módulo son únicos', () => {
+  assert.equal(new Set(MODULES.map(m => m.id)).size, MODULES.length);
 });
 
 test('parseNum acepta respuestas numéricas y rechaza texto', () => {
