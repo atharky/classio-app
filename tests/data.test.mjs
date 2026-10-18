@@ -78,7 +78,12 @@ for (const mod of WITH_CONTENT) {
       assert.ok(!ids.has(ex.id), `${mod.id}: examen ${ex.id} repetido`);
       ids.add(ex.id);
       assert.ok(ex.levels.length > 0 && ex.n >= ex.levels.length, `${mod.id}:${ex.id}`);
-      for (const li of ex.levels) assert.ok(Number.isInteger(li) && li >= 0 && li < mod.levels.length, `${mod.id}:${ex.id} nivel ${li}`);
+      for (const r of ex.levels) {
+        // Un número es un nivel del propio módulo; «módulo:nivel» toma un nivel de otro módulo.
+        const [m, li] = typeof r === 'number' ? [mod, r] : [MODULES.find(x => x.id === r.split(':')[0]), +r.split(':')[1]];
+        assert.ok(m && m.levels && !m.soon, `${mod.id}:${ex.id} módulo de «${r}»`);
+        assert.ok(Number.isInteger(li) && li >= 0 && li < m.levels.length, `${mod.id}:${ex.id} nivel ${r}`);
+      }
     }
   });
 }
