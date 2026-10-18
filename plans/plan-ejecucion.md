@@ -4,6 +4,8 @@
 
 El detalle de cada tarea (alcance, criterio de hecho, modelo recomendado y coste) está en [`tareas.md`](tareas.md). Este documento ordena las tareas en fases y explica por qué.
 
+**Seguimiento:** el estado de cada tarea (⬜ pendiente, 🔄 en curso, 👀 en revisión, ✅ hecha, ⛔ bloqueada, ➖ descartada) se lleva en el [Control de estado de `tareas.md`](tareas.md#control-de-estado). Se actualiza en el mismo PR que ejecuta la tarea, y `npm test` comprueba que la tabla es coherente.
+
 ## Resumen ejecutivo
 
 | | Qué está bien | Qué falta |
