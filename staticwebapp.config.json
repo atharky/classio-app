@@ -7,5 +7,9 @@
     "Permissions-Policy": "camera=(), microphone=(), geolocation=()"
   },
   "mimeTypes": { ".webmanifest": "application/manifest+json" },
-  "routes": [{ "route": "/sw.js", "headers": { "Cache-Control": "no-cache" } }]
+  "routes": [
+    { "route": "/sw.js", "headers": { "Cache-Control": "no-cache" } },
+    { "route": "/api/*", "headers": { "Cache-Control": "no-store" } }
+  ],
+  "platform": { "apiRuntime": "node:20" }
 }

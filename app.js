@@ -1,4 +1,6 @@
-import { $, fmt, P, mc, num, parseNum, POT_LEVELS, MODULES, pick, shuffle } from './data.js';
+import { $, fmt, parseNum, pick, shuffle } from './data.js';
+import { SUBJECTS, MODULES, ANIMS } from './catalog.js';
+import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
@@ -14,10 +16,31 @@ function migrateState(raw){
 }
 let storageWarning='';
 let S=(()=>{try{return migrateState(JSON.parse(localStorage.getItem(KEY)))}catch(e){storageWarning='No se pudo leer el progreso guardado.';return emptyState()}})();
-const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));storageWarning='';return true}catch(e){storageWarning='No se pudo guardar el progreso en este navegador.';return false}};
+const persist=()=>{try{localStorage.setItem(KEY,JSON.stringify(S));storageWarning='';return true}catch(e){storageWarning='No se pudo guardar el progreso en este navegador.';return false}};
+const save=()=>{const ok=persist();scheduleSync();return ok};
 const mp=id=>S.mods[id]||(S.mods[id]={unlocked:1,best:{}});
 const isOpen=(mod,i)=>S.open||i<mp(mod.id).unlocked;
 const QUIZ_N=5,PASS=4;
+
+/* ---------- sincronización ---------- */
+let link=loadLink(),syncStatus='',syncTimer=null,syncing=false;
+const progressJSON=st=>JSON.stringify({mods:st.mods,exams:st.exams});
+function setSyncStatus(t){syncStatus=t;const m=$('#sync-msg');m?m.textContent=t:renderFoot()}
+function scheduleSync(){if(!link)return;clearTimeout(syncTimer);syncTimer=setTimeout(syncNow,2000)}
+async function syncNow(){if(!link)return;if(syncing){scheduleSync();return}
+  clearTimeout(syncTimer);syncing=true;const code=link.code,sent=progressJSON(S);
+  try{const r=await pushState(code,S);
+    if(!link||link.code!==code)return;
+    link.at=Date.now();saveLink(link);syncStatus='';
+    // Si hubo progreso nuevo mientras viajaba la petición, no se pisa: se envía en la siguiente.
+    if(progressJSON(S)!==sent){scheduleSync();renderFoot();return}
+    const changed=progressJSON(r.state)!==sent;
+    if(changed){S.mods=r.state.mods;S.exams=r.state.exams;persist()}
+    if(changed||currentView.fn===viewSync)refresh();else renderFoot()}
+  catch(e){setSyncStatus(syncMessage(e))}
+  finally{syncing=false}}
+// Repinta solo vistas sin ejercicios en curso, sin mover el foco ni el scroll.
+function refresh(){if([viewHome,viewModule,viewSync].includes(currentView.fn))currentView.fn(...currentView.args);renderFoot()}
 
 function makeSet(gens,n,tag){const out=[],seen=new Set();let order=shuffle(gens.map((g,i)=>i));let k=0;
   while(out.length<n){const gi=order[k%order.length];k++;if(k%order.length===0)order=shuffle(order);
@@ -28,33 +51,35 @@ function makeSet(gens,n,tag){const out=[],seen=new Set();let order=shuffle(gens.
 const app=$('#app');
 let timerId=null;
 function setCrumb(t){$('#crumb').textContent=t||''}
-function go(view,...args){clearInterval(timerId);window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
+function go(view,...args){clearInterval(timerId);stopAnim();window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
 $('#home-btn').onclick=()=>go(viewHome);
 
-function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}`;
+function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${link?'Sincronización activada':'Sincronizar entre dispositivos'}</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}${syncStatus&&currentView.fn!==viewSync?`<span class="storage-warning" role="alert"> ${syncStatus}</span>`:''}`;
+  $('#sync').onclick=()=>go(viewSync);
   $('#export').onclick=exportProgress;
   $('#import').onclick=()=>$('#import-file').click();
   $('#open-all').onclick=()=>{S.open=!S.open;save();go(currentView.fn,...currentView.args)};
-  $('#reset').onclick=()=>{const fa=$('#foot-actions');fa.innerHTML=`¿Seguro? Se borrarán niveles y notas. <button class="link" id="r-yes" type="button">Sí, borrar</button> · <button class="link" id="r-no" type="button">Cancelar</button>`;
-    $('#r-yes').onclick=()=>{S=emptyState();save();go(viewHome)};$('#r-no').onclick=renderFoot}}
+  $('#reset').onclick=()=>{const fa=$('#foot-actions');fa.innerHTML=`¿Seguro? Se borrarán niveles y notas${link?' de este dispositivo y dejará de sincronizarse (tu código conserva el progreso en la nube)':''}. <button class="link" id="r-yes" type="button">Sí, borrar</button> · <button class="link" id="r-no" type="button">Cancelar</button>`;
+    $('#r-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';S=emptyState();save();go(viewHome)};$('#r-no').onclick=renderFoot}}
 let currentView={fn:null,args:[]};
 const track=(fn,args)=>currentView={fn,args};
 
 function viewHome(){track(viewHome,[]);setCrumb('');
   app.innerHTML=`<div class="stack">
    <section class="hero"><p class="eyebrow">Aprendizaje guiado · 1º de ESO</p>
-    <div class="big" aria-hidden="true">2<sup>5</sup> = 32</div>
-    <p class="muted" style="max-width:56ch">Elige un módulo. Cada uno tiene niveles que se desbloquean al aprobar una prueba corta, y exámenes de prueba para repasar todo.</p></section>
-   <div class="mods">${MODULES.map(m=>{const p=m.soon?null:mp(m.id);const done=p?Math.min(Object.keys(p.best).filter(k=>p.best[k]>=PASS).length,m.levels.length):0;
+    <div class="big" aria-hidden="true">2<sup>5</sup> · Aa · 🔬</div>
+    <p class="muted" style="max-width:56ch">Elige una materia y un módulo. Cada módulo tiene niveles que se desbloquean al aprobar una prueba corta, y exámenes de prueba para repasar todo.</p></section>
+   ${SUBJECTS.map(sub=>`<section class="subject stack" aria-labelledby="sub-${sub.id}"><h2 id="sub-${sub.id}">${sub.name}</h2>
+   <div class="mods">${MODULES.filter(m=>m.subject===sub.id).map(m=>{const p=m.soon?null:mp(m.id);const done=p?Math.min(Object.keys(p.best).filter(k=>p.best[k]>=PASS).length,m.levels.length):0;
      return `<button class="mod ${m.soon?'':'on'}" type="button" data-id="${m.id}" ${m.soon?'disabled':''}>
       <span class="sym">${m.sym}</span><h3>${m.name}</h3><span class="muted" style="font-size:.92rem">${m.desc}</span>
       ${m.soon?'<span><span class="chip grey">Próximamente</span></span>':`<span class="row" style="justify-content:space-between"><span class="chip ${done===m.levels.length?'ok':''}">${done} de ${m.levels.length} niveles</span></span><div class="bar"><i style="width:${done/m.levels.length*100}%"></i></div>`}
-     </button>`}).join('')}</div></div>`;
+     </button>`}).join('')}</div></section>`).join('')}</div>`;
   app.querySelectorAll('.mod:not([disabled])').forEach(b=>b.onclick=()=>go(viewModule,MODULES.find(m=>m.id===b.dataset.id)))}
 
 function viewModule(mod){track(viewModule,[mod]);setCrumb(mod.name);const p=mp(mod.id);
   app.innerHTML=`<div class="stack">
-   <div><p class="eyebrow">Módulo</p><h1>${mod.name}</h1></div>
+   <div><p class="eyebrow">${SUBJECTS.find(s=>s.id===mod.subject).name}</p><h1>${mod.name}</h1></div>
    <h2 style="margin-top:6px">Niveles</h2>
    <div class="path">${mod.levels.map((lv,i)=>{const best=p.best[i];const done=best>=PASS;const open=isOpen(mod,i);const cur=open&&!done;
      return `<button type="button" class="lvl ${done?'done':''} ${cur?'cur':''}" data-i="${i}" ${open?'':'disabled'} aria-label="Nivel ${i+1}: ${lv.title}${open?'':' (bloqueado)'}">
@@ -80,10 +105,42 @@ function viewLevel(mod,i,tab){track(viewLevel,[mod,i,tab]);const lv=mod.levels[i
   $('#t-quiz').onclick=()=>go(viewLevel,mod,i,'quiz');
   const pane=$('#pane');
   if(tab==='learn'){
-    pane.innerHTML=`<div class="stack lesson">${lv.lesson.map(([t,h])=>`<section class="card"><h3>${t}</h3>${h}</section>`).join('')}
+    pane.innerHTML=`<div class="stack lesson"><div id="anim"></div>${ANIMS[mod.id]?.[i]?'<h2>Resumen escrito</h2>':''}${lv.lesson.map(([t,h])=>`<section class="card"><h3>${t}</h3>${h}</section>`).join('')}
      <div class="card row" style="justify-content:space-between"><span>¿Lo tienes? Responde ${QUIZ_N} preguntas. Con ${PASS} bien ${i+1<mod.levels.length?'desbloqueas el siguiente nivel':'completas el módulo'}.</span><button class="btn" type="button" id="go-quiz">Hacer la prueba</button></div></div>`;
-    $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz')}
+    $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz');
+    const steps=ANIMS[mod.id]?.[i];if(steps)animPlayer($('#anim'),steps)}
   else levelQuiz(pane,mod,i)}
+
+function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
+  app.innerHTML=`<div class="stack">
+   <div><p class="eyebrow">Tu progreso</p><h1>Sincronizar entre dispositivos</h1></div>
+   ${link?`<section class="card stack"><h3>Este dispositivo está sincronizado</h3>
+     <p class="muted">Tu código de sincronización es:</p><p class="code">${link.code}</p>
+     <p>Apúntalo en un lugar seguro: es la única forma de recuperar tu progreso en otro dispositivo. Quien tenga el código puede ver y cambiar tu progreso, así que no lo compartas.</p>
+     <p class="hint">${link.at?`Última sincronización: ${new Date(link.at).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}`:'Aún sin sincronizar'}</p>
+     <div class="row" id="sync-actions"><button class="btn" type="button" id="sync-now">Sincronizar ahora</button><button class="btn ghost" type="button" id="unlink">Desvincular este dispositivo</button></div></section>`
+   :`<section class="card stack"><h3>Continúa en otro dispositivo</h3>
+     <p>Ahora tu progreso solo está en este navegador. Crea un código para seguir en otro ordenador, tablet o móvil. No pedimos nombre, correo ni contraseña.</p>
+     <div class="row"><button class="btn" type="button" id="create">Crear código</button></div></section>
+    <section class="card stack"><h3>Ya tengo un código</h3>
+     <p class="muted">Escríbelo para traer aquí tu progreso. Se juntará con lo que ya tengas en este dispositivo: no se pierde nada.</p>
+     <form class="row" id="link-form"><input id="code-in" class="codein" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="13" aria-label="Código de sincronización" placeholder="XXXXX-XXXXX"><button class="btn" type="submit" id="link-btn">Vincular</button></form></section>`}
+   <p class="storage-warning" id="sync-msg" role="alert">${syncStatus}</p></div>`;
+  const busy=(b,on,text)=>{b.disabled=on;b.textContent=text};
+  const stay=()=>currentView.fn===viewSync?go(viewSync):renderFoot(); // no saca al alumno de otra pantalla
+  if(link){
+    $('#sync-now').onclick=async e=>{busy(e.target,true,'Sincronizando…');await syncNow();const b=$('#sync-now');b&&busy(b,false,'Sincronizar ahora')};
+    $('#unlink').onclick=()=>{$('#sync-actions').innerHTML=`<span>¿Seguro? Apunta antes tu código: sin él no podrás recuperar el progreso en otro dispositivo.</span><button class="btn" type="button" id="u-yes">Sí, desvincular</button><button class="btn ghost" type="button" id="u-no">Cancelar</button>`;
+      $('#u-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';go(viewSync)};$('#u-no').onclick=()=>go(viewSync)}}
+  else{
+    $('#create').onclick=async e=>{busy(e.target,true,'Creando…');
+      try{const r=await createCode(S);link={code:r.code,at:Date.now()};saveLink(link);syncStatus='';stay()}
+      catch(err){busy(e.target,false,'Crear código');setSyncStatus(syncMessage(err))}};
+    $('#link-form').onsubmit=async e=>{e.preventDefault();const inp=$('#code-in'),b=$('#link-btn'),code=normalizeCode(inp.value);
+      if(!code){setSyncStatus(syncMessage({kind:'invalid_code'}));inp.focus();return}
+      busy(b,true,'Vinculando…');
+      try{const r=await pushState(code,S);link={code,at:Date.now()};saveLink(link);S.mods=r.state.mods;S.exams=r.state.exams;persist();syncStatus='';stay()}
+      catch(err){busy(b,false,'Vincular');setSyncStatus(syncMessage(err));inp.focus()}}}}
 
 /* ---------- pregunta ---------- */
 function qBody(q){
@@ -100,6 +157,98 @@ const isRight=q=>q.type==='mc'?q.sel===q.answer:parseNum(q.raw)===q.answer;
 const rightText=q=>q.type==='mc'?q.options[q.answer]:fmt(q.answer);
 const userText=q=>q.type==='mc'?(q.sel!==undefined?q.options[q.sel]:'(sin responder)'):(q.raw&&q.raw.trim()?q.raw:'(sin responder)');
 const PRAISE=['¡Correcto!','¡Muy bien!','¡Exacto!','¡Eso es!'];
+function lockQ(qb,q,ok){
+  if(q.type==='mc')qb.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.k;if(k===q.answer)b.classList.add('right');else if(k===q.sel)b.classList.add('wrong')});
+  else{const inp=qb.querySelector('#ans');inp.disabled=true;inp.classList.add(ok?'right':'wrong');qb.querySelector('.pm').disabled=true}}
+
+/* ---------- explicación animada con audio ---------- */
+let animStop=null;
+function stopAnim(){if(animStop){animStop();animStop=null}}
+let soundOn=(()=>{try{return localStorage.getItem('mates1eso.sound')!=='off'}catch(e){return true}})();
+const tts=window.speechSynthesis||null;
+tts&&tts.getVoices(); // Chrome carga las voces de forma diferida
+const esVoice=()=>{const vs=tts?tts.getVoices():[];return vs.find(v=>/^es[-_]ES/i.test(v.lang))||vs.find(v=>/^es\b/i.test(v.lang))||null};
+
+// Rotulador de pizarra: sigue cada trazo SVG punto a punto y cada texto de izquierda a derecha.
+const PEN_SVG='<svg viewBox="0 0 44 44"><g transform="rotate(35 22 22)"><rect x="16" y="1" width="12" height="28" rx="3" fill="#2d3748"/><rect x="16" y="6" width="12" height="6" fill="#1f4fd1"/><path d="M17 29h10l-3 10h-4z" fill="#1f4fd1"/></g></svg>';
+function followPen(stage){
+  const pen=document.createElement('div');pen.className='pen';pen.setAttribute('aria-hidden','true');pen.innerHTML=PEN_SVG;
+  let raf=0,hide=0;
+  const onStart=e=>{const el=e.target,name=e.animationName;
+    if(!['wb-write','wb-draw','x-in'].includes(name)||!el.isConnected)return;
+    const dur=(parseFloat(getComputedStyle(el,e.pseudoElement||null).animationDuration)||.5)*1000;
+    if(pen.parentNode!==stage)stage.appendChild(pen); // repintar la escena lo quita
+    const sr=stage.getBoundingClientRect(),ox=stage.scrollLeft-sr.left,oy=stage.scrollTop-sr.top;let at;
+    if(name==='wb-draw'&&el.getTotalLength){const len=el.getTotalLength(),m=el.getScreenCTM();
+      at=t=>{const p=el.getPointAtLength(t*len);return [m.a*p.x+m.c*p.y+m.e+ox,m.b*p.x+m.d*p.y+m.f+oy]}}
+    else{const r=el.getBoundingClientRect(),y=name==='x-in'?r.top+r.height/2:r.bottom-6;at=t=>[r.left+t*r.width+ox,y+oy]}
+    cancelAnimationFrame(raf);clearTimeout(hide);pen.classList.add('on');const t0=performance.now();
+    const tick=now=>{if(!el.isConnected){pen.classList.remove('on');return} // la escena se repintó o se salió de la pantalla
+      const t=Math.min(1,(now-t0)/dur),[x,y]=at(t);pen.style.transform=`translate(${x}px,${y}px)`;
+      if(t<1)raf=requestAnimationFrame(tick);else hide=setTimeout(()=>pen.classList.remove('on'),700)};
+    raf=requestAnimationFrame(tick)};
+  stage.addEventListener('animationstart',onStart);
+  return ()=>{cancelAnimationFrame(raf);clearTimeout(hide);stage.removeEventListener('animationstart',onStart)}}
+
+function animPlayer(root,steps){
+  let idx=0,playing=false,started=false,pending=false,ended=false,token=0,timer=null,watchdog=null,audio=null;
+  root.innerHTML=`<section class="card anim stack" aria-label="Explicación animada">
+    <div class="qhead"><h3>Explicación animada</h3><span class="dots" id="a-dots"></span></div>
+    <div class="stage" id="a-stage"></div>
+    <p class="caption" id="a-cap"></p>
+    <div class="row"><button class="btn" type="button" id="a-play">▶ Empezar</button><button class="btn ghost" type="button" id="a-again">↺ Repetir paso</button><button class="btn ghost" type="button" id="a-next">Siguiente →</button></div>
+    <div class="row"><button class="link" type="button" id="a-sound"></button><span class="hint" id="a-note"></span></div></section>`;
+  const el=id=>root.querySelector('#'+id),stage=el('a-stage'),cap=el('a-cap'),play=el('a-play'),next=el('a-next'),again=el('a-again'),snd=el('a-sound'),note=el('a-note');
+  function silence(){token++;clearTimeout(timer);clearTimeout(watchdog);if(tts)tts.cancel();if(audio){audio.pause();audio=null}}
+  // Narra el texto (grabación si existe, si no la voz del navegador) y llama a done al acabar.
+  // Sin sonido o sin voz en español se espera un tiempo proporcional al texto, para leer los subtítulos.
+  function speak(text,src,done){silence();const t=token,wait=Math.max(2500,text.length*65);
+    const finish=()=>{if(t!==token)return;clearTimeout(timer);clearTimeout(watchdog);done&&done()};
+    const v=soundOn&&!src&&esVoice();
+    if(soundOn&&src){audio=new Audio(src);audio.onended=finish;audio.onerror=()=>{timer=setTimeout(finish,wait)};audio.play().catch(audio.onerror)}
+    else if(v){const u=new SpeechSynthesisUtterance(text);u.voice=v;u.lang=v.lang;u.rate=.95;u.onend=finish;u.onerror=finish;tts.speak(u);watchdog=setTimeout(finish,wait*2+3000)}
+    else timer=setTimeout(finish,wait)}
+  function paintControls(){
+    play.textContent=ended?'↺ Ver otra vez':playing?'Pausar':started?'▶ Continuar':'▶ Empezar';
+    next.disabled=pending||ended;again.disabled=ended;
+    snd.textContent=soundOn?'🔊 Sonido activado':'🔇 Sonido desactivado';snd.setAttribute('aria-pressed',String(soundOn));
+    note.textContent=soundOn&&!tts?'Tu navegador no permite audio: sigue los subtítulos.':soundOn&&tts&&tts.getVoices().length&&!esVoice()?'Tu navegador no tiene voz en español: sigue los subtítulos.':'';
+    el('a-dots').innerHTML=steps.map((s,k)=>`<i class="${ended||k<idx?'ok':k===idx?'cur':''}"></i>`).join('')}
+  function show(k,force){idx=k;ended=false;const s=steps[k];cap.textContent=s.say;pending=Boolean(s.ask);
+    if(s.ask)askStep(s);else stage.innerHTML=s.show; // repintar reinicia las animaciones CSS
+    if(playing||force)speak(s.say,s.audio,s.ask||!playing?null:advance);
+    paintControls()}
+  function advance(){idx+1<steps.length?show(idx+1):end()}
+  function end(){const wasPlaying=playing;playing=false;pending=false;ended=true;
+    stage.innerHTML='<div class="sl big"><span class="a" style="--d:0">¡Fin de la explicación!</span></div>';
+    cap.textContent='Repasa el resumen escrito de abajo o haz la prueba del nivel.';
+    wasPlaying?speak('¡Fin de la explicación! Ahora puedes hacer la prueba del nivel.',null,null):silence();paintControls()}
+  function askStep(s){const q=s.ask();let tries=0;
+    stage.innerHTML=`<div class="stack aq"><span class="eyebrow">Tu turno</span><div class="prompt">${q.prompt}</div><div id="a-qb">${qBody(q)}</div><div id="a-fb"></div>
+      <div class="row"><button class="btn" type="button" id="a-check" disabled>Comprobar</button></div></div>`;
+    const qb=stage.querySelector('#a-qb'),btn=stage.querySelector('#a-check'),fb=stage.querySelector('#a-fb');
+    wireQ(qb,q,()=>{if(pending)btn.disabled=!answered(q)});
+    const inp=qb.querySelector('#ans');if(inp)inp.onkeydown=e=>{if(e.key==='Enter'&&!btn.disabled)btn.click()};
+    btn.onclick=()=>{if(!pending){advance();return}
+      tries++;const ok=isRight(q);
+      if(ok||tries>=2){pending=false;lockQ(qb,q,ok);const v=ok?pick(PRAISE):`La respuesta es ${rightText(q)}.`;
+        fb.innerHTML=`<div class="fb ${ok?'ok':'ko'}"><span class="v">${v}</span>${q.explain}</div>`;
+        btn.textContent=idx+1<steps.length?'Continuar':'Terminar';btn.focus();
+        speak(ok?v:'Fíjate en la explicación.',null,null);paintControls()}
+      else{fb.innerHTML=`<div class="fb ko"><span class="v">Casi. Inténtalo otra vez.</span>${q.hint||'Repasa lo que acabas de ver.'}</div>`;
+        if(q.type==='mc'){q.sel=undefined;qb.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'))}
+        btn.disabled=true;speak('Casi. Inténtalo otra vez.',null,null)}}}
+  play.onclick=()=>{started=true;if(ended){playing=true;show(0);return}
+    if(playing){playing=false;silence();paintControls();return}
+    playing=true;pending?(speak(steps[idx].say,steps[idx].audio,null),paintControls()):show(idx)};
+  again.onclick=()=>show(idx,true);
+  next.onclick=()=>{if(!pending)advance()};
+  snd.onclick=()=>{soundOn=!soundOn;try{localStorage.setItem('mates1eso.sound',soundOn?'on':'off')}catch(e){}
+    if(playing&&!pending)show(idx);else{if(!soundOn)silence();paintControls()}};
+  if(tts)tts.onvoiceschanged=paintControls;
+  const stopPen=followPen(stage);
+  animStop=()=>{playing=false;silence();stopPen();if(tts)tts.onvoiceschanged=null};
+  show(0)}
 
 /* ---------- prueba de nivel ---------- */
 function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,QUIZ_N);let idx=0;
@@ -113,8 +262,7 @@ function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,Q
     const inp=qb.querySelector('#ans');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'&&!btn.disabled)btn.click()}}
     btn.onclick=()=>{if(q.done){idx++;idx<QUIZ_N?show():finish();return}
       q.done=true;q.ok=isRight(q);
-      if(q.type==='mc'){qb.querySelectorAll('.opt').forEach(b=>{b.disabled=true;const k=+b.dataset.k;if(k===q.answer)b.classList.add('right');else if(k===q.sel)b.classList.add('wrong')})}
-      else{inp.disabled=true;inp.classList.add(q.ok?'right':'wrong');qb.querySelector('.pm').disabled=true}
+      lockQ(qb,q,q.ok);
       $('#fb').innerHTML=`<div class="fb ${q.ok?'ok':'ko'}"><span class="v">${q.ok?pick(PRAISE):`No es correcto. La respuesta es ${rightText(q)}.`}</span>${q.explain}</div>`;
       btn.textContent=idx+1<QUIZ_N?'Siguiente':'Ver resultado';btn.focus()}}
   function finish(){const ok=qs.filter(q=>q.ok).length,pass=ok>=PASS,p=mp(mod.id);
@@ -177,12 +325,13 @@ function viewExam(mod,ex){track(viewExam,[mod,ex]);setCrumb(`${mod.name} · ${ex
   show()}
 
 go(viewHome);
+syncNow();
 
 
 function exportProgress(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url;a.download='cuaderno-mates-progreso.json';a.click();URL.revokeObjectURL(url);
+  a.href=url;a.download='cuaderno-1eso-progreso.json';a.click();URL.revokeObjectURL(url);
 }
 
 $('#import-file').onchange=async e=>{

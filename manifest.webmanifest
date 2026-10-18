@@ -1,6 +1,6 @@
 {
-  "name": "Cuaderno de Mates 1º ESO",
-  "short_name": "Cuaderno de Mates",
+  "name": "Cuaderno 1º ESO",
+  "short_name": "Cuaderno 1º ESO",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#f7f5ef",
