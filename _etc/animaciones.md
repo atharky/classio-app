@@ -1,6 +1,6 @@
 # Explicaciones animadas con audio
 
-Cada nivel empieza, en la pestaña **Aprende**, con una explicación animada por pasos en estilo **pizarra blanca** (*whiteboard animation*): el texto se escribe a mano de izquierda a derecha, los dibujos se trazan línea a línea y un rotulador sigue cada trazo. Hay narración en voz alta y subtítulos siempre visibles. En algunos pasos la explicación se detiene y el alumno tiene que responder una pregunta para seguir. Si falla dos veces se le muestra la respuesta explicada y puede continuar. Debajo se mantiene la lección escrita como **Resumen escrito**.
+Cada nivel empieza, en la pestaña **Aprende**, con una explicación animada por pasos en estilo **pizarra blanca** (*whiteboard animation*): una historia que se va trazando a medida que avanza la narración (ver «Storytelling en pizarra»). Hay narración en voz alta y subtítulos siempre visibles. En algunos pasos la explicación se detiene y el alumno tiene que responder una pregunta para seguir. Si falla dos veces se le muestra la respuesta explicada y puede continuar. Debajo se mantiene la lección escrita como **Resumen escrito**.
 
 ## Storytelling en pizarra
 
