@@ -11,5 +11,5 @@
     { "route": "/sw.js", "headers": { "Cache-Control": "no-cache" } },
     { "route": "/api/*", "headers": { "Cache-Control": "no-store" } }
   ],
-  "platform": { "apiRuntime": "node:20" }
+  "platform": { "apiRuntime": "node:22" }
 }
