@@ -66,6 +66,8 @@ for (const mod of WITH_CONTENT) {
         assert.doesNotMatch(step.say, /<|\d/, `${at}: la narración se lee en voz alta, sin HTML ni cifras`);
         if (step.ask) for (let r = 0; r < RUNS; r++) checkQuestion(step.ask(), at);
         else assert.ok(typeof step.show === 'string' && step.show.trim() && !/undefined|NaN/.test(step.show), `${at}: sin escena`);
+        // Un retraso enorme suele ser un argumento cambiado de sitio: el trazo no llegaría a verse.
+        for (const m of (step.show || '').matchAll(/--d:\s*([\d.]+)/g)) assert.ok(+m[1] <= 12, `${at}: un trazo empieza a los ${m[1]} s`);
       }
     }
   });

@@ -1,21 +1,42 @@
-import { ri, pick, shuffle, fmt, P, R, mc, num } from './data.js';
+import { ri, pick, shuffle, fmt, P, R, mc, num, POT_LEVELS } from './data.js';
 
-import { at, seq, line, lab, strike, real, sk, stroke, ln, box, fill, tx, arrow, grid, dots } from './sketch.js';
+import { at, seq, line, lab, strike, real, sk, stroke, ln, box, fill, tx, arrow, grid, dots, circ, person, bubble } from './sketch.js';
 
 const factors=(b,e,start=0,step=.35)=>seq(Array(e).fill(String(b)).flatMap((x,k)=>k?['·',x]:[x]),start,step/2);
-
+// Montón de n trozos de papel apilados (de abajo arriba), con la esquina inferior izquierda en (x,y).
+const stack=(x,y,n,d,{w=48,h=28}={})=>Array.from({length:n},(_,i)=>box(x+i*3,y-h-i*5,w,h,d+i*.12,{t:.25})).join('');
+// Cubo en perspectiva con la cara frontal cuadriculada.
+const cube=d=>sk(110,110,box(10,35,60,60,d)+ln(30,35,30,95,d+.7)+ln(50,35,50,95,d+.8)+ln(10,55,70,55,d+.9)+ln(10,75,70,75,d+1)+stroke('M10 35L35 12L95 12L70 35',d+1.2,{t:.5})+stroke('M70 95L95 72L95 12',d+1.6,{t:.4}),'cube');
+// Árbol de divisiones: 1 → 2 → 4 → …, un nivel por segundo.
+const tree=(levels,d0)=>{const W=280;let s='';
+  for(let l=0;l<levels;l++){const n=2**l,y=18+l*36;
+    for(let i=0;i<n;i++){const x=(i+.5)*W/n;s+=circ(+x.toFixed(1),y,l<3?9:7,d0+l*1.1+i*.05,{c:'blue'});
+      if(l)s+=ln(+((Math.floor(i/2)+.5)*W/(n/2)).toFixed(1),y-36+9,+x.toFixed(1),y-(l<3?9:7),d0+l*1.1-.3,{t:.25})}}
+  return sk(W,18+(levels-1)*36+14,s)};
 const POT_ANIMS=[
-[ // 1 · ¿Qué es una potencia?
-  {say:'Mira esta multiplicación: el dos se repite cinco veces.',show:line(factors(2,5))},
-  {say:'Para escribirlo más corto usamos una potencia: dos elevado a cinco. El dos es la base y el cinco, el exponente.',
-   show:line(`${factors(2,5)} ${at(1.6,'=')}`)+line(`${lab('2','base',2)}${lab('<sup>5</sup>','exponente',2.8,true)}`,'big')},
-  {say:'Ahora tú. Fíjate bien en la potencia.',ask:()=>{const b=ri(2,9),e=ri(3,7);return num(`En ${P(b,e)}, ¿cuántas veces se multiplica el ${b}?`,e,`El exponente (${e}) dice cuántas veces se multiplica la base: ${Array(e).fill(b).join(' · ')}.`)}},
-  {say:'Dos elevado a cinco vale treinta y dos. ¡Ojo! No es dos por cinco, que daría diez.',
-   show:line(`${at(0,P(2,5))} ${at(.5,'= 32')}`,'big')+line(at(1.8,`${P(2,5)} ≠ 2 · 5`,'bad'))},
-  {say:'Una más.',ask:()=>{const [b,e]=pick([[2,3],[2,4],[3,2],[3,3],[4,2],[5,2]]);return mc(`¿Cuánto vale ${P(b,e)}?`,String(b**e),[String(b*e),String(b+e),String(e**b)],`${Array(e).fill(b).join(' · ')} = ${b**e}.`)}},
-  {say:'En la vida real: si doblas un folio por la mitad tienes dos capas. Cada doblez las duplica. Con cinco dobleces, dos elevado a cinco: treinta y dos capas.',
-   show:real('doblar un folio',sk(250,150,[0,1,2,3].map(k=>Array.from({length:2**k},(_,i)=>ln(18+k*60,112-i*7,58+k*60,112-i*7,k*.9+i*.06,{c:i?'':'blue'})).join('')+tx(38+k*60,138,`${2**k}`,k*.9+.3)).join('')+tx(125,24,'capas de papel',3.4,{s:15}))+line(at(3.8,`5 dobleces → ${P(2,5)} = 32 capas`)))},
-  {say:'¿Cuántas capas tendrás?',ask:()=>{const n=ri(3,6);return num(`Doblas un folio por la mitad ${n} veces seguidas. ¿Cuántas capas de papel tienes?`,2**n,`Cada doblez duplica las capas: ${Array(n).fill(2).join(' · ')} = ${P(2,n)} = ${2**n}.`)}}
+[ // 1 · ¿Qué es una potencia? — relato piloto: «Lucía y el folio»
+  {say:'Esta es Lucía. Tiene un folio y unas tijeras. Corta el folio por la mitad y pone un trozo encima del otro: ahora tiene dos trozos.',
+   show:sk(290,150,person(36,38,0,'Lucía')+box(82,30,62,86,.9,{t:.6})+ln(82,73,144,73,1.8,{c:'red',t:.5})+arrow(154,73,184,73,2.5,'blue')+stack(200,96,2,3.1)+tx(232,140,'2 trozos',3.8,{s:15}))},
+  {say:'Corta el montón otra vez por la mitad: cuatro trozos. Y otra vez: ocho. ¡En cada corte los trozos se duplican!',
+   show:sk(300,150,stack(12,104,2,0)+tx(36,140,'1 corte',.5,{s:13})+arrow(70,82,100,82,.9,'blue')+tx(85,70,'×2',1.1,{s:14,c:'red'})
+     +stack(110,104,4,1.4)+tx(134,140,'2 cortes',2,{s:13})+arrow(168,82,198,82,2.4,'blue')+tx(183,70,'×2',2.6,{s:14,c:'red'})
+     +stack(208,104,8,2.9)+tx(232,140,'3 cortes',3.8,{s:13}))
+     +line(`${at(4.2,'2')} ${at(4.6,'→ 2 · 2 = 4')} ${at(5.4,'→ 2 · 2 · 2 = <b>8</b>')}`)},
+  {say:'Lucía sigue cortando. Calcula cuántos trozos tendrá.',ask:()=>{const n=ri(4,6);return num(`Lucía corta el montón por la mitad ${n} veces seguidas. ¿Cuántos trozos tiene al final?`,2**n,`Cada corte duplica los trozos: ${Array(n).fill(2).join(' · ')} = ${2**n}.`)}},
+  {say:'Contarlo así es largo: después de cinco cortes serían dos por dos por dos por dos por dos. Los matemáticos lo escriben más corto: dos elevado a cinco.',
+   show:line(strike(factors(2,5,0,.5),2.6))+line(at(3.4,`= ${P(2,5)}`),'big')+line(at(4.6,'¡mucho más corto!','good'))},
+  {say:'El dos es la base: el número que se multiplica. El cinco es el exponente: cuántas veces se multiplica. En la historia de Lucía, el exponente es el número de cortes.',
+   show:line(`${lab('2','base',0)}${lab('<sup>5</sup>','exponente',1.2,true)}`,'big')+line(at(2.4,'base → lo que se multiplica: <b>×2</b>'))+line(at(3.8,'exponente → el número de <b>cortes</b>'))},
+  {say:'Ahora escríbelo tú como potencia.',ask:POT_LEVELS[0].gens[1]},
+  {say:'Se lee así: cinco al cuadrado, porque cinco por cinco forma un cuadrado. Cuatro al cubo, porque forma un cubo. Desde el exponente cuatro decimos elevado a.',
+   show:`<div class="row instrow">${grid(5,0,{size:76})}${cube(1.8)}</div>`+line(at(3,`${P(5,2)} → cinco <b>al cuadrado</b>`))+line(at(4.2,`${P(4,3)} → cuatro <b>al cubo</b>`))+line(at(5.4,`${P(2,6)} → dos <b>elevado a</b> seis`))},
+  {say:'Marcos, el amigo de Lucía, dice que dos elevado a cinco es diez, porque dos por cinco es diez. Lucía cuenta su montón: ¡treinta y dos trozos!',
+   show:sk(300,150,person(46,52,0,'Marcos')+bubble(66,6,70,32,'¡10!',.7,{s:18,c:'red'})+person(254,52,1.6,'Lucía')+bubble(170,6,70,32,'¡32!',2.3,{s:18})+stack(140,128,8,3,{w:34,h:20}))
+     +line(`${at(3.8,`${P(2,5)} ≠ 2 · 5`,'bad')} &nbsp; ${at(4.8,`${P(2,5)} = <b>32</b>`,'good')}`)},
+  {say:'El exponente no multiplica a la base: cuenta cuántas veces se repite. Compruébalo.',ask:POT_LEVELS[0].gens[5]},
+  {say:'En la vida real: una bacteria se divide en dos cada veinte minutos. Tras cinco divisiones hay dos elevado a cinco: treinta y dos bacterias. ¡Igual que los cortes de Lucía!',
+   show:real('las bacterias',tree(4,0))+line(at(4.4,`1 → 2 → 4 → 8 → … → ${P(2,5)} = <b>32</b>`))},
+  {say:'¿Cuántas bacterias habrá?',ask:()=>{const n=ri(3,7);return num(`Una bacteria se divide en dos cada hora. Si empiezas con una, ¿cuántas bacterias hay después de ${n} horas?`,2**n,`Cada hora se duplican: ${P(2,n)} = ${2**n} bacterias.`)}}
 ],
 [ // 2 · Cuadrados, cubos y casos especiales
   {say:'Un número al cuadrado es el área de un cuadrado. Cuatro al cuadrado son dieciséis cuadraditos.',show:grid(4)+line(at(1.6,`${P(4,2)} = 16`),'big')},

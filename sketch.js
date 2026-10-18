@@ -24,7 +24,6 @@ const circ=(cx,cy,r,d,o={})=>`<circle class="dr ${o.c||''}" pathLength="1" cx="$
 const fill=(x,y,w,h,d,c='soft')=>`<rect class="fi ${c}" x="${x}" y="${y}" width="${w}" height="${h}" rx="2" style="--d:${f1(d)}"/>`;
 const dot=(cx,cy,r,d,c='')=>`<circle class="fi ${c}" cx="${cx}" cy="${cy}" r="${r}" style="--d:${f1(d)}"/>`;
 const tx=(x,y,str,d,o={})=>`<text class="st ${o.c||''}" x="${x}" y="${y}" text-anchor="${o.a||'middle'}" font-size="${o.s||16}" style="--d:${f1(d)}">${str}</text>`;
-const arrow=(x1,y,x2,d,c='')=>ln(x1,y,x2,y,d,{c})+ln(x2,y,x2-Math.sign(x2-x1)*10,y-7,d+.3,{c,t:.15})+ln(x2,y,x2-Math.sign(x2-x1)*10,y+7,d+.4,{c,t:.15});
 // Cuadrícula de n×n: borde, líneas y relleno casilla a casilla para poder contarlas.
 const grid=(n,d0=0,{size=150,soft=true}={})=>{const c=size/n,o=5;let s=box(o,o,size,size,d0,{t:.9});
   for(let k=1;k<n;k++)s+=ln(f1(o+k*c),o,f1(o+k*c),o+size,d0+.9+k*.08,{t:.22})+ln(o,f1(o+k*c),o+size,f1(o+k*c),d0+.9+k*.08,{t:.22});
@@ -43,5 +42,7 @@ const bubble=(x,y,w,h,text,d,o={})=>box(x,y,w,h,d,{t:.5,c:o.c})+ln(x+18,y+h,x+10
 // Flecha que señala un punto (x2,y2) desde (x1,y1), en cualquier dirección.
 const pointer=(x1,y1,x2,y2,d,c='red')=>{const a=Math.atan2(y2-y1,x2-x1),h=9,p=(s)=>[f1(x2-h*Math.cos(a+s)),f1(y2-h*Math.sin(a+s))];const [ax,ay]=p(.5),[bx,by]=p(-.5);
   return ln(x1,y1,x2,y2,d,{c})+ln(x2,y2,ax,ay,d+.3,{c,t:.12})+ln(x2,y2,bx,by,d+.35,{c,t:.12})};
+// Flecha de (x1,y1) a (x2,y2) con el color del rotulador por defecto.
+const arrow=(x1,y1,x2,y2,d,c='')=>pointer(x1,y1,x2,y2,d,c);
 
 export { plain, at, seq, line, lab, strike, real, J, f1, sk, stroke, ln, box, circ, fill, dot, tx, arrow, grid, dots, person, ell, bubble, pointer };
