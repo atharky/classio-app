@@ -43,8 +43,11 @@ const PARTS={
   brazo:{at:[114,112],from:[206,118],fn:'Une la base con el tubo; por él se coge el microscopio para llevarlo.',kind:'mecánica'},
   base:{at:[30,186],from:[4,198],fn:'Es el pie que da estabilidad al microscopio.',kind:'mecánica'}};
 // La etiqueta va encima del origen de la flecha, o debajo si la flecha sube, para no cruzarse con ella.
-const micro=(d=0,mark,labels=[])=>sk(210,202,MICRO(d)+(mark?pointer(...PARTS[mark].from,...PARTS[mark].at,d+2.8):'')
-  +labels.map(([p,t],k)=>pointer(...PARTS[p].from,...PARTS[p].at,d+2.8+k*1.2)+tx(PARTS[p].from[0],PARTS[p].from[1]+(PARTS[p].at[1]<PARTS[p].from[1]?16:-6),p.replace('tornillo ',''),d+3.1+k*1.2,{s:12,c:'red',a:PARTS[p].from[0]<60?'start':'end'})).join(''),'micro');
+const microInner=(d=0,mark,labels=[])=>MICRO(d)+(mark?pointer(...PARTS[mark].from,...PARTS[mark].at,d+2.8):'')
+  +labels.map(([p,t],k)=>pointer(...PARTS[p].from,...PARTS[p].at,d+2.8+k*1.2)+tx(PARTS[p].from[0],PARTS[p].from[1]+(PARTS[p].at[1]<PARTS[p].from[1]?16:-6),p.replace('tornillo ',''),d+3.1+k*1.2,{s:12,c:'red',a:PARTS[p].from[0]<60?'start':'end'})).join('')
+const micro=(d,mark,labels)=>sk(210,202,microInner(d,mark,labels),'micro');
+// Microscopio con algo dibujado a su izquierda (una persona, la preparación…), todo en un mismo dibujo.
+const microScene=(left,d,mark,labels)=>sk(330,202,left+`<g transform="translate(120,0)">${microInner(d,mark,labels)}</g>`,'micro');
 
 /* ---------- pictogramas de peligro (viewBox 120 × 120) ---------- */
 const DIAMOND=d=>stroke('M60 6L114 60L60 114L6 60Z',d,{c:'red',t:.7});
@@ -140,49 +143,85 @@ const LAB_LEVELS=[
   ]}
 ];
 
-/* ---------- animaciones de pizarra ---------- */
+/* ---------- relatos de pizarra: las prácticas de Nora ---------- */
+const row=(...xs)=>`<div class="row instrow">${xs.join('')}</div>`;
+const kid=(name,d=0)=>sk(80,130,person(40,30,d,name),'inst');
+const bottle=(label,d=0)=>sk(120,140,stroke('M40 30L40 128L90 128L90 30L76 30L76 14L54 14L54 30Z',d,{t:1})+box(46,60,38,40,d+1,{t:.4})+tx(65,86,label,d+1.4,{s:11}),'inst');
+// Una persona junto a su material, en un solo dibujo para que quepa en el recuadro.
+const bench=(name,ks,d0=0)=>sk(80+ks.length*105,150,person(40,44,d0,name)+ks.map((k,i)=>`<g transform="translate(${70+i*105},5)">${DRAW[k](d0+.8+i*.8)}</g>`).join(''));
+const gap=(d,c='blue')=>sk(60,140,arrow(6,70,54,70,d,c),'mark');
+// Lo que se ve por el ocular: células de cebolla como ladrillos dentro del círculo de luz.
+const view=(d,blur)=>sk(130,130,circ(65,65,55,d,{t:.5})+[0,1,2,3].map(r=>[0,1,2].map(c=>box(23+c*24+(r%2)*12,33+r*16,24,16,d+.6+r*.25+c*.08,{t:.2,c:blur?'blue':''})).join('')).join(''),'inst');
 const LAB_ANIMS=[
-[
-  {say:'En el laboratorio usamos material de vidrio porque es transparente, resiste el calor y no reacciona con casi ninguna sustancia.',show:labeled(['vaso','erlen','tubo'],0,1.4)},
-  {say:'El vaso de precipitados y el matraz Erlenmeyer contienen, mezclan y calientan líquidos. El cuello estrecho del Erlenmeyer evita que salpiquen.',show:labeled(['vaso','erlen'],0,1.6)+line(at(3.4,'contener · mezclar · calentar'))},
+[ // Material de vidrio: la primera práctica de Nora
+  {say:'Hoy es la primera práctica de laboratorio de Nora. Sobre la mesa hay muchos recipientes de vidrio, porque el vidrio es transparente, aguanta el calor y casi no reacciona con nada.',
+   show:bench('Nora',['vaso','erlen','tubo'])+line(at(3.4,'transparente · resiste el calor · no reacciona'))},
+  {say:'La profesora le pide preparar agua con sal. Nora la calienta en un vaso de precipitados. Para agitarla sin que salpique, usa el matraz Erlenmeyer, de cuello estrecho.',
+   show:labeled(['vaso','erlen'],0,1.6)+line(at(3.4,'mezclar y calentar · el cuello estrecho evita salpicar'))},
   {say:'¿Cómo se llama este material?',ask:LAB_LEVELS[0].gens[0]},
-  {say:'Para medir volúmenes con precisión usamos la probeta o la pipeta. Las marcas del vaso de precipitados son solo aproximadas.',show:labeled(['probeta','pipeta','vaso'],0,1.4)+line(`${at(4.2,'✓ precisas','good')} &nbsp; ${at(4.8,'≈ aproximado','bad')}`)},
-  {say:'Elige el material adecuado.',ask:LAB_LEVELS[0].gens[3]},
-  {say:'En la vida real: en la cocina, una jarra medidora hace el papel de un vaso de precipitados, y con un embudo pasamos el aceite a una botella.',
-   show:real('la cocina',`<div class="row instrow">${pic('jarra',0)}${pic('embudo',1.6)}</div>`+line(at(3.2,'jarra medidora ≈ vaso de precipitados')))},
-  {say:'¿Para qué sirve?',ask:LAB_LEVELS[0].gens[2]}
+  {say:'Ahora necesita exactamente veinticinco mililitros. Nora coge el vaso, pero su compañero Leo la avisa: sus marcas son solo aproximadas. Para medir bien, la probeta.',
+   show:row(pic('vaso',0),gap(1),pic('probeta',1.4))+line(`${at(2.6,'vaso: ≈ aproximado','bad')} &nbsp; ${at(3.4,'probeta: ✓ precisa','good')}`)},
+  {say:'Para tomar solo dos mililitros con mucha precisión usa la pipeta. Y para pasar la mezcla a una botella de boca estrecha, el embudo.',
+   show:labeled(['pipeta','embudo'],0,1.6)},
+  {say:'Elige tú el material adecuado.',ask:LAB_LEVELS[0].gens[3]},
+  {say:'Al final, la profesora guarda bacterias en una placa de Petri y deja unas gotas de agua salada en un vidrio de reloj: al evaporarse, saldrán cristales de sal.',
+   show:labeled(['petri','reloj'],0,1.6)+line(at(3.4,'cultivar microorganismos · evaporar'))},
+  {say:'En la vida real: en casa, Nora ve que la jarra medidora de la cocina funciona como un vaso de precipitados, y que su padre usa un embudo para pasar aceite a una botella.',
+   show:real('la cocina',row(pic('jarra',0),pic('embudo',1.6))+line(at(3.2,'jarra medidora ≈ vaso de precipitados')))},
+  {say:'¿Para qué sirve este material?',ask:LAB_LEVELS[0].gens[2]}
 ],
-[
-  {say:'El mechero Bunsen calienta con una llama. Para sujetar un tubo de ensayo mientras se calienta se usan unas pinzas de madera.',show:labeled(['mechero','pinzas'],0,1.6)},
-  {say:'La gradilla sostiene los tubos de ensayo y el mortero sirve para triturar sólidos.',show:labeled(['gradilla','mortero'],0,1.8)},
-  {say:'¿Cómo se llama este instrumento?',ask:LAB_LEVELS[1].gens[0]},
-  {say:'Para medir: la balanza mide la masa, en gramos, y el termómetro, la temperatura, en grados Celsius.',show:labeled(['balanza','termometro'],0,1.6)+line(`${at(3.4,'masa → g')} &nbsp; ${at(4,'temperatura → °C')}`)},
+[ // Otros instrumentos: Nora calienta y mide
+  {say:'En la segunda práctica, Nora tiene que calentar un poco de agua en un tubo de ensayo. Enciende el mechero Bunsen, que calienta con una llama.',
+   show:bench('Nora',['tubo','mechero'])},
+  {say:'Va a coger el tubo con la mano, pero la profesora la para: el vidrio caliente parece frío y quema. Se sujeta con pinzas de madera, con la boca hacia otro lado.',
+   show:line(at(0,'✗ con la mano','bad'))+labeled(['pinzas'],.8)+line(at(2.6,'✓ pinzas de madera, la boca lejos de las personas','good'))},
+  {say:'¿Qué instrumento sirve para esto?',ask:LAB_LEVELS[1].gens[1]},
+  {say:'Mientras el agua se calienta, deja los tubos en la gradilla y tritura unos granos de sal gorda en el mortero.',
+   show:labeled(['gradilla','mortero'],0,1.8)},
+  {say:'Ahora toca medir. La balanza mide la masa, en gramos. El termómetro mide la temperatura del agua, en grados Celsius.',
+   show:labeled(['balanza','termometro'],0,1.6)+line(`${at(3.4,'masa → g')} &nbsp; ${at(4,'temperatura → °C')}`)},
   {say:'¿Qué magnitud mide?',ask:LAB_LEVELS[1].gens[2]},
-  {say:'En la vida real: la báscula de la cocina funciona igual que la balanza. Pesas el bol vacío, luego con harina, y la resta te da la harina que has echado.',
+  {say:'Al terminar, limpia los tubos con el escobillón y los aclara con el frasco lavador, que echa agua destilada. El soporte y la rejilla vuelven a su sitio.',
+   show:line(seq(['<span class="chip">escobillón</span>','<span class="chip">frasco lavador</span>','<span class="chip">soporte</span>','<span class="chip">rejilla</span>'],0,.8))+line(at(3.4,'material limpio y ordenado','good'))},
+  {say:'En la vida real: Nora ayuda a hacer un bizcocho. Pesa el bol vacío y luego con harina en la báscula de la cocina: la resta es la harina que ha echado.',
    show:real('la báscula de la cocina',pic('balanza',0))+line(at(1.8,'310 g − 125 g = <b>185 g</b> de harina'))},
   {say:'Haz tú la resta.',ask:LAB_LEVELS[1].gens[3]}
 ],
-[
-  {say:'El microscopio óptico nos deja ver cosas diminutas, como las células, que no se ven a simple vista.',show:micro(0)},
-  {say:'Por el ocular miramos. Los objetivos están cerca de la muestra, en el revólver. Y la preparación se coloca en la platina.',show:micro(0,null,[['ocular'],['objetivos'],['platina']])},
-  {say:'¿Qué parte señala la flecha?',ask:LAB_LEVELS[2].gens[0]},
-  {say:'Los aumentos totales se calculan multiplicando el ocular por el objetivo. Diez por cuarenta: cuatrocientos aumentos.',show:line(`${at(0,'ocular 10×')} ${at(.8,'·')} ${at(1.2,'objetivo 40×')}`,'big')+line(at(2.6,'= <b>400 aumentos</b>'),'big')},
-  {say:'Calcula los aumentos.',ask:LAB_LEVELS[2].gens[2]},
-  {say:'En la vida real: en clase se observan las células de la cebolla. Se pone una capa finísima en el portaobjetos, se tapa con el cubreobjetos y se enfoca.',
-   show:real('células de cebolla',sk(280,130,box(10,50,120,40,0,{t:.6})+box(45,55,50,30,.7,{t:.4})+ln(130,70,175,70,1.2,{c:'blue'})+circ(225,65,50,1.4,{t:.5})
-     +[0,1,2].map(r=>[0,1,2].map(c=>box(198+c*18+(r%2)*9,44+r*14,18,14,2+r*.3+c*.1,{t:.2})).join('')).join('')+tx(70,110,'portaobjetos',2.2,{s:12})+tx(225,128,'células',3,{s:12})))},
-  {say:'¿Qué parte del microscopio es?',ask:LAB_LEVELS[2].gens[1]}
+[ // El microscopio: Nora ve células de cebolla
+  {say:'Hoy Nora va a ver algo que no se ve a simple vista: las células de una cebolla. Para eso necesita el microscopio óptico.',
+   show:microScene(person(50,70,0,'Nora'),.8)},
+  {say:'Primero prepara la muestra: una capa finísima de cebolla en el portaobjetos, tapada con el cubreobjetos. La coloca en la platina.',
+   show:microScene(box(4,70,110,30,0,{t:.6})+box(34,74,50,22,.8,{t:.3})+tx(59,118,'portaobjetos',1.2,{s:11})+tx(59,132,'y cubreobjetos',1.3,{s:11})+arrow(116,86,148,118,1.6,'blue'),2,null,[['platina']])},
+  {say:'Empieza con el objetivo de menor aumento. Mirando de lado, acerca la muestra con el tornillo macrométrico, y después mira por el ocular.',
+   show:micro(0,null,[['objetivos'],['tornillo macrométrico'],['ocular']])},
+  {say:'¿Con qué objetivo hay que empezar?',ask:LAB_LEVELS[2].gens[5]},
+  {say:'Al principio todo se ve borroso. Nora gira el tornillo micrométrico, el enfoque fino, y de pronto aparecen las células, como pequeños ladrillos.',
+   show:row(view(0,true),gap(1.4),view(2))+line(at(3.6,'enfoque fino → <b>micrométrico</b>'))},
+  {say:'Quiere verlas más grandes y gira el revólver hasta el objetivo de cuarenta. Va a usar el macrométrico, pero Leo la avisa: podría romper la preparación.',
+   show:micro(0,'revólver')+line(`${at(3,'✗ macrométrico','bad')} &nbsp; ${at(3.8,'✓ solo micrométrico','good')}`)},
+  {say:'El ocular aumenta diez veces y el objetivo, cuarenta. Los aumentos totales se multiplican: diez por cuarenta, cuatrocientos aumentos.',
+   show:line(`${at(0,'ocular 10×')} ${at(.8,'·')} ${at(1.2,'objetivo 40×')}`,'big')+line(at(2.6,'= <b>400 aumentos</b>'),'big')},
+  {say:'Calcula tú los aumentos.',ask:LAB_LEVELS[2].gens[2]},
+  {say:'En la vida real: en los hospitales se miran muestras de sangre al microscopio para contar las células y descubrir, por ejemplo, si una persona tiene una infección.',
+   show:real('el hospital',sk(260,120,circ(70,60,52,0,{t:.5})+[[50,40],[82,36],[64,66],[94,72],[42,80]].map(([x,y],k)=>ell(x,y,11,8,.6+k*.2,{c:'red',t:.2})).join('')+ln(122,60,170,60,1.8,{c:'blue'})+tx(215,66,'¿infección?',2.2,{s:14})))},
+  {say:'¿Qué parte señala la flecha?',ask:LAB_LEVELS[2].gens[0]}
 ],
-[
-  {say:'En el laboratorio hay que llevar bata, recogerse el pelo y no comer ni beber. Y siempre se siguen las instrucciones del profesor.',
-   show:line(seq(['<span class="chip">bata</span>','<span class="chip">gafas</span>','<span class="chip">pelo recogido</span>'],0,.8))+line(at(2.8,'✗ comer o beber','bad'))},
-  {say:'Los pictogramas avisan del peligro de un producto. Son rombos con el borde rojo y un dibujo negro.',show:`<div class="row instrow">${picto('inflamable',0)}${picto('tóxico',1.6)}${picto('corrosivo',3.2)}</div>`},
+[ // Seguridad: el susto de Nora
+  {say:'Antes de empezar, Nora se pone la bata y las gafas, y se recoge el pelo. En el laboratorio, además, no se come ni se bebe.',
+   show:row(kid('Nora'))+line(seq(['<span class="chip">bata</span>','<span class="chip">gafas</span>','<span class="chip">pelo recogido</span>'],.8,.8))+line(at(3.4,'✗ comer o beber','bad'))},
+  {say:'En la estantería hay frascos con etiquetas. Los rombos de borde rojo son pictogramas de peligro: inflamable, tóxico, corrosivo.',
+   show:row(picto('inflamable',0),picto('tóxico',1.6),picto('corrosivo',3.2))},
   {say:'¿Qué significa este pictograma?',ask:LAB_LEVELS[3].gens[0]},
-  {say:'Para oler un producto no se acerca la nariz: se abanica el aire con la mano. Y si algo te salpica, lávate con mucha agua y avisa al profesor.',show:line(at(0,'✗ acercar la nariz','bad'))+line(at(1.4,'✓ abanicar con la mano','good'))+line(at(2.8,'salpicadura → agua + avisar'))},
-  {say:'¿Qué está bien hecho?',ask:LAB_LEVELS[3].gens[2]},
+  {say:'Leo quiere saber a qué huele un líquido y acerca la nariz. ¡Error! Algunos vapores son tóxicos. Para oler se abanica el aire con la mano, desde lejos.',
+   show:row(kid('Leo'),bottle('???',.8))+line(`${at(2.4,'✗ acercar la nariz','bad')} &nbsp; ${at(3.2,'✓ abanicar con la mano','good')}`)},
+  {say:'De pronto, a Nora le salpica una gota en la mano. No se asusta: la lava con abundante agua del grifo y avisa enseguida a la profesora.',
+   show:sk(260,120,tx(55,14,'grifo',.3,{s:12})+stroke('M20 20L90 20L90 44',0,{t:.5})+[0,1,2,3].map(k=>dot(90,56+k*12,3.5,.6+k*.2,'blue')).join('')+stroke('M60 108Q90 92 120 108',1.4,{t:.3})+tx(190,50,'agua',1.8,{s:16,c:'green'})+tx(190,80,'+ avisar',2.4,{s:16,c:'green'}))},
+  {say:'¿Qué harías tú?',ask:LAB_LEVELS[3].gens[4]},
+  {say:'Al terminar, limpian el material, tiran los restos donde indica la profesora y se lavan las manos. La práctica ha salido bien gracias a las normas.',
+   show:line(seq(['<span class="chip">limpiar</span>','<span class="chip">restos donde se indica</span>','<span class="chip">lavarse las manos</span>'],0,.9))+line(at(3.2,'✓ práctica segura','good'))},
   {say:'En la vida real: la lejía de casa lleva el pictograma de corrosivo. Por eso no se mezcla con otros productos y se guarda lejos del alcance de los niños.',
-   show:real('la lejía de casa',`<div class="row instrow">${sk(120,140,stroke('M40 30L40 128L90 128L90 30L76 30L76 14L54 14L54 30Z',0,{t:1})+box(46,60,38,40,1,{t:.4})+tx(65,86,'LEJÍA',1.4,{s:11}),'inst')}${picto('corrosivo',1.8)}</div>`)},
-  {say:'¿Qué pictograma corresponde?',ask:LAB_LEVELS[3].gens[1]}
+   show:real('la lejía de casa',row(bottle('LEJÍA',0),picto('corrosivo',1.8)))},
+  {say:'¿Cuál de estas acciones es correcta?',ask:LAB_LEVELS[3].gens[2]}
 ]];
 
 export { LAB_LEVELS, LAB_ANIMS };
