@@ -172,64 +172,107 @@ const RES_LEVELS=[
   ]}
 ];
 
-/* ---------- animaciones de pizarra ---------- */
+/* ---------- relatos de pizarra ---------- */
 const textLines=(n,d0,{x=20,w=220,y0=18,gap=16,hl=-1}={})=>Array.from({length:n},(_,k)=>ln(x,y0+k*gap,x+(k===n-1?w*.6:w),y0+k*gap,d0+k*.18,{c:k===hl?'blue':'',t:.3})).join('');
+const tag=(x,y,text,d,c='red')=>tx(x,y,text,d,{s:13,c});
+const mobile=(x,y,d,w=44,h=70)=>box(x,y,w,h,d,{t:.5})+ln(x+w/2-6,y+h-7,x+w/2+6,y+h-7,d+.5,{t:.1});
+const note=(x,y,d)=>box(x,y,70,50,d,{t:.4})+ln(x+10,y+16,x+60,y+16,d+.5,{t:.15})+ln(x+10,y+28,x+60,y+28,d+.6,{t:.15})+ln(x+10,y+40,x+44,y+40,d+.7,{t:.15});
+const radio=(x,y,d)=>box(x,y,80,50,d,{t:.5})+circ(x+22,y+25,12,d+.5)+ln(x+44,y+16,x+70,y+16,d+.7,{t:.15})+ln(x+44,y+28,x+70,y+28,d+.8,{t:.15})+ln(x+60,y,x+72,y-20,d+.9,{t:.2});
+const book=(x,y,d)=>stroke(`M${x} ${y}L${x+40} ${y+6}L${x+80} ${y}L${x+80} ${y+50}L${x+40} ${y+56}L${x} ${y+50}Z`,d,{t:.6})+ln(x+40,y+6,x+40,y+56,d+.6,{t:.2});
+const semaforo=(x,y,d)=>box(x,y,26,62,d,{t:.4})+circ(x+13,y+14,7,d+.4,{c:'red'})+circ(x+13,y+31,7,d+.5)+circ(x+13,y+48,7,d+.6,{c:'green'});
+const fig=(svg,cap,d)=>`<figure class="instfig">${svg}<figcaption>${at(d,cap)}</figcaption></figure>`;
+// Lucía y Marcos, siempre en el mismo sitio de la pizarra.
+const pair=d=>person(40,40,d)+person(250,40,d);
+
 const COM_ANIMS=[
-[
-  {say:'Comunicar es transmitir información. Mira: Lucía le escribe un mensaje a Marcos.',show:sk(280,140,person(40,30,0,'Lucía')+person(240,30,.6,'Marcos')+bubble(58,8,164,34,'¿Quedamos a las cinco?',1.2,{s:13})+arrow(80,90,200,90,2.2,'blue'))},
-  {say:'Lucía es el emisor, quien envía. Marcos es el receptor, quien recibe. Y lo que le dice es el mensaje.',
-   show:sk(280,150,person(40,30,0)+person(240,30,0)+bubble(58,8,164,34,'¿Quedamos a las cinco?',0,{s:13})+tx(40,125,'EMISOR',.8,{c:'red',s:13})+tx(240,125,'RECEPTOR',1.6,{c:'red',s:13})+tx(140,62,'MENSAJE',2.4,{c:'red',s:13}))},
-  {say:'Ahora tú: busca el elemento que te piden.',ask:COM_LEVELS[0].gens[0]},
-  {say:'El código es el sistema de signos que comparten, aquí el español escrito. El canal es el medio físico por el que viaja: la pantalla del móvil.',
-   show:line(at(0,'<b>Código</b> → el español escrito'))+line(at(1.6,'<b>Canal</b> → la pantalla del móvil'))+line(at(3.2,'<b>Contexto</b> → dos amigos organizan la tarde','good'))},
-  {say:'No los confundas: el canal es el medio físico y el código, el sistema de signos.',ask:COM_LEVELS[0].gens[3]},
-  {say:'En la vida real: el árbitro pita y señala el penalti. Emisor, el árbitro. Receptores, los jugadores. Código, las señales del reglamento. Canal, el aire y la luz.',
+[ // La pandilla organiza la tarde
+  {say:'Esta tarde, Lucía quiere quedar con su amigo Marcos. Coge el móvil y le escribe: ¿quedamos a las cinco?',
+   show:sk(290,140,person(40,40,0,'Lucía')+mobile(70,44,.9)+bubble(110,6,164,32,'¿Quedamos a las cinco?',1.6,{s:13})+person(255,58,2.6,'Marcos'))},
+  {say:'El mensaje viaja hasta Marcos. Lucía es el emisor, quien lo envía. Marcos es el receptor, quien lo recibe. Y la propuesta de quedar es el mensaje.',
+   show:sk(290,145,pair(0)+bubble(70,2,150,30,'¿Quedamos a las cinco?',0,{s:12})+arrow(70,70,220,70,.6,'blue')+tag(40,126,'EMISOR',1.4)+tag(250,126,'RECEPTOR',2)+tag(145,60,'MENSAJE',2.6))},
+  {say:'Ahora tú: busca ese elemento en otra situación.',ask:COM_LEVELS[0].gens[0]},
+  {say:'Para entenderse usan el mismo código, el español escrito. El mensaje viaja por un canal, la pantalla del móvil. Y el contexto es la situación: dos amigos que organizan la tarde.',
+   show:sk(300,130,tx(50,62,'Aa',0,{s:36})+tag(50,104,'código',.6)+tag(50,122,'el español',.9,'blue')+mobile(128,14,1.4)+tag(150,104,'canal',2)+tag(150,122,'la pantalla',2.3,'blue')
+     +circ(250,48,28,2.8)+ln(250,48,250,28,3.2,{t:.2})+ln(250,48,264,56,3.3,{t:.2})+tag(250,104,'contexto',3.6)+tag(250,122,'quedar la tarde',3.9,'blue'))},
+  {say:'Marcos contesta: ¡vale! Ahora él es el emisor y Lucía, la receptora. El emisor y el receptor pueden intercambiar sus papeles.',
+   show:sk(290,145,pair(0)+bubble(188,2,74,30,'¡Vale!',.4,{s:15})+arrow(220,70,70,70,1,'red')+tag(40,126,'RECEPTORA',1.8)+tag(250,126,'EMISOR',2.4))},
+  {say:'Su amiga Ana lee la conversación y dice: el canal es el español. ¡Error! El español es el código. El canal es el medio físico: aquí, la pantalla.',
+   show:sk(290,110,person(40,30,0,'Ana')+bubble(70,4,180,30,'El canal es el español',.6,{s:13})+ln(80,19,240,19,1.8,{c:'red',t:.4}))+line(at(2.4,'canal → la pantalla · código → el español','good'))},
+  {say:'No los confundas: ¿cuál es el canal y cuál el código?',ask:COM_LEVELS[0].gens[3]},
+  {say:'En la vida real: el sábado la pandilla va al fútbol. El árbitro pita un penalti: él es el emisor, los jugadores los receptores y el código, las señales del reglamento.',
    show:real('un partido de fútbol',sk(280,130,person(50,25,0,'árbitro')+ln(63,45,95,20,.8,{c:'red'})+tx(110,18,'¡PIII!',1.2,{s:15})+person(190,30,1.6)+person(235,30,1.9)+tx(212,122,'jugadores',2.3,{s:14})))},
   {say:'¿Qué falla en esta comunicación?',ask:COM_LEVELS[0].gens[2]}
 ],
-[
-  {say:'Podemos comunicarnos con palabras, habladas o escritas. Es la comunicación verbal.',show:line(at(0,'Verbal oral → una llamada'))+line(at(1.4,'Verbal escrita → un correo'))},
-  {say:'También sin palabras: con gestos, imágenes, colores o sonidos. Es la comunicación no verbal.',show:sk(260,110,circ(60,50,30,0)+circ(50,42,3,.5)+circ(70,42,3,.6)+stroke('M45 60Q60 74 75 60',.8,{t:.3})+box(165,8,36,82,1.4,{t:.5})+circ(183,26,9,1.9,{c:'red'})+circ(183,49,9,2.1)+circ(183,72,9,2.3,{c:'green'})+tx(130,108,'gestos · emoticonos · colores',2.6,{s:14}))+line(at(3,'No verbal: sin palabras','good'))},
-  {say:'¿Qué tipo de comunicación es?',ask:COM_LEVELS[1].gens[0]},
-  {say:'Los signos pueden ser indicios, como el humo que indica fuego; iconos, que se parecen a lo que representan; o símbolos, que entendemos por acuerdo, como las palabras.',
-   show:sk(300,120,stroke('M40 95L60 95M50 95Q35 70 52 55Q48 70 60 62Q62 80 50 95',0,{c:'red',t:.6})+stroke('M50 50Q40 35 55 25Q45 12 58 5',.6,{t:.5})+tx(50,115,'indicio',1.2,{s:14})+stroke('M150 20L180 50L150 80L120 50Z',1.6,{c:'red',t:.6})+stroke('M140 62Q150 30 160 40',2.2,{t:.4})+tx(150,115,'icono',2.6,{s:14})+tx(250,60,'«casa»',3,{s:20})+tx(250,115,'símbolo',3.4,{s:14}))},
+[ // El camino de Marcos al instituto
+  {say:'Por la mañana, la madre de Marcos le dice: ¡coge el paraguas! Y le deja una nota en la nevera. Las dos usan palabras: es comunicación verbal, oral y escrita.',
+   show:sk(290,140,person(40,40,0,'madre')+bubble(58,4,150,30,'¡Coge el paraguas!',.8,{s:13})+note(205,56,1.8)+tag(130,72,'verbal oral',2.6)+tag(240,128,'verbal escrita',3))},
+  {say:'De camino, un amigo le saluda levantando el pulgar. No dice nada, pero Marcos lo entiende: es comunicación no verbal, con gestos.',
+   show:sk(290,130,person(60,30,0,'Marcos')+person(220,30,.6,'amigo')+tx(250,48,'👍',1.4,{s:26})+tag(145,40,'sin palabras',2.2))},
+  {say:'¿Qué tipo de comunicación es esta?',ask:COM_LEVELS[1].gens[0]},
+  {say:'Marcos mira al cielo: nubes negras. Nadie se lo ha dicho, pero sabe que va a llover. Las nubes son un indicio: tienen una relación natural con la lluvia.',
+   show:sk(260,130,stroke('M90 70Q70 70 72 54Q74 38 94 42Q100 22 124 24Q148 22 156 42Q176 38 180 56Q182 70 162 70Z',0,{t:.8})+ln(100,80,94,96,1,{c:'blue',t:.15})+ln(128,80,122,96,1.2,{c:'blue',t:.15})+ln(156,80,150,96,1.4,{c:'blue',t:.15})+tag(130,122,'indicio → va a llover',2.2))},
+  {say:'En el paso de peatones, la señal muestra a una persona caminando: se parece a lo que representa, es un icono. El semáforo en rojo significa para porque lo hemos acordado: es un símbolo.',
+   show:sk(290,140,box(30,18,80,82,0,{c:'blue',t:.6})+person(70,34,.7)+tag(70,126,'icono',1.6)+semaforo(190,24,2)+tag(203,126,'símbolo',2.8))},
+  {say:'En una tienda, un cartel tiene el dibujo de un teléfono y la palabra teléfono. El dibujo se parece a un teléfono: es un icono. La palabra no se parece: es un símbolo.',
+   show:sk(290,130,box(20,10,250,90,0,{t:.6})+stroke('M50 40Q50 30 60 30L66 30L70 44L62 48Q66 60 76 66L82 58L94 62L94 70Q94 80 84 80Q50 76 50 40Z',.8,{t:.6})+tx(190,62,'TELÉFONO',1.6,{s:22})+tag(72,122,'icono',2.4)+tag(190,122,'símbolo',2.8))},
   {say:'Clasifica este signo.',ask:COM_LEVELS[1].gens[1]},
-  {say:'En la vida real: las señales de tráfico combinan iconos, como el dibujo de un peatón, y símbolos, como el círculo rojo que significa prohibido.',
-   show:real('señales de tráfico',sk(240,110,circ(70,55,40,0,{c:'red',t:.6})+person(70,25,.8)+circ(170,55,40,1.6,{c:'red',t:.6})+ln(142,27,198,83,2.2,{c:'red'})+tx(70,108,'icono',2.6,{s:13})+tx(170,108,'símbolo',2.8,{s:13})))},
+  {say:'En la vida real: en un mensaje de móvil mezclas de todo. Las palabras escritas son símbolos, y los emoticonos con caras, que se parecen a lo que expresan, son iconos.',
+   show:real('los mensajes del móvil',sk(260,120,box(90,4,80,110,0,{t:.6})+tx(130,40,'¡Hola!',1,{s:16})+tx(130,76,'😀',1.6,{s:26})+tag(42,44,'símbolo',2.2,'blue')+tag(218,80,'icono',2.6,'blue')))},
   {say:'¿Cuál de estos es del tipo que te piden?',ask:COM_LEVELS[1].gens[2]}
 ],
-[
-  {say:'Usamos el lenguaje con intenciones distintas. Cada intención es una función del lenguaje.',show:line(seq(['informar','expresar','pedir','comprobar','embellecer','explicar la lengua'].map(t=>`<span class="chip">${t}</span>`),0,.5))},
-  {say:'Si informamos de forma objetiva, la función es representativa. Si mostramos lo que sentimos, es expresiva. Si queremos que el otro haga algo, es apelativa.',
-   show:line(at(0,'«Hoy hace sol.» → <b>representativa</b>'))+line(at(1.6,'«¡Qué feliz estoy!» → <b>expresiva</b>'))+line(at(3.2,'«Ven aquí.» → <b>apelativa</b>'))},
+[ // Un día de Ana
+  {say:'Ana desayuna con la radio puesta. La locutora dice: hoy lloverá en el norte. Informa de forma objetiva: es la función representativa.',
+   show:sk(290,120,radio(26,50,0)+bubble(126,8,154,32,'Hoy lloverá en el norte',1,{s:12})+tag(203,94,'representativa',2.2))},
+  {say:'En el recreo, Ana ve su nota y grita: ¡qué alegría, he aprobado! Expresa lo que siente. Es la función expresiva, centrada en el emisor.',
+   show:sk(290,130,person(50,40,0,'Ana')+bubble(70,4,190,32,'¡Qué alegría, he aprobado!',.8,{s:12})+tag(165,86,'expresiva',2))},
   {say:'¿Qué función predomina?',ask:COM_LEVELS[2].gens[0]},
-  {say:'La fática comprueba que el canal funciona. La poética cuida la forma del mensaje. Y la metalingüística habla de la propia lengua.',
-   show:line(at(0,'«¿Me oyes?» → <b>fática</b>'))+line(at(1.4,'«Tres tristes tigres…» → <b>poética</b>'))+line(at(2.8,'«“Mesa” es un sustantivo.» → <b>metalingüística</b>'))},
-  {say:'Busca la frase con la función que te piden.',ask:COM_LEVELS[2].gens[1]},
-  {say:'En la vida real: los anuncios mezclan funciones. Bebe Frescola, la que mola, quiere que compres, función apelativa, y lo dice con rima, función poética.',
+  {say:'En clase, la profesora pide: ¡cerrad la ventana! Quiere que hagan algo: función apelativa. Ojo: aunque lleve exclamaciones, una orden no es expresiva.',
+   show:sk(290,130,person(50,40,0,'profesora')+bubble(70,4,190,32,'¡Cerrad la ventana!',.8,{s:14})+tag(165,72,'apelativa ✓',2,'green')+tag(165,96,'expresiva ✗',2.6))},
+  {say:'Por la tarde, Ana llama a su abuela y se oye mal: ¿me oyes? ¿hola? Solo comprueba que el canal funciona. Es la función fática.',
+   show:sk(290,120,person(40,30,0,'Ana')+bubble(62,2,130,30,'¿Me oyes? ¿Hola?',.6,{s:12})+stroke('M110 70L140 60L160 80L190 68',1.6,{c:'red',t:.4})+person(250,30,2.2,'abuela')+tag(150,112,'fática',2.8))},
+  {say:'¿Qué frase tiene la función que te piden?',ask:COM_LEVELS[2].gens[1]},
+  {say:'Antes de dormir, Ana lee un poema que cuida la forma: es la función poética. Y al hacer los deberes pregunta cómo se escribe hierba: función metalingüística.',
+   show:`<div class="row instrow">${fig(sk(110,90,book(15,15,0),'inst'),'poética',1)}${fig(sk(110,90,tx(55,52,'¿hierba?',1.6,{s:18}),'inst'),'metalingüística',2.4)}</div>`},
+  {say:'En la vida real: en la tele, Ana ve un anuncio. Bebe Frescola, la que mola. Quiere que lo compre, función apelativa, y lo dice con rima, función poética.',
    show:real('la publicidad',sk(240,120,box(30,10,180,90,0,{t:.8})+tx(120,48,'¡Bebe Frescola,',1,{s:20})+tx(120,78,'la que mola!',1.6,{s:20})+tx(120,116,'apelativa + poética',2.4,{s:13,c:'red'})))},
   {say:'¿Qué función predomina en este caso?',ask:COM_LEVELS[2].gens[3]}
 ]];
+
+// La hoja de Carla: el mismo texto se va subrayando de un recuadro a otro.
+const page=(d,extra='')=>sk(290,150,box(20,10,250,110,d,{t:.6})+textLines(6,d,{x:35,w:220,y0:30,gap:15})+extra);
 const RES_ANIMS=[
-[
-  {say:'Un texto tiene una idea principal: lo más importante. Las demás ideas la amplían o la explican.',show:sk(260,110,textLines(5,0,{hl:0})+ln(20,24,240,24,1.4,{c:'red',t:.6}))+line(at(1.8,'la idea principal suele ir al principio o al final'))},
-  {say:'Las palabras clave son las que mejor resumen el tema. Casi siempre son sustantivos y verbos importantes.',show:line(seq(['abejas','polen','plantas','alimentos'].map(w=>`<span class="chip">${w}</span>`),0,.6))+line(at(2.6,'además · muy · porque → no son clave','bad'))},
-  {say:'Lee el texto y busca la idea principal.',ask:RES_LEVELS[0].gens[0]},
-  {say:'Cuidado: un detalle llamativo puede ser verdad y no ser lo más importante.',show:line(at(0,'«Las abejas producen miel.»'))+line(at(1.4,'verdad, pero es un detalle','bad'))},
-  {say:'Ahora busca las palabras clave.',ask:RES_LEVELS[0].gens[2]},
-  {say:'En la vida real: cuando estudias para un examen, subrayar la idea principal y las palabras clave te ahorra tiempo y te ayuda a recordar.',
-   show:real('estudiar para un examen',sk(260,120,box(20,8,220,104,0,{t:.7})+textLines(5,.8,{x:35,w:190,y0:28,hl:1})+ln(35,46,225,46,2.2,{c:'red',t:.5})+circ(70,78,14,2.8,{c:'blue'})))},
-  {say:'¿Qué título le pondrías?',ask:RES_LEVELS[0].gens[3]}
+[ // Carla prepara el examen
+  {say:'Carla tiene mañana examen de ciencias. Su profesora le ha dado un texto sobre las abejas. Primero lo lee entero, sin subrayar nada, para entenderlo.',
+   show:sk(290,130,person(40,40,0,'Carla')+box(90,10,180,110,.8,{t:.6})+textLines(6,1.4,{x:105,w:150,y0:30,gap:15}))},
+  {say:'Después busca la idea principal: lo más importante, lo que si se quita deja al texto sin sentido. La subraya: las abejas son imprescindibles porque polinizan.',
+   show:page(0,ln(35,33,255,33,.8,{c:'blue',t:.6})+tag(145,140,'idea principal',1.6,'blue'))},
+  {say:'Lee el texto y busca tú la idea principal.',ask:RES_LEVELS[0].gens[0]},
+  {say:'Las otras frases amplían o explican la principal: son ideas secundarias, como que las abejas producen miel y cera. Carla las marca con otro color.',
+   show:page(0,ln(35,33,255,33,0,{c:'blue',t:.6})+ln(35,63,255,63,.8,{c:'green',t:.5})+ln(35,93,255,93,1.4,{c:'green',t:.5})+tag(145,140,'ideas secundarias',2,'green'))},
+  {say:'Su amigo Leo subraya como idea principal que las abejas producen miel. Es verdad, pero es solo un detalle: el texto no trata de eso.',
+   show:sk(290,130,person(40,40,0,'Leo')+bubble(62,6,200,32,'Lo importante: dan miel',.8,{s:13})+ln(72,22,252,22,2,{c:'red',t:.4})+tag(165,86,'es solo un detalle',2.6))},
+  {say:'Por último, Carla rodea las palabras clave: abejas, polen, plantas, alimentos. Son sustantivos y verbos importantes, no palabras como además o porque.',
+   show:line(seq(['abejas','polen','plantas','alimentos'].map(w=>`<span class="chip">${w}</span>`),0,.6))+line(at(2.8,'además · muy · porque → no son clave','bad'))},
+  {say:'¿Qué palabras clave elegirías?',ask:RES_LEVELS[0].gens[2]},
+  {say:'En la vida real: cuando lees una noticia o un folleto, buscar la idea principal te dice en segundos de qué trata y si te interesa seguir leyendo.',
+   show:real('leer una noticia',sk(260,120,box(60,6,140,108,0,{t:.6})+tx(130,30,'NOTICIA',.8,{s:14})+textLines(4,1.2,{x:75,w:110,y0:50,gap:15,hl:0})))},
+  {say:'¿Qué título le pondrías al texto?',ask:RES_LEVELS[0].gens[3]}
 ],
-[
-  {say:'Para resumir, primero se lee el texto entero, luego se subraya, después se hace un esquema y al final se redacta.',show:line(seq(['1 · leer','2 · subrayar','3 · esquema','4 · redactar'].map(t=>`<span class="chip">${t}</span>`),0,.8))},
-  {say:'Un buen resumen es breve: más o menos una cuarta parte del texto. Es fiel, objetivo y está escrito con tus palabras.',show:sk(260,110,box(20,10,100,90,0)+textLines(5,.4,{x:30,w:80,y0:25,gap:15})+arrow(130,55,165,55,1.6,'blue')+box(175,40,50,30,2.2)+ln(183,55,217,55,2.6))+line(at(2.8,'≈ una cuarta parte'))},
-  {say:'Elige el mejor resumen.',ask:RES_LEVELS[1].gens[0]},
-  {say:'Cuidado con tres errores: dar tu opinión, quedarte en un detalle o cambiar lo que dice el texto.',show:line(at(0,'✗ «Yo creo que…»','bad'))+line(at(1.2,'✗ solo un detalle','bad'))+line(at(2.4,'✗ inventar o cambiar ideas','bad'))},
-  {say:'Calcula la longitud del resumen.',ask:RES_LEVELS[1].gens[2]},
-  {say:'En la vida real: cuando le cuentas a un amigo una película en un minuto, estás resumiendo. Dices lo importante, en orden y sin contar cada escena.',
+[ // Carla escribe el resumen
+  {say:'Con el texto subrayado, Carla ya ha hecho los dos primeros pasos: leer y subrayar. Ahora toca el tercero, el esquema, y después redactar.',
+   show:line(seq(['<span class="chip">1 · leer ✓</span>','<span class="chip">2 · subrayar ✓</span>','<span class="chip">3 · esquema</span>','<span class="chip">4 · redactar</span>'],0,.8))},
+  {say:'En el esquema pone arriba la idea principal y debajo, unidas con flechas, las ideas secundarias más importantes.',
+   show:sk(290,130,box(85,6,120,34,0,{c:'blue',t:.5})+tx(145,28,'polinizan',.5,{s:15})+arrow(120,42,70,84,1)+arrow(170,42,220,84,1.3)+box(20,88,100,34,1.6,{t:.4})+tx(70,110,'miel y cera',2,{s:14})+box(170,88,100,34,2.2,{t:.4})+tx(220,110,'alimentos',2.6,{s:14}))},
+  {say:'¿Qué se hace en cada paso?',ask:RES_LEVELS[1].gens[3]},
+  {say:'Ahora redacta: con sus palabras, en tercera persona y sin dar su opinión. El resumen ocupa más o menos una cuarta parte del texto original.',
+   show:sk(260,110,box(20,10,100,90,0)+textLines(5,.4,{x:30,w:80,y0:25,gap:15})+arrow(130,55,165,55,1.6,'blue')+box(175,40,50,30,2.2)+ln(183,55,217,55,2.6))+line(at(2.8,'≈ una cuarta parte'))},
+  {say:'Calcula cuánto debe ocupar un resumen.',ask:RES_LEVELS[1].gens[2]},
+  {say:'Leo, en cambio, copia las primeras frases del texto: le queda largo y se pierde el final. Además añade: me encantan las abejas. Eso es una opinión.',
+   show:sk(290,140,person(40,40,0,'Leo')+box(90,8,180,124,.8,{t:.6})+textLines(6,1.2,{x:105,w:150,y0:28,gap:15})+tx(180,124,'«Me encantan…»',2.4,{s:13,c:'red'})+ln(96,14,264,128,3,{c:'red',t:.5}))},
+  {say:'¿Qué falla en este resumen?',ask:RES_LEVELS[1].gens[1]},
+  {say:'En la vida real: cuando le cuentas a un amigo una película en un minuto, estás resumiendo: dices lo importante, en orden y sin contar cada escena.',
    show:real('contar una película',sk(270,120,person(45,25,0,'tú')+bubble(70,5,150,34,'Va de un chico que…',.8)+person(240,25,1.6,'amigo')))},
-  {say:'¿Qué falla en este resumen?',ask:RES_LEVELS[1].gens[1]}
+  {say:'Elige el mejor resumen.',ask:RES_LEVELS[1].gens[0]}
 ]];
 
 export { COM_LEVELS, RES_LEVELS, COM_ANIMS, RES_ANIMS };
