@@ -1,6 +1,6 @@
-import { $, fmt, P, mc, num, parseNum, POT_LEVELS, MODULES, pick, shuffle } from './data.js';
+import { $, fmt, parseNum, pick, shuffle } from './data.js';
+import { SUBJECTS, MODULES, ANIMS } from './catalog.js';
 import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
-import { ANIMS } from './anim.js';
 
 if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
 
@@ -67,18 +67,19 @@ const track=(fn,args)=>currentView={fn,args};
 function viewHome(){track(viewHome,[]);setCrumb('');
   app.innerHTML=`<div class="stack">
    <section class="hero"><p class="eyebrow">Aprendizaje guiado · 1º de ESO</p>
-    <div class="big" aria-hidden="true">2<sup>5</sup> = 32</div>
-    <p class="muted" style="max-width:56ch">Elige un módulo. Cada uno tiene niveles que se desbloquean al aprobar una prueba corta, y exámenes de prueba para repasar todo.</p></section>
-   <div class="mods">${MODULES.map(m=>{const p=m.soon?null:mp(m.id);const done=p?Math.min(Object.keys(p.best).filter(k=>p.best[k]>=PASS).length,m.levels.length):0;
+    <div class="big" aria-hidden="true">2<sup>5</sup> · Aa · 🔬</div>
+    <p class="muted" style="max-width:56ch">Elige una materia y un módulo. Cada módulo tiene niveles que se desbloquean al aprobar una prueba corta, y exámenes de prueba para repasar todo.</p></section>
+   ${SUBJECTS.map(sub=>`<section class="subject stack" aria-labelledby="sub-${sub.id}"><h2 id="sub-${sub.id}">${sub.name}</h2>
+   <div class="mods">${MODULES.filter(m=>m.subject===sub.id).map(m=>{const p=m.soon?null:mp(m.id);const done=p?Math.min(Object.keys(p.best).filter(k=>p.best[k]>=PASS).length,m.levels.length):0;
      return `<button class="mod ${m.soon?'':'on'}" type="button" data-id="${m.id}" ${m.soon?'disabled':''}>
       <span class="sym">${m.sym}</span><h3>${m.name}</h3><span class="muted" style="font-size:.92rem">${m.desc}</span>
       ${m.soon?'<span><span class="chip grey">Próximamente</span></span>':`<span class="row" style="justify-content:space-between"><span class="chip ${done===m.levels.length?'ok':''}">${done} de ${m.levels.length} niveles</span></span><div class="bar"><i style="width:${done/m.levels.length*100}%"></i></div>`}
-     </button>`}).join('')}</div></div>`;
+     </button>`}).join('')}</div></section>`).join('')}</div>`;
   app.querySelectorAll('.mod:not([disabled])').forEach(b=>b.onclick=()=>go(viewModule,MODULES.find(m=>m.id===b.dataset.id)))}
 
 function viewModule(mod){track(viewModule,[mod]);setCrumb(mod.name);const p=mp(mod.id);
   app.innerHTML=`<div class="stack">
-   <div><p class="eyebrow">Módulo</p><h1>${mod.name}</h1></div>
+   <div><p class="eyebrow">${SUBJECTS.find(s=>s.id===mod.subject).name}</p><h1>${mod.name}</h1></div>
    <h2 style="margin-top:6px">Niveles</h2>
    <div class="path">${mod.levels.map((lv,i)=>{const best=p.best[i];const done=best>=PASS;const open=isOpen(mod,i);const cur=open&&!done;
      return `<button type="button" class="lvl ${done?'done':''} ${cur?'cur':''}" data-i="${i}" ${open?'':'disabled'} aria-label="Nivel ${i+1}: ${lv.title}${open?'':' (bloqueado)'}">
@@ -182,7 +183,8 @@ function followPen(stage){
       at=t=>{const p=el.getPointAtLength(t*len);return [m.a*p.x+m.c*p.y+m.e+ox,m.b*p.x+m.d*p.y+m.f+oy]}}
     else{const r=el.getBoundingClientRect(),y=name==='x-in'?r.top+r.height/2:r.bottom-6;at=t=>[r.left+t*r.width+ox,y+oy]}
     cancelAnimationFrame(raf);clearTimeout(hide);pen.classList.add('on');const t0=performance.now();
-    const tick=now=>{const t=Math.min(1,(now-t0)/dur),[x,y]=at(t);pen.style.transform=`translate(${x}px,${y}px)`;
+    const tick=now=>{if(!el.isConnected){pen.classList.remove('on');return} // la escena se repintó o se salió de la pantalla
+      const t=Math.min(1,(now-t0)/dur),[x,y]=at(t);pen.style.transform=`translate(${x}px,${y}px)`;
       if(t<1)raf=requestAnimationFrame(tick);else hide=setTimeout(()=>pen.classList.remove('on'),700)};
     raf=requestAnimationFrame(tick)};
   stage.addEventListener('animationstart',onStart);
@@ -329,7 +331,7 @@ syncNow();
 function exportProgress(){
   const blob=new Blob([JSON.stringify(S,null,2)],{type:'application/json'});
   const url=URL.createObjectURL(blob), a=document.createElement('a');
-  a.href=url;a.download='cuaderno-mates-progreso.json';a.click();URL.revokeObjectURL(url);
+  a.href=url;a.download='cuaderno-1eso-progreso.json';a.click();URL.revokeObjectURL(url);
 }
 
 $('#import-file').onchange=async e=>{

@@ -24,6 +24,15 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Raíces 1 | Huerto cuadrado de 49 m² → lado de 7 m |
 | Raíces 2 | Formar un cuadrado con 36 alumnos (con 40 no se puede) |
 | Raíces 3 | 30 alumnos → cuadrado de 5 × 5 y sobran 5 (el resto) |
+| Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
+| Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
+| Comunicación 3 | La publicidad: función apelativa y poética |
+| Resumen 1 | Subrayar para estudiar un examen |
+| Resumen 2 | Contar una película a un amigo en un minuto |
+| Laboratorio 1 | La cocina: jarra medidora y embudo |
+| Laboratorio 2 | La báscula de la cocina: pesar por diferencia |
+| Laboratorio 3 | Observar células de cebolla al microscopio |
+| Laboratorio 4 | La lejía de casa y el pictograma de corrosivo |
 
 ## Controles
 
@@ -42,7 +51,7 @@ Al salir de la pantalla (cambiar de pestaña, volver a niveles…) la narración
 
 ## Cómo se escribe una animación
 
-El contenido está en [`anim.js`](../anim.js), un array de pasos por nivel y módulo (`ANIMS[moduleId][nivel]`):
+Las animaciones están en [`anim.js`](../anim.js) (Matemáticas), [`lengua.js`](../lengua.js) y [`biologia.js`](../biologia.js), y se reúnen en `ANIMS[moduleId][nivel]` en [`catalog.js`](../catalog.js). Las piezas de pizarra están en [`sketch.js`](../sketch.js). Cada paso:
 
 ```js
 { say: 'Texto que se narra y se muestra como subtítulo.',
@@ -53,6 +62,6 @@ El contenido está en [`anim.js`](../anim.js), un array de pasos por nivel y mó
 
 Piezas de texto: `at(retraso, html)` escribe algo a los `retraso` segundos (tarda más cuanto más largo); `seq([...])` escribe piezas una tras otra; `line(html, 'big')` es una línea de la pizarra; `lab(html, etiqueta, retraso, arriba)` pone una etiqueta debajo (o encima); `strike(html, retraso)` tacha algo; `real(título, html)` marca el paso como ejemplo «En la vida real».
 
-Piezas de dibujo (SVG): `sk(ancho, alto, trazos)` crea el dibujo; dentro, `ln` (línea), `box` (rectángulo), `circ` (círculo), `arrow` (flecha) se trazan con el rotulador; `fill` y `dot` rellenan; `tx` escribe texto. Atajos: `grid(n)` (cuadrícula de n × n que se rellena casilla a casilla) y `dots(n, sobran)` (formación de n × n puntos con puntos sueltos en rojo).
+Piezas de dibujo (SVG): `sk(ancho, alto, trazos)` crea el dibujo; dentro, `ln` (línea), `box` (rectángulo), `circ` (círculo), `ell` (elipse), `arrow` (flecha horizontal), `pointer` (flecha en cualquier dirección), `person` (persona), `bubble` (bocadillo) se trazan con el rotulador; `fill` y `dot` rellenan; `tx` escribe texto. Atajos: `grid(n)` (cuadrícula de n × n que se rellena casilla a casilla) y `dots(n, sobran)` (formación de n × n puntos con puntos sueltos en rojo).
 
 Las pruebas (`npm test`) exigen para cada nivel de cada módulo con contenido: una animación, al menos 4 pasos, empezar explicando, al menos 2 preguntas válidas, un ejemplo «En la vida real», y narraciones de 220 caracteres como máximo **escritas con palabras, sin cifras ni HTML** (la voz lee mejor «veinticinco» que «25»).

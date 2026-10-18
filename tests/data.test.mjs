@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { MODULES, RAI_LEVELS, parseNum, num, fmt, isqrt, R } from '../data.js';
-import { ANIMS } from '../anim.js';
+import { RAI_LEVELS, parseNum, num, fmt, isqrt, R } from '../data.js';
+import { SUBJECTS, MODULES, ANIMS } from '../catalog.js';
 
 const ACTIVE = MODULES.filter(m => !m.soon);
 
@@ -80,6 +80,31 @@ for (const mod of WITH_CONTENT) {
     }
   });
 }
+
+test('cada módulo pertenece a una materia y cada materia tiene módulos', () => {
+  const ids = new Set(SUBJECTS.map(x => x.id));
+  assert.equal(ids.size, SUBJECTS.length);
+  for (const m of MODULES) assert.ok(ids.has(m.subject), `${m.id}: materia «${m.subject}» desconocida`);
+  for (const x of SUBJECTS) assert.ok(MODULES.some(m => m.subject === x.id && !m.soon), `${x.id}: sin módulos activos`);
+});
+
+test('biología y lengua: las respuestas numéricas son correctas', () => {
+  const byId = id => MODULES.find(m => m.id === id);
+  const numGens = id => byId(id).levels.flatMap(l => l.gens);
+  let checked = 0;
+  for (const gen of [...numGens('laboratorio'), ...numGens('resumen')]) for (let r = 0; r < RUNS; r++) {
+    const q = gen();
+    if (q.type !== 'num') continue;
+    const n = ints(q);
+    if (/aumentos totales/.test(q.prompt)) assert.equal(q.answer, n[0] * n[1], q.prompt);
+    else if (/De cuántos aumentos es el objetivo/.test(q.prompt)) assert.equal(q.answer * n[1], n[0], q.prompt);
+    else if (/balanza marca/.test(q.prompt)) assert.equal(q.answer, n[1] - n[0], q.prompt);
+    else if (/cuarta parte/.test(q.prompt)) assert.equal(q.answer * 4, n[0], q.prompt);
+    else assert.fail(`sin comprobación: ${q.prompt}`);
+    checked++;
+  }
+  assert.ok(checked > 0);
+});
 
 test('los identificadores de módulo son únicos', () => {
   assert.equal(new Set(MODULES.map(m => m.id)).size, MODULES.length);

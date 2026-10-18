@@ -137,6 +137,17 @@ b,strong{font-weight:700}
 .rv .ua{font-size:.9rem;color:var(--muted)}
 footer{margin-top:40px;font-size:.88rem;color:var(--muted);display:flex;gap:14px;flex-wrap:wrap;align-items:center}
 @media (prefers-reduced-motion: no-preference){.pop{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(6px)}to{transform:none}}}
+/* materias y contenidos de texto */
+.subject{gap:10px}
+.subject+.subject{margin-top:18px}
+.prompt .texto{font-size:1rem;line-height:1.6;background:var(--pen-soft);border-left:4px solid var(--pen);border-radius:0 8px 8px 0;padding:10px 14px;margin-bottom:12px}
+.prompt .sk{display:block;margin:10px auto 4px}
+.sk.inst{width:min(110px,28vw)}
+.sk.micro{width:min(290px,80vw)}
+.sk.picto{width:min(100px,26vw)}
+.instrow{justify-content:center;align-items:flex-end;gap:14px}
+.instfig{margin:0;display:flex;flex-direction:column;align-items:center;gap:4px;max-width:130px;text-align:center}
+.instfig figcaption{font-size:.95rem;font-weight:700;line-height:1.25}
 /* explicación animada: pizarra blanca (también en modo oscuro: es un objeto) */
 .anim .stage{--ink:#1d2433;--muted:#5b6478;--pen:#1f4fd1;--pen-soft:#e8edfb;--good:#1f8a3b;--good-soft:#e3f5e7;--bad:#d12f2f;--bad-soft:#fdeaea;--card:#fff;--line:#c9cfdb;--hl:#ffe066;
   color-scheme:light;color:var(--ink);background:#fdfdfb;border:6px solid #cdd3dd;border-radius:10px;box-shadow:inset 0 0 0 1px #eceff4,0 2px 0 #b9c0cc;
@@ -165,7 +176,7 @@ footer{margin-top:40px;font-size:.88rem;color:var(--muted);display:flex;gap:14px
 .sk.board,.sk.cube{width:min(150px,40vw)}
 .sk.dots{width:min(190px,60vw)}
 .sk .dr{fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1;stroke-dashoffset:1;animation:wb-draw var(--t,.4s) ease-in-out forwards;animation-delay:calc(var(--d,0) * 1s)}
-.sk .dr.blue{stroke:var(--pen)} .sk .dr.red{stroke:var(--bad)}
+.sk .dr.blue{stroke:var(--pen)} .sk .dr.red{stroke:var(--bad)} .sk .dr.green{stroke:var(--good)}
 @keyframes wb-draw{to{stroke-dashoffset:0}}
 .sk .fi,.sk .st{opacity:0;animation:wb-fade .35s ease-out forwards;animation-delay:calc(var(--d,0) * 1s)}
 .sk .fi{fill:var(--ink)} .sk .fi.soft{fill:var(--pen);fill-opacity:.22} .sk .fi.blue{fill:var(--pen)} .sk .fi.red{fill:var(--bad)} .sk .fi.ink{fill:var(--ink);fill-opacity:.8}

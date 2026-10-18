@@ -188,12 +188,5 @@ const RAI_LEVELS=[
   ]}
 ];
 
-const MODULES=[
-  {id:'potencias',name:'Potencias',sym:P('a','n'),desc:'Qué son, sus propiedades y cómo operar con ellas.',levels:POT_LEVELS,
-   exams:[{id:'p1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'p2',name:'Examen parcial B',sub:'Niveles 4 a 6',levels:[3,4,5],n:10},{id:'pf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4,5],n:12}]},
-  {id:'raices',name:'Raíces cuadradas',sym:'√',desc:'Raíces exactas y aproximadas.',levels:RAI_LEVELS,soon:true},
-  {id:'divis',name:'Divisibilidad',sym:'m.c.m.',desc:'Múltiplos, divisores, mcm y mcd.',soon:true},
-  {id:'enteros',name:'Números enteros',sym:'ℤ',desc:'Operaciones con signo y recta numérica.',soon:true}
-];
 
-export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS, MODULES };
+export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS };
