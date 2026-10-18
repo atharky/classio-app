@@ -2,12 +2,26 @@
 
 Cada nivel empieza, en la pestaña **Aprende**, con una explicación animada por pasos en estilo **pizarra blanca** (*whiteboard animation*): el texto se escribe a mano de izquierda a derecha, los dibujos se trazan línea a línea y un rotulador sigue cada trazo. Hay narración en voz alta y subtítulos siempre visibles. En algunos pasos la explicación se detiene y el alumno tiene que responder una pregunta para seguir. Si falla dos veces se le muestra la respuesta explicada y puede continuar. Debajo se mantiene la lección escrita como **Resumen escrito**.
 
-## Estilo pizarra
+## Storytelling en pizarra
 
-- La escena es una pizarra blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (Google Fonts; sin conexión cae en una letra manuscrita del sistema) y rotulador negro, azul, rojo y verde.
+La explicación de cada nivel se cuenta como una **historia que se va trazando** en una pizarra blanca grande:
+
+- **Cada paso se dibuja en un recuadro nuevo** y los anteriores se quedan en la pizarra. Los recuadros se colocan en zigzag (tres por fila).
+- **La cámara viaja** de un recuadro al siguiente: se aleja a mitad de camino y vuelve a acercarse mientras se traza la flecha que los une. Durante la narración se acerca muy despacio, para que la pizarra nunca esté quieta del todo.
+- **El trazo acompaña a la voz:** los tiempos de cada escena se estiran o encogen (`--k`) para que el dibujo se reparta a lo largo de la narración, y esperan (`--o`) a que la cámara llegue.
+- **Las palabras clave** (las negritas de las escenas) se marcan con rotulador fosforito justo después de escribirse.
+- **Las preguntas también forman parte de la historia:** en la pizarra se dibuja un «?» con la pregunta escrita. La pregunta se responde debajo de la pizarra, y al resolverla queda escrita en el recuadro con un ✓ (o con la solución).
+- **Al salir de un recuadro su dibujo se completa al instante**, para que la historia nunca quede a medias.
+- **Al final, la cámara se aleja hasta mostrar la historia completa.** Tocando un recuadro (o con Tab + Intro) se vuelve a ese paso.
+- **Pausar** detiene la voz, el trazo y la cámara a la vez.
+- No aparece ninguna mano ni rotulador: solo el trazo.
+
+### Aspecto
+
+- La pizarra es blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (Google Fonts; sin conexión, una letra manuscrita del sistema) y rotulador negro, azul, rojo y verde.
 - El texto aparece «escribiéndose» (recorte animado) y los dibujos SVG se trazan con `stroke-dashoffset`; las líneas tienen un pequeño temblor de mano alzada, siempre el mismo para que las escenas no cambien entre visitas.
-- El rotulador sigue cada trazo punto a punto (`getPointAtLength`) y cada texto de izquierda a derecha, y se esconde cuando no dibuja.
-- Con «reducir movimiento» activado en el sistema no hay animaciones ni rotulador: cada escena aparece terminada.
+- Si una escena no cabe en su recuadro, se encoge para caber.
+- Con «reducir movimiento» activado en el sistema no hay viajes de cámara ni animaciones: cada escena aparece terminada.
 
 ## Ejemplos de la vida real
 
