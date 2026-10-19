@@ -34,7 +34,7 @@ export function levelQuiz(pane,mod,i){const lv=mod.levels[i];
     let unlockedNow=false;if(pass&&p.unlocked<=i+1&&i+1<mod.levels.length){p.unlocked=i+2;unlockedNow=true}save();
     const last=i+1>=mod.levels.length;
     pane.innerHTML=`<div class="card stack pop">
-      <div class="row" style="gap:18px"><span class="score">${ok}/${QUIZ_N}</span><div style="flex:1;min-width:200px"><h2>${pass?(last?'¡Módulo completado!':'¡Nivel superado!'):'Casi, inténtalo otra vez'}</h2>
+      <div class="row" data-s="gap:18px"><span class="score">${ok}/${QUIZ_N}</span><div data-s="flex:1;min-width:200px"><h2>${pass?(last?'¡Módulo completado!':'¡Nivel superado!'):'Casi, inténtalo otra vez'}</h2>
       <p class="muted">${pass?(unlockedNow?`Has desbloqueado el nivel ${i+2}: <b>${mod.levels[i+1].title}</b>.`:last?'Ahora prueba el examen final del módulo.':'Puedes seguir al siguiente nivel.'):`Necesitas ${PASS} aciertos. Repasa la lección y vuelve a intentarlo; las preguntas cambian.`}</p></div></div>
       <div class="row">${pass&&!last?`<button class="btn" type="button" id="next">Ir al nivel ${i+2}</button>`:''}
        ${pass&&last?`<button class="btn" type="button" id="exams">Ir a los exámenes</button>`:''}
@@ -54,7 +54,7 @@ export function viewReview(mod){track(viewReview,[mod]);setCrumb(`${mod.name} ·
   const qs=picks.map(([,li,gi])=>{const q=mod.levels[li].gens[gi]();q.gi=gi;q.li=li;return q});
   runQuiz(pane,qs,qs=>{qs.forEach(q=>recordResult(mod.id,q.li,q.gi,q.ok));save();
     const ok=qs.filter(q=>q.ok).length,left=pendingMisses(mod.id).length;
-    pane.innerHTML=`<div class="card stack pop"><div class="row" style="gap:18px"><span class="score">${ok}/${qs.length}</span><div style="flex:1;min-width:200px"><h2>${ok===qs.length?'¡Muy bien!':'Sigue practicando'}</h2>
+    pane.innerHTML=`<div class="card stack pop"><div class="row" data-s="gap:18px"><span class="score">${ok}/${qs.length}</span><div data-s="flex:1;min-width:200px"><h2>${ok===qs.length?'¡Muy bien!':'Sigue practicando'}</h2>
       <p class="muted">${left?`Te quedan ${left} tipo${left===1?'':'s'} de pregunta por repasar. Con ${CURE} aciertos seguidos de cada uno, quedan superados.`:'Has repasado todo lo que tenías pendiente.'}</p></div></div>
       <div class="row">${left?`<button class="btn" type="button" id="again">Seguir repasando</button>`:''}<button class="btn ${left?'ghost':''}" type="button" id="back">Volver al módulo</button></div></div>`;
     $('#again')&&($('#again').onclick=()=>go(viewReview,mod));$('#back').onclick=()=>go(viewModule,mod)})}

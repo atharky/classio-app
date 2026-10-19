@@ -19,7 +19,7 @@ const face=(x,y,d,hair='M-14 -4Q-14 -20 0 -20Q14 -20 14 -4')=>circ(x,y,14,d,{t:.
   +stroke(hair.replace(/(-?\d+) (-?\d+)/g,(_,a,b)=>`${x+ +a} ${y+ +b}`),d+.5,{t:.3});
 const dna=(x,y,d)=>stroke(`M${x} ${y}C${x+20} ${y+20} ${x+20} ${y+40} ${x} ${y+60}C${x-20} ${y+80} ${x-20} ${y+100} ${x} ${y+120}`,d,{c:'blue',t:.6})
   +stroke(`M${x} ${y}C${x-20} ${y+20} ${x-20} ${y+40} ${x} ${y+60}C${x+20} ${y+80} ${x+20} ${y+100} ${x} ${y+120}`,d+.3,{c:'red',t:.6})+[18,42,78,102].map((yy,k)=>ln(x-12,y+yy,x+12,y+yy,d+.9+k*.08,{t:.1})).join('');
-const atom=(x,y,d)=>[0,60,120].map((a,k)=>`<ellipse class="dr" pathLength="1" cx="${x}" cy="${y}" rx="30" ry="11" transform="rotate(${a} ${x} ${y})" style="--d:${d+k*.3};--t:.4s"/>`).join('')+dot(x,y,5,d+1,'red');
+const atom=(x,y,d)=>[0,60,120].map((a,k)=>`<ellipse class="dr" pathLength="1" cx="${x}" cy="${y}" rx="30" ry="11" transform="rotate(${a} ${x} ${y})" data-s="--d:${d+k*.3};--t:.4s"/>`).join('')+dot(x,y,5,d+1,'red');
 const chart=(x,y,d,bars)=>ln(x,y,x,y+80,d,{t:.2})+ln(x,y+80,x+bars.length*30+10,y+80,d+.2,{t:.2})+bars.map((h,k)=>fill(x+10+k*30,y+80-h,20,h,d+.5+k*.3,k%2?'soft':'blue')).join('');
 
 /* ---------- nivel 1 · fake news ---------- */
@@ -105,7 +105,7 @@ const CIE_LEVELS=[
   lesson:[
     ['¿Qué son?',`<p>Las <b>fake news</b> son <span class="hl">noticias falsas</span> que se difunden como si fueran verdaderas, sobre todo por internet y redes sociales. En español tienen un nombre: <b>bulos</b>.</p>`],
     ['¿Por qué se difunden?',`<p>Hay personas interesadas en difundirlas para <b>ganar dinero</b> (con visitas y publicidad), para <b>influir</b> en lo que piensa la gente, para <b>llamar la atención</b> o para hacer daño a alguien. Otras veces se comparten por error, sin comprobarlas.</p>`],
-    ['Seis claves para detectarlas',`<div class="tbl"><table><tr><th>Pista</th><th>¿Por qué es útil?</th></tr>${CLUES.map(([a,b],i)=>`<tr><td style="text-align:left"><b>${i+1}.</b> ${a}</td><td style="text-align:left">${b}</td></tr>`).join('')}</table></div>`],
+    ['Seis claves para detectarlas',`<div class="tbl"><table><tr><th>Pista</th><th>¿Por qué es útil?</th></tr>${CLUES.map(([a,b],i)=>`<tr><td data-s="text-align:left"><b>${i+1}.</b> ${a}</td><td data-s="text-align:left">${b}</td></tr>`).join('')}</table></div>`],
     ['Error típico',`<div class="ex warn">«Si lo ha compartido mucha gente, será verdad»</div><p>Un bulo puede tener miles de «me gusta». Lo que cuenta es la <b>fuente</b> y si se puede <b>contrastar</b> en medios serios. Las fotos también pueden estar retocadas o sacadas de contexto.</p>`]
   ],
   gens:[
@@ -150,9 +150,9 @@ const CIE_LEVELS=[
   lesson:[
     ['La ciencia',`<p>La <b>ciencia</b> es el conocimiento que se obtiene con el <b>método científico</b>: se basa en <span class="hl">pruebas y experimentos</span> que cualquiera puede repetir, otros expertos revisan los estudios y <b>cambia sus ideas</b> si aparecen pruebas nuevas.</p>`],
     ['La pseudociencia',`<p>Una <b>pseudociencia</b> <span class="hl">parece ciencia, pero no lo es</span>: usa palabras científicas, pero no sigue el método científico. No se puede comprobar, se basa en <b>testimonios</b> («a mi vecina le funcionó»), no cambia aunque las pruebas la contradigan y a menudo busca <b>vender algo</b>.</p>`],
-    ['Once disciplinas',`<div class="tbl"><table><tr><th>Ciencia</th><th>Pseudociencia</th></tr>${SCI.map((d,i)=>`<tr><td style="text-align:left">${d[0]}</td><td style="text-align:left">${PSE[i]?PSE[i][0]:''}</td></tr>`).join('')}</table></div>
+    ['Once disciplinas',`<div class="tbl"><table><tr><th>Ciencia</th><th>Pseudociencia</th></tr>${SCI.map((d,i)=>`<tr><td data-s="text-align:left">${d[0]}</td><td data-s="text-align:left">${PSE[i]?PSE[i][0]:''}</td></tr>`).join('')}</table></div>
      <p class="muted">Ojo: <b>Arqueología</b> y <b>Psicología</b> son ciencias aunque suenen raro. <b>Homeopatía</b>, <b>Numerología</b> y <b>Cienciología</b> no lo son, aunque su nombre parezca científico.</p>`],
-    ['Cinco características',`<div class="tbl"><table><tr><th>Característica</th><th>Es de…</th></tr>${TRAITS.slice(0,3).concat(TRAITS.slice(6,8)).sort((x,y)=>x[1]<y[1]?-1:1).map(([t,k])=>`<tr><td style="text-align:left">${t}</td><td>${k}</td></tr>`).join('')}</table></div>`],
+    ['Cinco características',`<div class="tbl"><table><tr><th>Característica</th><th>Es de…</th></tr>${TRAITS.slice(0,3).concat(TRAITS.slice(6,8)).sort((x,y)=>x[1]<y[1]?-1:1).map(([t,k])=>`<tr><td data-s="text-align:left">${t}</td><td>${k}</td></tr>`).join('')}</table></div>`],
     ['Comparar dos mensajes',`<p>Dos mensajes sobre el tiempo: la <b>agencia de meteorología</b> da datos medibles (porcentajes y grados), <b>cita su fuente</b> (un modelo numérico) y se puede comprobar. «El Horóscopo» es vago, no cita ninguna fuente y no se puede comprobar. Fíate del primero. Usa las mismas claves de las fake news: la fuente, los datos y si se puede contrastar.</p>`],
     ['¿Sirven las pseudociencias?',`<p>No son útiles para <b>decidir cosas importantes</b>, porque no se basan en pruebas. Pueden hacerte <b>perder dinero o salud</b> (por ejemplo, dejar un tratamiento médico por un remedio que no funciona). Como juego o entretenimiento no hacen daño, pero no son una guía.</p>`],
     ['Error típico',`<div class="ex warn">«Si usa palabras científicas o lleva bata, es ciencia»</div><p>Lo que hace que algo sea ciencia son las <b>pruebas</b>, no la apariencia ni el nombre.</p>`]
@@ -169,7 +169,7 @@ const CIE_LEVELS=[
   ]},
 { title:'Mujeres científicas', sub:'Descubrimientos que cambiaron la ciencia',
   lesson:[
-    ['Científicas que hay que conocer',`<div class="tbl"><table><tr><th>Científica</th><th>¿Qué hizo?</th></tr>${WOMEN.map(w=>`<tr><td style="text-align:left"><b>${w.n}</b></td><td style="text-align:left">${w.k}</td></tr>`).join('')}</table></div>`],
+    ['Científicas que hay que conocer',`<div class="tbl"><table><tr><th>Científica</th><th>¿Qué hizo?</th></tr>${WOMEN.map(w=>`<tr><td data-s="text-align:left"><b>${w.n}</b></td><td data-s="text-align:left">${w.k}</td></tr>`).join('')}</table></div>`],
     ['¿Por qué se conocen menos?',`<p>Durante siglos se impidió a muchas mujeres <b>estudiar</b> o trabajar en ciencia, y a veces sus descubrimientos se atribuyeron a hombres. Por ejemplo, la «Fotografía 51» de Rosalind Franklin se enseñó a otros investigadores sin que ella lo supiera y les ayudó a descubrir la forma del ADN. Ella murió en 1958 y no compartió el premio Nobel de 1962.</p>
      <p>El <span class="hl">11 de febrero</span> es el <b>Día Internacional de la Mujer y la Niña en la Ciencia</b>.</p>`],
     ['Error típico',`<div class="ex warn">Pensar que la ciencia es «cosa de hombres»</div><p>Mujeres como Marie Curie o Margarita Salas hicieron descubrimientos fundamentales. Hoy chicas y chicos pueden dedicarse a la ciencia por igual.</p>`]

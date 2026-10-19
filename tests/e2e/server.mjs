@@ -7,6 +7,7 @@ import { createSync } from '../../api/src/sync.js';
 import { memoryStore } from '../../api/src/memory-store.js';
 const ROOT = fileURLToPath(new URL('../../', import.meta.url));
 const sync = createSync(memoryStore());
+const CSP = JSON.parse(await readFile(join(ROOT, 'staticwebapp.config.json'), 'utf8')).globalHeaders['Content-Security-Policy'];
 let build = 1; // POST /__bump simula un despliegue nuevo: cambia el sello de sw.js
 const types = {
   '.html': 'text/html; charset=utf-8',
@@ -33,14 +34,14 @@ http
     }
     if (url.pathname === '/sw.js') {
       const d = (await readFile(join(ROOT, 'sw.js'), 'utf8')).replace("'cuaderno-__BUILD__'", "'cuaderno-e2e" + build + "'");
-      res.writeHead(200, { 'Content-Type': 'text/javascript', 'Cache-Control': 'no-store' });
+      res.writeHead(200, { 'Content-Type': 'text/javascript', 'Cache-Control': 'no-store', 'Content-Security-Policy': CSP });
       return res.end(d);
     }
     try {
       const p = normalize(url.pathname === '/' ? '/index.html' : url.pathname);
       if (p.includes('..') || p.startsWith('/api/') || p.startsWith('/tests/')) throw 0;
       const d = await readFile(join(ROOT, p));
-      res.writeHead(200, { 'Content-Type': types[extname(p)] || 'application/octet-stream' });
+      res.writeHead(200, { 'Content-Type': types[extname(p)] || 'application/octet-stream', 'Content-Security-Policy': CSP });
       res.end(d);
     } catch {
       res.writeHead(404);

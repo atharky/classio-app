@@ -1,4 +1,5 @@
 import { pick } from './data.js';
+import { hydrateStyles } from './inline.js';
 import { PRAISE, answered, isRight, lockQ, qBody, rightText, wireQ } from './question.js';
 import { at, dot, sk, stroke, tx } from './sketch.js';
 
@@ -65,19 +66,19 @@ export function animPlayer(root,steps){
     if(a.y===b.y){const r=b.x>a.x;y1=y2=a.y+H/2;x1=r?a.x+W+8:a.x-8;x2=r?b.x-8:b.x+W+8;qx=(x1+x2)/2;qy=y1-G.gap*.35}
     else{x1=x2=a.x+W/2;y1=a.y+H+8;y2=b.y-8;qx=x1+G.gap*.35;qy=(y1+y2)/2}
     const ang=Math.atan2(y2-qy,x2-qx),h=12,p=s=>`${(x2-h*Math.cos(ang+s)).toFixed(1)} ${(y2-h*Math.sin(ang+s)).toFixed(1)}`;
-    return `<path class="dr blue ${cls}" pathLength="1" style="--d:0;--t:${t}s" d="M${x1} ${y1}Q${qx.toFixed(1)} ${qy.toFixed(1)} ${x2} ${y2}"/>`
-      +`<path class="dr blue ${cls}" pathLength="1" style="--d:${t};--t:.2s" d="M${p(.5)}L${x2} ${y2}L${p(-.5)}"/>`}
+    return `<path class="dr blue ${cls}" pathLength="1" data-s="--d:0;--t:${t}s" d="M${x1} ${y1}Q${qx.toFixed(1)} ${qy.toFixed(1)} ${x2} ${y2}"/>`
+      +`<path class="dr blue ${cls}" pathLength="1" data-s="--d:${t};--t:.2s" d="M${p(.5)}L${x2} ${y2}L${p(-.5)}"/>`}
   function sizeLinks(){const n=frames.length,rows=Math.ceil(n/COLS)||1;links.setAttribute('width',COLS*(G.W+G.gap));links.setAttribute('height',rows*(G.H+G.gap))}
   function place(k){const p=pos(k);Object.assign(frames[k].style,{left:p.x+'px',top:p.y+'px',width:G.W+'px',height:G.H+'px'})}
   function frameAt(k){if(frames[k])return frames[k];
     const f=document.createElement('div');f.className='frame';f.setAttribute('aria-label',`Paso ${k+1}`);f.innerHTML=`<span class="fnum" aria-hidden="true">${k+1}</span><div class="fc"></div>`;
     const go=()=>{if(ended){started=true;show(k,true)}};f.onclick=go;f.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}};
     board.appendChild(f);frames[k]=f;place(k);sizeLinks();
-    if(k>0&&frames[k-1])links.insertAdjacentHTML('beforeend',linkSvg(k));return f}
+    if(k>0&&frames[k-1]){links.insertAdjacentHTML('beforeend',linkSvg(k));hydrateStyles(links)}return f}
   // Encoge el contenido si no cabe en el recuadro.
   function fit(f){const fc=f.querySelector('.fc');fc.style.transform='';const s=Math.min(1,(G.W-20)/fc.scrollWidth,(G.H-20)/fc.scrollHeight);if(s<1)fc.style.transform=`scale(${s.toFixed(3)})`}
   function relayout(){stopCam();G=geom();stage.style.height=G.H+'px';frames.forEach((f,k)=>{if(f){place(k);fit(f)}});sizeLinks();
-    links.innerHTML=frames.map((f,k)=>k>0&&f&&frames[k-1]?linkSvg(k,true):'').join('');
+    links.innerHTML=frames.map((f,k)=>k>0&&f&&frames[k-1]?linkSvg(k,true):'').join('');hydrateStyles(links);
     ended?overview():moveCam(centerOf(idx),false)}
 
   function silence(){token++;clearTimeout(timer);clearTimeout(watchdog);if(tts)tts.cancel();if(audio){audio.pause();audio=null}}
@@ -103,6 +104,7 @@ export function animPlayer(root,steps){
     // Al salir de un recuadro su dibujo se completa al instante: la historia nunca queda a medias.
     frames.forEach(x=>{if(x){x.classList.toggle('on',x===f);x.classList.toggle('done',x!==f)}});
     f.querySelector('.fc').innerHTML=q?questionScene(q):s.show; // repintar reinicia las animaciones CSS
+    hydrateStyles(f);
     fit(f);const o=moveCam(centerOf(k),true);pace(f,o,s.say);slowZoom(sayTime(s.say)+2,o);
     qp.innerHTML='';if(q)askStep(q,f);
     if(playing||force)speak(s.say,s.audio,s.ask||!playing?null:advance);
@@ -123,7 +125,7 @@ export function animPlayer(root,steps){
       if(ok||tries>=2){pending=false;lockQ(qb,q,ok);const v=ok?pick(PRAISE):`La respuesta es ${rightText(q)}.`;
         fb.innerHTML=`<div class="fb ${ok?'ok':'ko'}"><span class="v">${v}</span>${q.explain}</div>`;
         // La respuesta queda escrita en la pizarra, como parte de la historia.
-        const fc=f.querySelector('.fc');fc.insertAdjacentHTML('beforeend',stamp(ok,ok?rightText(q):'Solución: '+rightText(q)));f.style.setProperty('--o','0s');f.style.setProperty('--k','1');fit(f);
+        const fc=f.querySelector('.fc');fc.insertAdjacentHTML('beforeend',stamp(ok,ok?rightText(q):'Solución: '+rightText(q)));hydrateStyles(fc);f.style.setProperty('--o','0s');f.style.setProperty('--k','1');fit(f);
         btn.textContent=idx+1<steps.length?'Continuar':'Terminar';btn.focus();
         speak(ok?v:'Fíjate en la explicación.',null,null);paintControls()}
       else{fb.innerHTML=`<div class="fb ko"><span class="v">Casi. Inténtalo otra vez.</span>${q.hint||'Repasa lo que acabas de ver.'}</div>`;

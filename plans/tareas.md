@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 16 de 26 · **En curso:** 0 · **Pendientes:** 10
+**Actualizado:** 19-10-2026 · **Hechas:** 17 de 26 · **En curso:** 0 · **Pendientes:** 9
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -55,7 +55,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ⬜ Pendiente | — | — |
+| T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ⬜ Pendiente | — | — |
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ⬜ Pendiente | — | — |
@@ -213,7 +213,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5**. **€**
 
 ### T16 · CSP sin `'unsafe-inline'` en estilos
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Tipo:** técnica · **Depende de:** T12
 - **Alcance:** sustituir los `style="…"` de las plantillas por clases utilitarias; los anchos de las barras de progreso pasan a variables CSS (`style` con `--w` sigue siendo inline: usar `width` por clase escalonada o `data-` + CSS); quitar `'unsafe-inline'`.
 - **Modelo:** **Sonnet 5.5** (`low`); la revisión visual E2E valida. **€€**

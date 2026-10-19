@@ -51,7 +51,7 @@ const TIERRA_LEVELS=[
 { title:'Un planeta excepcional', sub:'Las condiciones que hacen posible la vida',
   lesson:[
     ['El único con vida',`<p>La Tierra es el <span class="hl">único planeta del Sistema Solar en el que hay vida</span>, porque reúne las condiciones adecuadas para ella.</p>`],
-    ['Cinco condiciones',`<div class="tbl"><table><tr><th>Condición</th><th>¿Para qué sirve?</th></tr>${COND.map(([a,b])=>`<tr><td style="text-align:left"><b>${cap(a)}</b></td><td style="text-align:left">${b}</td></tr>`).join('')}</table></div>`],
+    ['Cinco condiciones',`<div class="tbl"><table><tr><th>Condición</th><th>¿Para qué sirve?</th></tr>${COND.map(([a,b])=>`<tr><td data-s="text-align:left"><b>${cap(a)}</b></td><td data-s="text-align:left">${b}</td></tr>`).join('')}</table></div>`],
     ['Error típico',`<div class="ex warn">«La vida existe porque hay mucha luz del Sol»</div><p>La luz ayuda, pero lo que cuenta es el conjunto: si falla <b>una</b> de las cinco condiciones (por ejemplo, el agua líquida), la vida tal como la conocemos no es posible.</p>`]
   ],
   gens:[
@@ -65,7 +65,7 @@ const TIERRA_LEVELS=[
 { title:'Los subsistemas terrestres', sub:'Geosfera, atmósfera, hidrosfera y biosfera',
   lesson:[
     ['Cuatro partes',`<p>En la Tierra se distinguen cuatro partes o <b>subsistemas</b> que se relacionan entre sí:</p>
-     <div class="tbl"><table>${SUBS.map(([a,b])=>`<tr><td style="text-align:left"><b>${a}</b></td><td style="text-align:left">${cap(b)}</td></tr>`).join('')}</table></div>`],
+     <div class="tbl"><table>${SUBS.map(([a,b])=>`<tr><td data-s="text-align:left"><b>${a}</b></td><td data-s="text-align:left">${cap(b)}</td></tr>`).join('')}</table></div>`],
     ['La geosfera, el soporte',`<p>La <b>geosfera</b> es la parte sólida y actúa como <span class="hl">soporte</span> del resto de componentes: sobre ella se asienta el agua, el aire y los seres vivos.</p>`],
     ['Todo se relaciona',`<p>Los subsistemas interactúan: un árbol (<b>biosfera</b>) agarra sus raíces al suelo (<b>geosfera</b>), toma agua (<b>hidrosfera</b>) y aire (<b>atmósfera</b>).</p>`],
     ['Error típico',`<div class="ex warn">«La biosfera son solo los animales»</div><p>La <b>biosfera</b> es <b>todos</b> los seres vivos: animales, plantas, hongos y microorganismos, también las personas.</p>`]
@@ -81,7 +81,7 @@ const TIERRA_LEVELS=[
 { title:'Las capas de la geosfera', sub:'Corteza, manto y núcleo, ordenadas por densidad',
   lesson:[
     ['¿Qué hay bajo nuestros pies?',`<p>El interior de la Tierra se divide en <span class="hl">tres capas, ordenadas según su densidad</span>: <b>corteza</b>, <b>manto</b> y <b>núcleo</b>.</p>`],
-    ['La Tierra en corte',`<div class="row" style="justify-content:center">${earth(0,null,PART_NAMES)}</div>
+    ['La Tierra en corte',`<div class="row" data-s="justify-content:center">${earth(0,null,PART_NAMES)}</div>
      <p>La <b>corteza</b> se divide en continental y oceánica; el <b>manto</b>, en superior e inferior; y el <b>núcleo</b>, en externo e interno.</p>`],
     ['La corteza',`<p>Es la capa <b>más externa y más delgada</b>. Está formada por rocas sólidas y rígidas y se fragmenta en <span class="hl">placas tectónicas</span>.</p>`],
     ['Error típico',`<div class="ex warn">«El interior de la Tierra es todo de lava»</div><p>No: la corteza y casi todo el manto son <b>sólidos</b>. Solo el <b>núcleo externo</b> es líquido.</p>`]

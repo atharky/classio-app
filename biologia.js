@@ -111,7 +111,7 @@ const LAB_LEVELS=[
 { title:'El microscopio óptico', sub:'Sus partes, los aumentos y cómo enfocar',
   lesson:[
     ['¿Para qué sirve?',`<p>El <b>microscopio óptico</b> aumenta la imagen de objetos tan pequeños que no se ven a simple vista, como las <span class="hl">células</span>. Usa la luz y un juego de lentes.</p>`],
-    ['Sus partes',`<div class="row" style="justify-content:center">${micro(0,null,[['ocular'],['objetivos'],['platina'],['tornillo macrométrico'],['foco']])}</div>
+    ['Sus partes',`<div class="row" data-s="justify-content:center">${micro(0,null,[['ocular'],['objetivos'],['platina'],['tornillo macrométrico'],['foco']])}</div>
      <p>Parte <b>óptica</b> (la que forma la imagen): ocular, objetivos, foco o lámpara y diafragma (regula la luz). Parte <b>mecánica</b> (el soporte): base, brazo, platina, revólver y tornillos macrométrico y micrométrico.</p>`],
     ['Los aumentos',`<p>Los aumentos totales se calculan <span class="hl">multiplicando</span> los del ocular por los del objetivo:</p><div class="ex">ocular 10× · objetivo 40× = <b>400 aumentos</b></div>`],
     ['Cómo enfocar',`<p>1. Empieza con el objetivo de <b>menor</b> aumento. 2. Coloca la preparación en la platina. 3. Acerca la platina al objetivo con el <b>macrométrico</b>, mirando de lado. 4. Mira por el ocular y afina con el <b>micrométrico</b>. 5. Para más aumento, gira el revólver y enfoca solo con el micrométrico.</p>`],

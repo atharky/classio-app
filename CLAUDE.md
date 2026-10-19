@@ -6,6 +6,7 @@ App educativa estática (módulos ES, sin build) + API de sincronización en `ap
 
 - **Sin frameworks ni compilación.** JavaScript de módulos ES y CSS planos. No añadas dependencias a la web; las de desarrollo (`@playwright/test`) viven solo en `package.json`.
 - **Estilo del código:** funciones cortas, generadores y niveles en una línea densa, como en `data.js` y `ciencia.js`. Imita lo que hay.
+- **Sin `style="…"` en las plantillas:** la CSP no admite estilos en línea. Escribe `data-s="…"` (`inline.js` lo convierte en estilo por CSSOM) o usa una clase de `styles.css`.
 - **Texto del alumno y del almacenamiento** que vaya a `innerHTML` pasa por `esc()` (`data.js`).
 - **Contenido nuevo:** cada nivel lleva lección, generadores con `explain`, relato (`ANIMS`) con un paso «En la vida real» y preguntas que se comprueban en `tests/data.test.mjs` (recálculo de respuestas). Las respuestas se calculan, no se escriben a mano.
 - **Relatos:** un recuadro por paso, `say` es lo que se narra y se subtitula, ningún `--d` mayor de 12 s. Respetan `prefers-reduced-motion`.

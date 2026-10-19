@@ -43,7 +43,7 @@ const COM_LEVELS=[
 { title:'Los elementos de la comunicación', sub:'Emisor, receptor, mensaje, código, canal y contexto',
   lesson:[
     ['¿Qué es comunicar?',`<p><b>Comunicar</b> es transmitir información de una persona (o de un grupo) a otra. Para que haya comunicación tienen que intervenir varios <span class="hl">elementos</span>.</p>`],
-    ['Los seis elementos',`<div class="tbl"><table><tr><th>Elemento</th><th>Qué es</th></tr>${EL.map(e=>`<tr><td><b>${e[0].toUpperCase()+e.slice(1)}</b></td><td style="text-align:left">${DEF[e][0].toUpperCase()+DEF[e].slice(1)}</td></tr>`).join('')}</table></div>`],
+    ['Los seis elementos',`<div class="tbl"><table><tr><th>Elemento</th><th>Qué es</th></tr>${EL.map(e=>`<tr><td><b>${e[0].toUpperCase()+e.slice(1)}</b></td><td data-s="text-align:left">${DEF[e][0].toUpperCase()+DEF[e].slice(1)}</td></tr>`).join('')}</table></div>`],
     ['Un ejemplo',`<div class="ex">Lucía escribe a Marcos por WhatsApp: «¿Quedamos a las cinco?»</div>
      <p>Emisor: <b>Lucía</b>. Receptor: <b>Marcos</b>. Mensaje: <b>la propuesta de quedar</b>. Código: <b>la lengua española escrita</b>. Canal: <b>la pantalla del móvil</b>. Contexto: <b>dos amigos que organizan la tarde</b>.</p>
      <p>El emisor y el receptor pueden <span class="hl">intercambiar sus papeles</span>: cuando Marcos contesta, él pasa a ser el emisor.</p>`],

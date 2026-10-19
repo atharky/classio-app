@@ -73,3 +73,25 @@ test('el selector de tema alterna automático, claro y oscuro y se recuerda', as
   await page.click('#theme');
   expect(await theme()).toBeNull();
 });
+
+test('con la CSP de producción no hay estilos bloqueados', async ({ page }) => {
+  const blocked = [];
+  page.on('console', (m) => {
+    if (/Content Security Policy|Refused to/i.test(m.text())) blocked.push(m.text());
+  });
+  await page.goto('/');
+  await page.click('#open-all');
+  for (const [mod, lvl] of [
+    ['potencias', 0],
+    ['laboratorio', 2],
+    ['tierra', 2],
+  ]) {
+    await page.click('#home-btn');
+    await page.click(`.mod[data-id="${mod}"]`);
+    await page.click(`.lvl[data-i="${lvl}"]`);
+    await page.click('#a-play');
+    await page.waitForTimeout(600);
+  }
+  expect(await page.evaluate(() => document.querySelectorAll('[data-s]').length)).toBe(0);
+  expect(blocked).toEqual([]);
+});

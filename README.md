@@ -29,7 +29,7 @@ npm run test:e2e         # navegador: reproductor, recorrido de niveles y exáme
 | Fichero | Qué contiene |
 |---|---|
 | `index.html`, `styles.css`, `main.js` | Página, estilos y punto de entrada |
-| `state.js`, `net.js`, `ui.js`, `update.js`, `theme.js` | Estado y progreso (`localStorage`), sincronización en segundo plano, marco de la página (migas, pie, navegación) y aviso de versión nueva |
+| `state.js`, `net.js`, `ui.js`, `update.js`, `theme.js`, `inline.js` | Estado y progreso (`localStorage`), sincronización en segundo plano, marco de la página (migas, pie, navegación) y aviso de versión nueva |
 | `views/` | Vistas: inicio, módulo, nivel (con resumen escrito), privacidad y sincronización |
 | `quiz.js`, `exam.js`, `question.js`, `player.js` | Pruebas de nivel y repaso, exámenes, preguntas (render y corrección) y reproductor de relatos |
 | `data.js` | Utilidades y generadores de preguntas de Potencias y Raíces |
