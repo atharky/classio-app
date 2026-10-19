@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 4 de 26 · **En curso:** 0 · **Pendientes:** 22
+**Actualizado:** 19-10-2026 · **Hechas:** 5 de 26 · **En curso:** 0 · **Pendientes:** 21
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -41,7 +41,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T01 | Pruebas E2E en el repositorio y en CI | F1 | P1 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
-| T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ⬜ Pendiente | — | — |
+| T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ⬜ Pendiente | — | — |
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ⬜ Pendiente | — | — |
@@ -106,7 +106,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`medium`); la lógica de `api/src/sync.js` tiene pruebas con almacén en memoria. **€€**
 
 ### T04 · Página de privacidad y uso de datos
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** funcional + legal · **Depende de:** T03
 - **Alcance:** vista «Privacidad» enlazada desde el pie: qué se guarda en el navegador, qué viaja a la nube con el código (solo niveles y notas), que no se piden datos personales, cómo borrar; mención a las fuentes externas mientras no se haga T15.
 - **Hecho cuando:** la página existe, es accesible y el texto lo ha revisado el responsable del proyecto.

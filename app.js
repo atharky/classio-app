@@ -65,8 +65,9 @@ function setCrumb(t){$('#crumb').textContent=t||''}
 function go(view,...args){clearInterval(timerId);stopAnim();window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
 $('#home-btn').onclick=()=>go(viewHome);
 
-function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${link?'Sincronización activada':'Sincronizar entre dispositivos'}</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}${syncStatus&&currentView.fn!==viewSync?`<span class="storage-warning" role="alert"> ${syncStatus}</span>`:''}`;
+function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${link?'Sincronización activada':'Sincronizar entre dispositivos'}</button> · <button class="link" id="privacy" type="button">Privacidad</button>${storageWarning?`<span class="storage-warning" role="alert"> ${storageWarning}</span>`:''}${syncStatus&&currentView.fn!==viewSync?`<span class="storage-warning" role="alert"> ${syncStatus}</span>`:''}`;
   $('#sync').onclick=()=>go(viewSync);
+  $('#privacy').onclick=()=>go(viewPrivacy);
   $('#export').onclick=exportProgress;
   $('#import').onclick=()=>$('#import-file').click();
   $('#open-all').onclick=()=>{S.open=!S.open;save();go(currentView.fn,...currentView.args)};
@@ -121,6 +122,24 @@ function viewLevel(mod,i,tab){track(viewLevel,[mod,i,tab]);const lv=mod.levels[i
     $('#go-quiz').onclick=()=>go(viewLevel,mod,i,'quiz');
     const steps=ANIMS[mod.id]?.[i];if(steps)animPlayer($('#anim'),steps)}
   else levelQuiz(pane,mod,i)}
+
+function viewPrivacy(){track(viewPrivacy,[]);setCrumb('Privacidad');
+  app.innerHTML=`<div class="stack">
+   <div><p class="eyebrow">Tus datos</p><h1>Privacidad y uso de datos</h1></div>
+   <section class="card stack"><h3>Qué guarda este cuaderno</h3>
+    <p>No pedimos nombre, correo, edad, centro ni contraseña. No hay cuentas. El cuaderno no usa cookies ni publicidad ni analítica.</p>
+    <p>En tu navegador se guardan tus <b>niveles superados</b>, tus <b>notas</b> de los exámenes, si tienes el sonido activado y, si lo usas, el código de sincronización. Todo queda en este dispositivo.</p></section>
+   <section class="card stack"><h3>Si usas la sincronización</h3>
+    <p>Al crear un código se guardan en un servidor (Microsoft Azure, en la Unión Europea) solo tus niveles y notas, asociados a un identificador que sale del código. El servidor no guarda el código, sino una huella irreversible de él, ni tu dirección IP.</p>
+    <p>Quien tenga tu código puede ver y cambiar tu progreso. No lo compartas con nadie que no quieras.</p></section>
+   <section class="card stack"><h3>Cómo borrar tus datos</h3>
+    <ul><li><b>De este dispositivo:</b> «Borrar progreso» en el pie de página.</li>
+    <li><b>De la nube:</b> en «Sincronizar entre dispositivos» pulsa «Borrar mis datos de la nube». El código deja de funcionar.</li></ul></section>
+   <section class="card stack"><h3>Narración con voz</h3>
+    <p>La voz que lee las explicaciones es la de tu propio dispositivo; el cuaderno no envía textos ni audio a ningún servicio.</p></section>
+   <section class="card stack"><h3>Tipos de letra</h3>
+    <p>Los tipos de letra se cargan desde Google Fonts, por lo que Google puede ver la dirección IP del dispositivo al abrir el cuaderno.</p></section>
+   <p class="hint">Si eres menor de edad, comenta con tu familia o tu profesorado qué dispositivo usas para sincronizar.</p></div>`}
 
 function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
   app.innerHTML=`<div class="stack">

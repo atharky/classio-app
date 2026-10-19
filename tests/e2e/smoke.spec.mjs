@@ -23,3 +23,10 @@ test('la pizarra cabe en pantallas estrechas sin desplazamiento horizontal',asyn
   await page.setViewportSize({width:360,height:740});await page.goto('/');
   expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
 });
+
+test('la página de privacidad explica qué datos se guardan y cómo borrarlos',async({page})=>{
+  await page.goto('/');await page.click('#privacy');
+  await expect(page.getByRole('heading',{name:'Privacidad y uso de datos'})).toBeVisible();
+  await expect(page.locator('main')).toContainText('Borrar mis datos de la nube');
+  await page.click('#home-btn');await expect(page.locator('.mod').first()).toBeVisible();
+});
