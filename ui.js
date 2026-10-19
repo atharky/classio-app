@@ -1,4 +1,5 @@
 import { $ } from './data.js';
+import { nextTheme, themeLabel } from './theme.js';
 import { net } from './net.js';
 import { stopAnim } from './player.js';
 import { S, emptyState, migrateState, replaceState, save, ui } from './state.js';
@@ -17,9 +18,10 @@ export function setCrumb(t){$('#crumb').textContent=t||''}
 export function go(view,...args){clearInterval(ui.timerId);stopAnim();window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>app.focus())}
 $('#home-btn').onclick=()=>go(viewHome);
 
-export function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${net.link?'Sincronización activada':'Sincronizar entre dispositivos'}</button> · <button class="link" id="privacy" type="button">Privacidad</button>${ui.warning?`<span class="storage-warning" role="alert"> ${ui.warning}</span>`:''}${net.status&&ui.view.fn!==viewSync?`<span class="storage-warning" role="alert"> ${net.status}</span>`:''}`;
+export function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${net.link?'Sincronización activada':'Sincronizar entre dispositivos'}</button> · <button class="link" id="privacy" type="button">Privacidad</button> · <button class="link" id="theme" type="button">Tema: ${themeLabel()}</button>${ui.warning?`<span class="storage-warning" role="alert"> ${ui.warning}</span>`:''}${net.status&&ui.view.fn!==viewSync?`<span class="storage-warning" role="alert"> ${net.status}</span>`:''}`;
   $('#sync').onclick=()=>go(viewSync);
   $('#privacy').onclick=()=>go(viewPrivacy);
+  $('#theme').onclick=()=>{nextTheme();renderFoot()};
   $('#export').onclick=exportProgress;
   $('#import').onclick=()=>$('#import-file').click();
   $('#open-all').onclick=()=>{S.open=!S.open;save();go(ui.view.fn,...ui.view.args)};

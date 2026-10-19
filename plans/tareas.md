@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 15 de 26 · **En curso:** 0 · **Pendientes:** 11
+**Actualizado:** 19-10-2026 · **Hechas:** 16 de 26 · **En curso:** 0 · **Pendientes:** 10
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -56,7 +56,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ⬜ Pendiente | — | — |
-| T17 | Selector de tema | F3 | P3 | — | Haiku | ⬜ Pendiente | — | — |
+| T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ⬜ Pendiente | — | — |
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ⬜ Pendiente | — | — |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ⬜ Pendiente | — | — |
@@ -219,7 +219,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`low`); la revisión visual E2E valida. **€€**
 
 ### T17 · Selector de tema
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Tipo:** funcional · **Depende de:** —
 - **Alcance:** botón en el pie (Automático / Claro / Oscuro) que fija `data-theme` en `<html>` y lo recuerda en `localStorage`; el CSS ya contempla `data-theme`.
 - **Modelo:** **Haiku 5.5**. **€**

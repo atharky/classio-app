@@ -57,3 +57,19 @@ test('los tipos de letra se cargan desde el propio sitio, sin peticiones a terce
   expect(await page.evaluate(() => document.fonts.check('16px "Atkinson Hyperlegible"'))).toBe(true);
   expect(external).toEqual([]);
 });
+
+test('el selector de tema alterna automático, claro y oscuro y se recuerda', async ({ page }) => {
+  await page.goto('/');
+  const theme = () => page.evaluate(() => document.documentElement.getAttribute('data-theme'));
+  expect(await theme()).toBeNull();
+  await page.click('#theme');
+  await expect(page.locator('#theme')).toHaveText('Tema: Claro');
+  expect(await theme()).toBe('light');
+  await page.click('#theme');
+  expect(await theme()).toBe('dark');
+  await page.reload();
+  expect(await theme()).toBe('dark');
+  await expect(page.locator('#theme')).toHaveText('Tema: Oscuro');
+  await page.click('#theme');
+  expect(await theme()).toBeNull();
+});
