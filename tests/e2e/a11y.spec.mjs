@@ -57,5 +57,5 @@ test('al cambiar de vista el foco va al encabezado y las pestañas se manejan co
   await page.keyboard.press('Home');
   await expect(page.locator('#t-learn')).toHaveAttribute('aria-selected', 'true');
   await page.click('#t-quiz');
-  await page.waitForSelector('#fb[aria-live=polite]');
+  await expect(page.locator('#fb')).toHaveAttribute('aria-live', 'polite');
 });
