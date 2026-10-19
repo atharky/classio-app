@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 10 de 26 · **En curso:** 0 · **Pendientes:** 16
+**Actualizado:** 19-10-2026 · **Hechas:** 11 de 26 · **En curso:** 0 · **Pendientes:** 15
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -49,7 +49,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
-| T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ⬜ Pendiente | — | — |
+| T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ⬜ Pendiente | — | — |
@@ -67,6 +67,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 **Notas de bloqueo o descarte:**
 
+- **T24** está hecha en el código, pero siguen sin confirmar las dudas 1, 3, 4 y 5 de la sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md) (tamaño «del sol», peridotita, espesores y respuestas del crucigrama).
 - **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
 
 ### Cómo se actualiza
@@ -168,7 +169,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`medium`) para el plan y los generadores con sus pruebas de recálculo; **Sonnet 5.5** para lecciones y relatos. **€€€**
 
 ### T24 · Módulo de Biología «La Tierra y la geosfera»
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional (contenido) · **Depende de:** T01
 - **Alcance:** a partir de los apuntes y actividades del cuaderno (datos, respuestas y dudas en [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)): módulo `tierra` de la materia Biología con 4 niveles — Un planeta excepcional · Los subsistemas terrestres · Las capas de la geosfera · Corteza, manto y núcleo en detalle (litosfera, rocas, espesores, estados). Incluye lección, generadores con las preguntas de las fichas (etiquetar el dibujo de las capas, completar frases, verdadero o falso con corrección y las 8 pistas del crucigrama), el dibujo de la Tierra en corte, un relato «Un viaje al centro de la Tierra» por nivel con su ejemplo «En la vida real», exámenes parcial A, parcial B y del tema, y la caché del service worker.
 - **Hecho cuando:** módulo activo en el inicio, pruebas de contenido y de relatos en verde, recorrido E2E sin errores, y los datos dudosos de la sección 5 del documento de contenido confirmados.
