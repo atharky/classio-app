@@ -183,6 +183,42 @@ const RAI_ANIMS=[
   {say:'En la vida real: un jardinero tiene semillas para cincuenta metros cuadrados de césped en forma de cuadrado. El lado será raíz de cincuenta: algo más de siete metros.',
    show:real('el césped',sk(240,120,box(70,10,100,100,0,{t:.8})+tx(120,66,'50 m²',1.2,{s:18})+tx(200,64,'≈ 7 m',1.8,{s:15,c:'red'})))+line(at(2.4,`7 &lt; ${R(50)} &lt; 8`))},
   {say:'¿Entre qué números está?',ask:RAI_LEVELS[2].gens[2]}
+],
+[ // 4 · Raíces, potencias y signos — relato: «El truco del mago Nico»
+  {say:'El mago Nico piensa un número, lo eleva al cuadrado y anuncia: me ha salido veinticinco. ¿Qué número pensó?',
+   show:sk(280,120,person(40,24,0,'Nico')+bubble(80,6,150,34,'?² = 25',.8,{s:18})+tx(150,100,'¿cuál era?',1.8,{s:15,c:'red'}))},
+  {say:'Pudo pensar cinco, porque cinco por cinco es veinticinco. Pero también menos cinco, porque menos por menos da más. ¡Hay dos respuestas!',
+   show:line(at(0,`${P(5,2)} = 25 ✓`,'good'))+line(at(1.2,`${P(-5,2)} = 25 ✓`,'good'))+line(at(2.4,'dos números: 5 y −5'),'big')},
+  {say:'Ahora tú: ¿qué números pudo pensar Nico?',ask:RAI_LEVELS[3].gens[0]},
+  {say:'Cuando Nico usa el símbolo de la raíz, solo da la respuesta positiva. Raíz de veinticinco es cinco. Si quiere la negativa, escribe un menos delante.',
+   show:line(at(0,`${R(25)} = <b>5</b>`),'big')+line(at(1.4,`−${R(25)} = −5`))},
+  {say:'Para su segundo truco, Nico eleva al cuadrado una raíz y el resultado es el número de dentro. El cuadrado y la raíz se deshacen.',
+   show:line(at(0,`${P(`(${R(49)})`,2)} = <b>49</b>`),'big')+line(at(1.4,`${R(P(7,2))} = 7`))},
+  {say:'Calcula esta potencia de una raíz.',ask:RAI_LEVELS[3].gens[2]},
+  {say:'Nico reta al público: raíz de menos nueve. Alguien dice que es menos tres. ¡No! Menos tres al cuadrado es nueve, nunca menos nueve. No hay ningún número que sirva.',
+   show:line(strike(at(0,`${R('−9')} = −3`,'bad'),1.2))+line(at(2,`${P(-3,2)} = 9, no −9`))+line(at(3,`${R('−9')}: no existe`,'good'))},
+  {say:'¿Cuánto vale esta raíz?',ask:RAI_LEVELS[3].gens[1]},
+  {say:'En la vida real: el área de un cuadrado nunca es negativa. Si un huerto cuadrado tuviera menos nueve metros cuadrados, no habría ninguna medida de lado posible.',
+   show:real('el área nunca es negativa',sk(240,120,box(70,10,100,100,0,{t:.8})+tx(120,66,'−9 m²',1.2,{s:18})+tx(120,126,'¿lado? ✗',1.8,{s:15,c:'red'})))},
+  {say:'Para terminar, deshaz el cuadrado.',ask:RAI_LEVELS[3].gens[3]}
+],
+[ // 5 · Operaciones combinadas con raíces — relato: «Las parcelas de Eva»
+  {say:'Eva tiene dos parcelas cuadradas: una de nueve metros cuadrados, con lado tres, y otra de dieciséis, con lado cuatro.',
+   show:sk(290,130,person(26,30,0,'Eva')+box(70,40,60,60,.9,{t:.6})+tx(100,76,'9 m²',1.8,{s:15})+box(150,20,80,80,1.6,{t:.7})+tx(190,64,'16 m²',2.2,{s:15}))},
+  {say:'Quiere unirlas en una sola parcela cuadrada. El área total es veinticinco, así que el lado nuevo es cinco, y no siete como podría parecer.',
+   show:line(at(0,`${R('9 + 16')} = ${R(25)} = <b>5</b>`),'big')+line(strike(at(1.4,`${R(9)} + ${R(16)} = 7`,'bad'),2.6))},
+  {say:'Calcula el lado de la parcela unida.',ask:RAI_LEVELS[4].gens[1]},
+  {say:'La barra de la raíz funciona como un paréntesis: primero se suma lo de dentro y después se hace la raíz. Con sumas y restas, la raíz no se puede separar.',
+   show:line(at(0,`${R('9 + 16')} ≠ ${R(9)} + ${R(16)}`),'big')+line(at(1.6,'5 ≠ 7','bad'))},
+  {say:'Con productos sí se puede separar. Raíz de cuatro por veinticinco es raíz de cuatro por raíz de veinticinco: dos por cinco, diez.',
+   show:line(at(0,`${R('4 · 25')} = ${R(4)} · ${R(25)}`))+line(at(1.4,'= 2 · 5 = <b>10</b>','good'))},
+  {say:'Calcula esta raíz de un producto.',ask:RAI_LEVELS[4].gens[2]},
+  {say:'En una operación combinada, la raíz se hace igual que las potencias: primero los paréntesis, luego raíces y potencias, y después multiplicar y dividir.',
+   show:line(at(0,`3 + ${R(49)} : 7 − ${P(2,2)}`),'big')+line(at(1.4,'3 + 7 : 7 − 4'))+line(at(2.4,'3 + 1 − 4 = <b>0</b>'))},
+  {say:'Ahora, una operación combinada.',ask:RAI_LEVELS[4].gens[3]},
+  {say:'En la vida real: un carpintero apoya una escalera en la pared. Si la base está a tres metros y la pared a cuatro metros de altura, la escalera mide cinco metros.',
+   show:real('la escalera del carpintero',sk(240,130,stroke('M60 110L60 14L180 110Z',0,{t:.8})+tx(30,66,'4 m',1.2,{s:14})+tx(120,126,'3 m',1.6,{s:14})+tx(140,50,'? m',2.2,{s:16,c:'red'})))+line(at(2.6,`${R('9 + 16')} = 5`))},
+  {say:'Elige el valor correcto.',ask:RAI_LEVELS[4].gens[5]}
 ]];
 
 export { POT_ANIMS, RAI_ANIMS };

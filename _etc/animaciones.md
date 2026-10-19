@@ -38,6 +38,8 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Raíces 1 | Huerto cuadrado de 49 m² → lado de 7 m |
 | Raíces 2 | Formar un cuadrado con 36 alumnos (con 40 no se puede) |
 | Raíces 3 | 30 alumnos → cuadrado de 5 × 5 y sobran 5 (el resto) |
+| Raíces 4 | El área de un cuadrado nunca es negativa: no hay raíz de −9 |
+| Raíces 5 | Escalera del carpintero: 3 m de base y 4 m de pared → 5 m (√(9+16)) |
 | Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
 | Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
 | Comunicación 3 | La publicidad: función apelativa y poética |

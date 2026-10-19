@@ -187,6 +187,46 @@ const RAI_LEVELS=[
     ()=>{const n=nonSquare(10,150),r=isqrt(n),h=Math.floor(n/2);return mc(`${R(n)} está entre…`,`${r} y ${r+1}`,[`${r-1} y ${r}`,`${r+1} y ${r+2}`,`${h} y ${h+1}`],`${P(r,2)} = ${r*r} &lt; ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}.`)},
     ()=>{const r=ri(3,15),s=ri(1,2*r);return num(`La raíz entera de un número es ${r} y el resto es ${s}. ¿Cuál es el número?`,r*r+s,`Radicando = raíz² + resto = ${P(r,2)} + ${s} = ${r*r} + ${s} = ${r*r+s}.`)},
     ()=>{const n=nonSquare(2,99),d=isqrt(n*100);return num(`Calcula ${R(n)} con una cifra decimal (por defecto)`,d/10,`${fmt(d/10)} · ${fmt(d/10)} = ${fmt(d*d/100)} y ${fmt((d+1)/10)} · ${fmt((d+1)/10)} = ${fmt((d+1)**2/100)}. Como ${n} está entre los dos, ${R(n)} ≈ ${fmt(d/10)}.`,'Usa la coma decimal: por ejemplo, 5,4.')}
+  ]},
+{ title:'Raíces, potencias y signos', sub:'Dos números con el mismo cuadrado y la raíz de un negativo',
+  lesson:[
+    ['Dos números, un mismo cuadrado',`<p>${P(5,2)} = 25 y también ${P(-5,2)} = 25, porque menos por menos da más. Por eso «¿qué número al cuadrado da 25?» tiene <span class="hl">dos respuestas</span>: 5 y −5.</p>`],
+    ['El radical es positivo',`<p>El símbolo ${R(25)} pide solo <b>la raíz positiva</b>: ${R(25)} = 5. Si quieres la negativa, se escribe con un menos delante:</p>
+     <div class="ex">${R(25)} = 5 &nbsp;·&nbsp; −${R(25)} = −5</div>`],
+    ['Raíz y cuadrado se deshacen',`<p>Elevar al cuadrado y hacer la raíz son operaciones <b>inversas</b>:</p>
+     <div class="ex">${R(P(7,2))} = 7 &nbsp;·&nbsp; ${P(`(${R(49)})`,2)} = 49</div>
+     <p>Funciona con cualquier número positivo, aunque la raíz no sea exacta: ${P(`(${R(10)})`,2)} = 10.</p>`],
+    ['Raíz de un número negativo',`<p>Ningún número, positivo o negativo, da un resultado negativo al elevarlo al cuadrado. Así que ${R('−9')} <span class="hl">no existe</span> entre los números que conoces.</p>
+     <div class="ex warn">${R('−9')} no es −3</div><p>Comprueba: ${P(-3,2)} = 9, no −9.</p>`]
+  ],
+  gens:[
+    ()=>{const k=ri(2,12),n=k*k;return mc(`¿Qué números elevados al cuadrado dan ${n}?`,`${k} y −${k}`,[`Solo ${k}`,`Solo −${k}`,`${k+1} y −${k+1}`],`${P(k,2)} = ${n} y ${P(-k,2)} = ${n}. Hay dos números; el radical ${R(n)} solo indica el positivo, ${k}.`)},
+    ()=>{const k=ri(2,12),n=k*k;return mc(`¿Cuánto vale ${R('−'+n)}?`,'No existe',[`−${k}`,String(k),`−${k} y ${k}`],`Ningún número elevado al cuadrado da −${n}: ${P(k,2)} = ${n} y ${P(-k,2)} = ${n}. Por eso ${R('−'+n)} no existe.`)},
+    ()=>{const n=ri(2,200);return num(`Calcula ${P(`(${R(n)})`,2)}`,n,`Elevar al cuadrado y hacer la raíz se deshacen: ${P(`(${R(n)})`,2)} = ${n}.`)},
+    ()=>{const n=ri(21,99);return num(`Calcula ${R(P(n,2))}`,n,`${R(P(n,2))} = ${n}: la raíz deshace el cuadrado, sin hacer ninguna cuenta.`)},
+    ()=>{const k=ri(2,12),n=k*k;
+      const pairs=[[`√${n} = ${k}`,true],[`(−${k})² = ${n}`,true],[`√${n} = −${k}`,false],[`(−${k})² = −${n}`,false],[`√(−${n}) = ${k}`,false]];
+      const good=pick(pairs.filter(p=>p[1])),bad=shuffle(pairs.filter(p=>!p[1])).slice(0,3);
+      return mc('¿Cuál de estas igualdades es verdadera?',good[0],bad.map(p=>p[0]),`${k}·${k} = ${n} y (−${k})·(−${k}) = ${n}. El radical solo da el valor positivo y la raíz de un negativo no existe.`)},
+    ()=>{const k=ri(2,9),m=ri(2,9);return num(`Calcula ${P(-k,2)} − ${R(m*m)}`,k*k-m,`${P(-k,2)} = ${k*k} (menos por menos da más) y ${R(m*m)} = ${m}. Entonces ${k*k} − ${m} = ${k*k-m}.`)}
+  ]},
+{ title:'Operaciones combinadas con raíces', sub:'Jerarquía y raíz de sumas, productos y cocientes',
+  lesson:[
+    ['Orden de las operaciones',`<p>La raíz se calcula <b>igual que las potencias</b>: después de los paréntesis y antes de multiplicar y dividir.</p>
+     <div class="ex">3 + ${R(49)} : 7 − ${P(2,2)} &nbsp;→&nbsp; 3 + 7 : 7 − 4 &nbsp;→&nbsp; 3 + 1 − 4 = 0</div>`],
+    ['El radicando es un paréntesis',`<p>La barra de la raíz agrupa lo de dentro. Primero se opera dentro y luego se hace la raíz:</p>
+     <div class="ex">${R('9 + 16')} = ${R(25)} = 5</div>`],
+    ['Raíz de un producto',`<p>La raíz de un producto es el producto de las raíces:</p>
+     <div class="ex">${R('4 · 25')} = ${R(4)} · ${R(25)} = 2 · 5 = 10</div><p>Con la división pasa igual: ${R('100 : 4')} = ${R(100)} : ${R(4)} = 10 : 2 = 5.</p>`],
+    ['Error típico',`<div class="ex warn">${R('9 + 16')} no es ${R(9)} + ${R(16)}</div><p>La primera vale 5 y la segunda 3 + 4 = 7. <b>Con sumas y restas no se puede separar la raíz</b>; con productos y cocientes, sí. Es el mismo error que (2 + 3)² ≠ 2² + 3².</p>`]
+  ],
+  gens:[
+    ()=>{const a=ri(2,9),b=ri(2,9),op=pick(['+','−']);const [x,y]=op==='−'&&a<b?[b,a]:[a,b];return num(`Calcula ${R(x*x)} ${op} ${R(y*y)}`,op==='+'?x+y:x-y,`${R(x*x)} = ${x} y ${R(y*y)} = ${y}. Entonces ${x} ${op} ${y} = ${op==='+'?x+y:x-y}.`)},
+    ()=>{const [a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17]]);return num(`Calcula ${R(`${a*a} + ${b*b}`)}`,c,`Primero se suma dentro de la raíz: ${a*a} + ${b*b} = ${c*c}. Después, ${R(c*c)} = ${c}.`)},
+    ()=>{const a=ri(2,9),b=ri(2,9);return num(`Calcula ${R(`${a*a} · ${b*b}`)}`,a*b,`La raíz de un producto es el producto de las raíces: ${R(a*a)} · ${R(b*b)} = ${a} · ${b} = ${a*b}.`)},
+    ()=>{const a=ri(2,9),r=ri(2,9),b=ri(2,5),c=ri(2,4);return num(`Calcula ${a} + ${R(r*r)} · ${b} − ${P(c,2)}`,a+r*b-c*c,`Primero la raíz y la potencia: ${R(r*r)} = ${r} y ${P(c,2)} = ${c*c}. Después, ${r} · ${b} = ${r*b}. Por último: ${a} + ${r*b} − ${c*c} = ${a+r*b-c*c}.`)},
+    ()=>{const a=ri(2,9),r=ri(2,9),c=ri(2,5);return num(`Calcula ${a*r} : ${R(r*r)} + ${P(c,2)}`,a+c*c,`Primero la raíz y la potencia: ${R(r*r)} = ${r} y ${P(c,2)} = ${c*c}. Después, ${a*r} : ${r} = ${a}. Por último: ${a} + ${c*c} = ${a+c*c}.`)},
+    ()=>{const [a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17]]);return mc(`¿Cuánto vale ${R(`${a*a} + ${b*b}`)}?`,String(c),[String(a+b),String(c*c),String(a*b)],`${a*a} + ${b*b} = ${c*c}, y ${R(c*c)} = ${c}. Ojo: ${a+b} sería ${R(a*a)} + ${R(b*b)}, que es otra cosa.`)}
   ]}
 ];
 

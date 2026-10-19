@@ -14,7 +14,8 @@ const SUBJECTS=[
 const MODULES=[
   {id:'potencias',subject:'mates',name:'Potencias',sym:P('a','n'),desc:'Qué son, sus propiedades y cómo operar con ellas.',levels:POT_LEVELS,
    exams:[{id:'p1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'p2',name:'Examen parcial B',sub:'Niveles 4 a 6',levels:[3,4,5],n:10},{id:'pf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4,5],n:12}]},
-  {id:'raices',subject:'mates',name:'Raíces cuadradas',sym:'√',desc:'Raíces exactas y aproximadas.',levels:RAI_LEVELS,soon:true},
+  {id:'raices',subject:'mates',name:'Raíces cuadradas',sym:'√',desc:'Raíces exactas y aproximadas.',levels:RAI_LEVELS,
+   exams:[{id:'r1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'r2',name:'Examen parcial B',sub:'Niveles 4 y 5',levels:[3,4],n:10},{id:'rf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4],n:12}]},
   {id:'divis',subject:'mates',name:'Divisibilidad',sym:'m.c.m.',desc:'Múltiplos, divisores, mcm y mcd.',soon:true},
   {id:'enteros',subject:'mates',name:'Números enteros',sym:'ℤ',desc:'Operaciones con signo y recta numérica.',soon:true},
   {id:'comunicacion',subject:'lengua',name:'La comunicación',sym:'E → R',desc:'Elementos de la comunicación, signos y funciones del lenguaje.',levels:COM_LEVELS,

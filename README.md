@@ -2,7 +2,7 @@
 
 Aplicación web educativa y estática para 1º de ESO: explicaciones animadas en pizarra con narración, pruebas por niveles, exámenes y progreso que se puede sincronizar entre dispositivos con un código (sin cuentas ni datos personales).
 
-**Materias y módulos activos:** Matemáticas (Potencias; Raíces cuadradas, oculto), Lengua (La comunicación, El resumen) y Biología (La ciencia y el método científico, Material de laboratorio). El plan de lo que viene está en [`plans/`](plans/plan-ejecucion.md).
+**Materias y módulos activos:** Matemáticas (Potencias, Raíces cuadradas), Lengua (La comunicación, El resumen) y Biología (La ciencia y el método científico, Material de laboratorio). El plan de lo que viene está en [`plans/`](plans/plan-ejecucion.md).
 
 ## Ejecutar en local
 

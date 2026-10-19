@@ -121,6 +121,24 @@ test('los identificadores de módulo son únicos', () => {
 const radicand = q => Number(q.prompt.match(/class="rc">([\d\u202f]+)</)[1].replace(/\u202f/g, ''));
 const ints = q => q.prompt.replace(/<[^>]+>/g, ' ').match(/\d+/g).map(Number);
 const isSquare = n => isqrt(n) ** 2 === n;
+
+// Evalúa una expresión del enunciado (raíces, potencias y operaciones) para recalcular la respuesta.
+const RT = /<span class="rt"><span class="rad"[^>]*>√<\/span><span class="sr">raíz de <\/span><span class="rc">((?:(?!<span class="rt">).)*?)<\/span><\/span>/;
+const evalExpr = html => {
+  let h = html;
+  while (RT.test(h)) h = h.replace(RT, (_, x) => `Math.sqrt(${x})`);
+  const js = h.replace(/<sup>(\d+)<\/sup>/g, '**$1').replace(/<[^>]+>/g, '').replace(/ /g, '').replace(/·/g, '*').replace(/:/g, '/').replace(/−/g, '-');
+  return Function(`return (${js})`)();
+};
+const expr = q => evalExpr(q.prompt.replace(/^(Calcula|¿Cuánto vale) /, '').replace(/\?$/, ''));
+const near = (a, b) => Math.abs(a - b) < 1e-9;
+const TRUE_EQ = s => { // «√49 = 7», «(−7)² = 49», «√(−49) = 7»
+  let m;
+  if ((m = s.match(/^√(\d+) = (−?)(\d+)$/))) return m[2] === '' && Number(m[3]) ** 2 === Number(m[1]);
+  if ((m = s.match(/^\(−(\d+)\)² = (−?)(\d+)$/))) return m[2] === '' && Number(m[1]) ** 2 === Number(m[3]);
+  if (/^√\(−\d+\)/.test(s)) return false;
+  throw new Error(`igualdad desconocida: ${s}`);
+};
 const NUM_CHECKS = [
   [/cifra decimal/, q => { const n = radicand(q), d = Math.round(q.answer * 10); return d * d <= 100 * n && 100 * n < (d + 1) ** 2; }],
   [/^¿Cuál es la raíz entera/, q => q.answer === isqrt(ints(q)[0])],
@@ -128,9 +146,14 @@ const NUM_CHECKS = [
   [/^La raíz entera de un número es/, q => { const [r, s] = ints(q); return q.answer === r * r + s && s <= 2 * r; }],
   [/cm²/, q => q.answer ** 2 === ints(q)[0]],
   [/^¿Qué número natural/, q => q.answer ** 2 === ints(q)[0]],
+  [/^Calcula (?!.*cifra).*(<sup>|[+·:−])/, q => near(q.answer, expr(q))],
   [/^Calcula /, q => q.answer ** 2 === radicand(q)],
 ];
 const MC_CHECKS = [
+  [/^¿Qué números elevados al cuadrado dan/, q => { const k = Math.sqrt(ints(q)[0]); return q.options[q.answer] === `${k} y −${k}`; }],
+  [/^¿Cuánto vale .*class="rc">−\d+</, q => q.options[q.answer] === 'No existe'],
+  [/^¿Cuánto vale .*class="rc">[^<]*[+·:−]/, q => Number(q.options[q.answer]) === expr(q)],
+  [/^¿Cuál de estas igualdades es verdadera/, q => q.options.every((o, k) => TRUE_EQ(o) === (k === q.answer))],
   [/^¿Cuánto vale/, q => Number(q.options[q.answer]) ** 2 === radicand(q)],
   [/está entre/, q => { const r = isqrt(radicand(q)); return q.options[q.answer] === `${r} y ${r + 1}`; }],
   [/^¿Es \d+ un cuadrado perfecto/, q => (q.options[q.answer] === 'Sí') === isSquare(ints(q)[0])],

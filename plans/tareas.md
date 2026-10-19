@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 6 de 26 · **En curso:** 0 · **Pendientes:** 20
+**Actualizado:** 19-10-2026 · **Hechas:** 7 de 26 · **En curso:** 0 · **Pendientes:** 19
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -44,7 +44,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ⬜ Pendiente | — | — |
+| T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ⬜ Pendiente | — | — |
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
@@ -135,7 +135,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 ## Fase 2 · Contenido con el examen a la vista
 
 ### T07 · Raíces cuadradas: niveles 4 y 5, exámenes y activación
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional · **Depende de:** T01, T02
 - **Alcance:** según `_etc/plan-modulo-raices.md`: nivel 4 (raíces, potencias y signos), nivel 5 (operaciones combinadas con raíces), exámenes parcial A/B y final, relatos de los dos niveles en el estilo de «El huerto de la abuela Rosa», prueba de recálculo de respuestas ampliada, quitar `soon:true`.
 - **Hecho cuando:** el módulo aparece activo en el inicio, las 5 animaciones y los 3 exámenes pasan las pruebas y el recorrido E2E.
