@@ -1,4 +1,5 @@
 import { pick, shuffle, mc } from './data.js';
+import { txt, sorting } from './qtypes.js';
 import { at, seq, line, real, strike, sk, stroke, ln, box, circ, fill, dot, tx, arrow, person, ell, bubble } from './sketch.js';
 
 /* ---------- contenido: Biología · La ciencia y el método científico ---------- */
@@ -162,6 +163,8 @@ const CIE_LEVELS=[
     ()=>{const [t,k]=pick(TRAITS);return mc(`«${t}»<br>¿Es propio de la ciencia o de una pseudociencia?`,k,['Ciencia','Pseudociencia'],`Es propio de ${k==='Ciencia'?'la ciencia':'una pseudociencia'}.`)},
     ()=>{const sci=Math.random()<.5;if(sci){const n=pick(TRICKY_SCI),d=DISC.find(x=>x[0]===n);return mc('¿Cuál de estas disciplinas <b>sí</b> es una ciencia?',d[0],TRICKY_PSE,`${d[0]} es una ciencia: ${d[2]}.`)}
       const n=pick(TRICKY_PSE),d=DISC.find(x=>x[0]===n);return mc('¿Cuál de estas disciplinas <b>no</b> es una ciencia?',d[0],shuffle(SCI.map(x=>x[0])).slice(0,3),`${d[0]} no es una ciencia: ${d[2]}.`)},
+    ()=>{const items=shuffle([...shuffle(SCI).slice(0,3),...shuffle(PSE).slice(0,3)]);return sorting('Clasifica cada disciplina: ¿ciencia o pseudociencia?',['Ciencia','Pseudociencia'],items.map(d=>[d[0],d[1]?0:1]),items.map(d=>`${d[0]}: ${d[1]?'ciencia':'pseudociencia'}, porque ${d[2]}.`).join(' '))},
+    ()=>txt('Algo que parece ciencia pero no sigue el método científico es una…','pseudociencia','Es una pseudociencia: parece ciencia, pero no la es.',{accept:['pseudociencias'],hint:'Escribe una palabra.'}),
     ()=>mc('Un anuncio vende una pulsera que «mejora el equilibrio y la energía», con testimonios de famosos. ¿Por qué desconfiar?','No presenta pruebas científicas, solo testimonios',['Porque es muy cara','Porque la llevan famosos','Porque es de colores'],'Un testimonio no es una prueba: la ciencia necesita experimentos que se puedan repetir.'),
     ()=>{const ag=Math.random()<.5;return mc(`Para organizar una fiesta al aire libre, ¿de qué mensaje te fías más?<br><br><b>A.</b> ${ag?MSG_AGENCIA:MSG_HOROSCOPO}<br><br><b>B.</b> ${ag?MSG_HOROSCOPO:MSG_AGENCIA}`,ag?'De A, porque da datos medibles y cita su fuente':'De B, porque da datos medibles y cita su fuente',[ag?'De B, porque es más misterioso':'De A, porque es más misterioso',ag?'De B, porque habla de los planetas':'De A, porque habla de los planetas','De los dos por igual'],'El mensaje de la agencia da porcentajes y grados, cita el modelo numérico en que se basa y se puede comprobar. El horóscopo es vago y no cita ninguna fuente.')},
     ()=>mc('¿Por qué no conviene guiarse por una pseudociencia para decisiones importantes?','Porque no se basa en pruebas y puede hacerte perder dinero o salud',['Porque es aburrida','Porque solo la usan los famosos','Porque siempre está prohibida'],'Sin pruebas no hay garantía: dejar un tratamiento médico por un remedio sin eficacia puede ser peligroso. Como juego, no hace daño.'),
@@ -252,10 +255,10 @@ const CIE_ANIMS=[
   {say:'¿De quién es esta característica?',ask:()=>CIE_LEVELS[3].gens[1]()},
   {say:'Ricardo compara dos mensajes. La agencia de meteorología da porcentajes y grados y dice en qué modelo se basa. El horóscopo habla de Mercurio y de oportunidades, sin datos.',
    show:sk(290,130,box(6,8,132,100,0,{t:.7})+tx(72,30,'Agencia',.7,{s:13,c:'green'})+tx(72,56,'40 % lluvia',1.2,{s:13})+tx(72,76,'−2 °C',1.6,{s:13})+tx(72,98,'fuente ✓',2,{s:13,c:'green'})+box(152,8,132,100,2.4,{t:.7})+tx(218,30,'El Horóscopo',3.1,{s:13,c:'red'})+tx(218,60,'«Mercurio…»',3.6,{s:13})+tx(218,98,'fuente ✗',4.2,{s:13,c:'red'}))},
-  {say:'¿De cuál se fían y por qué?',ask:()=>CIE_LEVELS[3].gens[4]()},
+  {say:'¿De cuál se fían y por qué?',ask:()=>CIE_LEVELS[3].gens[6]()},
   {say:'En la vida real: la aplicación del tiempo de tu móvil usa modelos numéricos como el de la agencia. Por eso acierta mucho más que cualquier horóscopo.',
    show:real('la aplicación del tiempo',sk(260,120,phone(95,6,0,104,64)+tx(127,52,'☀',.8,{s:26,c:'red'})+tx(127,84,'40 %',1.2,{s:14})+tx(200,60,'modelo numérico',1.8,{s:13,c:'green'})+arrow(188,60,164,60,2.2,'green')))},
-  {say:'Para terminar: ¿por qué no conviene guiarse por una pseudociencia?',ask:()=>CIE_LEVELS[3].gens[5]()}
+  {say:'Para terminar: ¿por qué no conviene guiarse por una pseudociencia?',ask:()=>CIE_LEVELS[3].gens[7]()}
 ],
 [ // Mujeres científicas: una línea del tiempo
   {say:'Viajamos por la historia de la ciencia de la mano de científicas que cambiaron lo que sabemos. Empezamos en la Antigüedad, con Hipatia de Alejandría: matemática y astrónoma.',

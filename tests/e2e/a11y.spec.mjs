@@ -59,3 +59,14 @@ test('al cambiar de vista el foco va al encabezado y las pestañas se manejan co
   await page.click('#t-quiz');
   await expect(page.locator('#fb')).toHaveAttribute('aria-live', 'polite');
 });
+
+for (const type of ['text', 'vf', 'sort', 'label', 'cross']) {
+  test(`accesibilidad (axe) del formato de pregunta «${type}»`, async ({ page }) => {
+    await page.goto('/__harness.html');
+    await page.waitForFunction(() => document.title === 'listo');
+    await page.evaluate((t) => window.mount(t), type);
+    if (type === 'vf') await page.click('[data-v="F"]');
+    await scan(page, type);
+    expect([...new Set(found)]).toEqual([]);
+  });
+}

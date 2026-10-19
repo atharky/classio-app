@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 19 de 26 · **En curso:** 0 · **Pendientes:** 7
+**Actualizado:** 19-10-2026 · **Hechas:** 20 de 26 · **En curso:** 0 · **Pendientes:** 6
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -58,7 +58,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ⬜ Pendiente | — | — |
+| T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ⬜ Pendiente | — | — |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ⬜ Pendiente | — | — |
@@ -231,7 +231,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`medium`): decisión de diseño con seguridad; **€€**.
 
 ### T26 · Nuevos tipos de pregunta: clasificar, completar y crucigrama
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Tipo:** funcional · **Depende de:** T01, T12
 - **Alcance:** hoy solo hay opción múltiple y respuesta numérica, y las fichas de clase usan formatos que no caben (sección 4 del documento de contenido): **clasificar** elementos en dos columnas (ciencia o pseudociencia), **completar frases** con una palabra (tolerando mayúsculas y tildes), **verdadero o falso y elegir la corrección**, **crucigrama** de definiciones y **etiquetar un dibujo** tocando la capa. Diseñar el tipo de pregunta en el modelo (`type`), su interfaz accesible con teclado, la corrección y su uso en niveles, relatos y exámenes; pruebas unitarias y E2E. Después, T24 y T25 pueden pasar de opción múltiple a estos formatos.
 - **Hecho cuando:** los cinco formatos funcionan en un nivel de ejemplo, con teclado y lector de pantalla, y las pruebas de contenido los validan.

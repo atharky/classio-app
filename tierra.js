@@ -1,4 +1,5 @@
 import { pick, shuffle, mc, num } from './data.js';
+import { txt, vf, labelq, crossword } from './qtypes.js';
 import { at, line, real, strike, sk, stroke, ln, box, circ, dot, tx, arrow, person, ell, pointer } from './sketch.js';
 
 /* ---------- contenido: Biología · La Tierra y la geosfera ---------- */
@@ -40,12 +41,28 @@ const CAPAS=[['La capa más externa y más delgada','Corteza'],['La capa que est
 const CAPA_NOMBRES=['Corteza','Manto','Núcleo'];
 const COMPLETAR=[['La roca más abundante de la corteza continental es el','granito',['basalto','peridotita','hierro']],['La roca más abundante de la corteza oceánica es el','basalto',['granito','peridotita','níquel']],
   ['La roca más abundante del manto es la','peridotita',['granito','basalto','arena']],['Los principales componentes del núcleo son','hierro y níquel',['granito y basalto','peridotita y arena','oro y plata']]];
-const VF=[['El núcleo externo es sólido.',false,'es líquido; el sólido es el núcleo interno.'],['El manto puede llegar a los 2900 km de profundidad.',true,''],['La roca principal de la corteza oceánica es el granito.',false,'es el basalto; el granito es de la corteza continental.'],
-  ['La corteza oceánica es más gruesa que la continental.',false,'es más delgada (hasta unos 10 km) y más densa.'],['La litosfera está formada por la corteza y la parte más superficial del manto.',true,''],['El núcleo interno es sólido.',true,''],
-  ['La geosfera es la parte gaseosa de la Tierra.',false,'es la parte sólida; la gaseosa es la atmósfera.']];
+const VF=[ // [frase, ¿verdadera?, por qué, correcciones (la primera es la buena)]
+  ['El núcleo externo es sólido.',false,'es líquido; el sólido es el núcleo interno.',['El núcleo externo es líquido.','El núcleo externo es gaseoso.','Todo el núcleo es sólido.']],
+  ['El manto puede llegar a los 2900 km de profundidad.',true,''],
+  ['La roca principal de la corteza oceánica es el granito.',false,'es el basalto; el granito es de la corteza continental.',['La roca principal de la corteza oceánica es el basalto.','La roca principal de la corteza oceánica es la peridotita.','La roca principal de la corteza oceánica es el hierro.']],
+  ['La corteza oceánica es más gruesa que la continental.',false,'es más delgada (hasta unos 10 km) y más densa.',['La corteza oceánica es más delgada que la continental.','La corteza oceánica mide lo mismo que la continental.','La corteza continental es más delgada que la oceánica.']],
+  ['La litosfera está formada por la corteza y la parte más superficial del manto.',true,''],['El núcleo interno es sólido.',true,''],
+  ['La geosfera es la parte gaseosa de la Tierra.',false,'es la parte sólida; la gaseosa es la atmósfera.',['La geosfera es la parte sólida de la Tierra.','La geosfera es toda el agua de la Tierra.','La geosfera es el conjunto de los seres vivos.']]];
 const CRUCI=[['Capa más interna de la geosfera','Núcleo'],['La que tiene más espesor de las dos litosferas','Continental'],['Parte del núcleo que es fluida','Externo'],['Capa con un espesor de unos 2900 km','Manto'],
   ['Capa formada por la corteza terrestre y la parte más superficial del manto','Litosfera'],['La más densa de las dos litosferas','Oceánica'],['Parte sólida de nuestro planeta','Geosfera'],['Uno de los dos elementos que forman mayoritariamente el núcleo','Hierro']];
 const CRUCI_RESP=['Núcleo','Continental','Externo','Manto','Litosfera','Oceánica','Geosfera','Hierro','Corteza','Atmósfera','Hidrosfera','Basalto'];
+
+/* ---------- crucigrama «La geosfera» (colocación comprobada en las pruebas) ---------- */
+const CRUCI_PLAN=[['GEOSFERA',5,3,'h','Parte sólida de nuestro planeta'],['NUCLEO',1,4,'v','Capa más interna de la geosfera'],['OCEANICA',1,0,'h','La más densa de las dos litosferas'],
+  ['CONTINENTAL',0,0,'v','La que tiene más espesor de las dos litosferas'],['EXTERNO',2,8,'v','Parte del núcleo que es fluida'],['LITOSFERA',10,0,'h','Capa formada por la corteza terrestre y la parte más superficial del manto'],
+  ['HIERRO',8,3,'h','Uno de los dos elementos que forman mayoritariamente el núcleo'],['MANTO',4,10,'v','Capa con un espesor de unos 2900 km']];
+// Numeración de las casillas de salida, de arriba abajo y de izquierda a derecha.
+const starts=[...new Set(CRUCI_PLAN.map(w=>`${w[1]},${w[2]}`))].sort((a,b)=>{const [r1,c1]=a.split(',').map(Number),[r2,c2]=b.split(',').map(Number);return r1-r2||c1-c2});
+export const CRUCIGRAMA=CRUCI_PLAN.map(([answer,r,c,dir,clue])=>({n:starts.indexOf(`${r},${c}`)+1,dir,r,c,answer,clue}));
+
+/* ---------- la Tierra en corte para tocar una capa ---------- */
+const EARTH_REGIONS=[{id:'corteza',name:'Corteza'},{id:'manto-sup',name:'Manto superior'},{id:'manto-inf',name:'Manto inferior'},{id:'nucleo-ext',name:'Núcleo externo'},{id:'nucleo-int',name:'Núcleo interno'}];
+const earthTouch=()=>`<svg viewBox="0 0 200 200" role="group" aria-label="La Tierra en corte"><circle data-id="corteza" class="l1" cx="100" cy="100" r="96"/><circle data-id="manto-sup" class="l2" cx="100" cy="100" r="80"/><circle data-id="manto-inf" class="l3" cx="100" cy="100" r="58"/><circle data-id="nucleo-ext" class="l4" cx="100" cy="100" r="36"/><circle data-id="nucleo-int" class="l5" cx="100" cy="100" r="16"/></svg>`;
 
 const TIERRA_LEVELS=[
 { title:'Un planeta excepcional', sub:'Las condiciones que hacen posible la vida',
@@ -92,6 +109,7 @@ const TIERRA_LEVELS=[
     ()=>{const p=pick(PART_NAMES);return mc(`¿Qué parte de la geosfera es esta?<br><b>${cap(PARTS[p].fn.replace(/^es /,''))}</b>`,cap(p),shuffle(PART_NAMES.filter(x=>x!==p)).slice(0,3).map(cap),`Es ${p.startsWith('corteza')?'la':'el'} ${p}.`)},
     ()=>mc('¿En qué se fragmenta la corteza terrestre?','En placas tectónicas',['En manto superior e inferior','En capas de agua','En núcleos'],'La corteza está rota en grandes trozos llamados placas tectónicas.'),
     ()=>mc('¿Cuántas capas principales tiene la geosfera?','Tres: corteza, manto y núcleo',['Dos: corteza y núcleo','Cuatro: corteza, manto, núcleo y atmósfera','Seis: corteza, manto, núcleo, hidrosfera, biosfera y atmósfera'],'Las tres capas se ordenan según su densidad: corteza, manto y núcleo. Las seis partes del dibujo son subdivisiones de esas tres.'),
+    ()=>{const r=pick(EARTH_REGIONS);return labelq(`Toca en el dibujo: <b>${r.name.toLowerCase()}</b>`,earthTouch(),EARTH_REGIONS,r.id,`${r.name}: ${r.id==='corteza'?'la capa más externa y delgada':r.id==='manto-sup'||r.id==='manto-inf'?'parte del manto, bajo la corteza':r.id==='nucleo-ext'?'es líquida (fluida)':'es sólida y la más interna'}.`)},
     ()=>tf(...pick([['La corteza es la capa más externa y más delgada.',true],['El núcleo es la capa más externa de la geosfera.',false,'es la más interna.'],['El manto está entre la corteza y el núcleo.',true],['Todo el interior de la Tierra es líquido.',false,'solo el núcleo externo es líquido.']]))
   ]},
 { title:'Corteza, manto y núcleo en detalle', sub:'Rocas, espesores, estados y litosfera',
@@ -107,7 +125,10 @@ const TIERRA_LEVELS=[
   ],
   gens:[
     ()=>{const [f,r,ws]=pick(COMPLETAR);return mc(`Completa: «${f} …»`,r,ws,`${f} ${r}.`)},
-    ()=>tf(...pick(VF)),
+    ()=>tf(...pick(VF).slice(0,3)),
+    ()=>{const [t,ok,why,fx]=pick(VF);return vf(t,ok,ok?'Es verdadero.':`Es falso: ${why}`,ok?[]:fx)},
+    ()=>{const [f,r,,alt]=pick(COMPLETAR.map(x=>[...x,x[1]==='hierro y níquel'?['hierro y niquel','hierro, níquel','níquel y hierro']:[]]));return txt(`Completa la frase: «${f} …»`,r,`${f} ${r}.`,{accept:alt,hint:r.includes(' ')?'Escribe las palabras que faltan.':'Escribe una palabra.'})},
+    ()=>crossword('Resuelve el crucigrama de la geosfera.',CRUCIGRAMA,'Las respuestas: '+CRUCIGRAMA.map(w=>`${w.n} ${w.dir==='h'?'horizontal':'vertical'}, ${w.answer.toLowerCase()}`).join('; ')+'.'),
     ()=>{const [p,r]=pick(CRUCI);const ws=shuffle(CRUCI_RESP.filter(x=>x!==r)).slice(0,3);return mc(`Pista de crucigrama:<br><b>${p}</b>`,r,ws,`${r}: ${p.toLowerCase()}.`)},
     ()=>{const [t,v]=pick([['continental',70],['oceánica',10]]);return num(`Bajas por la corteza ${t} (hasta unos ${v} km) y llegas al manto. Si el manto llega hasta unos 2900 km de profundidad, ¿cuántos kilómetros más tendrías que bajar para llegar al final del manto?`,2900-v,`Se resta: 2900 − ${v} = ${2900-v} km.`,'Escribe solo el número de kilómetros.')},
     ()=>mc('¿Cuál de las dos litosferas tiene más espesor?','La continental',['La oceánica','Las dos tienen el mismo','Ninguna'],'La litosfera continental es la de más espesor; la oceánica es la más densa.'),
@@ -168,10 +189,10 @@ const TIERRA_ANIMS=[
   {say:'¿Verdadero o falso?',ask:()=>TIERRA_LEVELS[3].gens[1]()},
   {say:'La litosfera es la capa formada por la corteza y la parte más superficial del manto. Hay dos: la continental, con más espesor, y la oceánica, más densa.',
    show:line(at(0,'<b>Litosfera</b> = corteza + parte superficial del manto'))+line(at(1.8,'continental: más espesor'))+line(at(2.8,'oceánica: más densa'))},
-  {say:'¿Qué litosfera tiene más espesor?',ask:()=>TIERRA_LEVELS[3].gens[4]()},
+  {say:'¿Qué litosfera tiene más espesor?',ask:()=>TIERRA_LEVELS[3].gens[7]()},
   {say:'En la vida real: una erupción volcánica es una señal de lo que hay bajo la corteza. La roca del interior, muy caliente, sale a la superficie como lava.',
    show:real('un volcán',sk(240,130,stroke('M20 118L90 40L150 40L220 118Z',0,{t:.8})+ln(110,40,100,14,.9,{c:'red',t:.3})+ln(130,40,142,10,1,{c:'red',t:.3})+ln(120,40,120,6,1.1,{c:'red',t:.3})+tx(120,100,'lava',1.8,{s:15,c:'red'})))},
-  {say:'Para terminar, calcula una profundidad.',ask:()=>TIERRA_LEVELS[3].gens[3]()}
+  {say:'Para terminar, calcula una profundidad.',ask:()=>TIERRA_LEVELS[3].gens[6]()}
 ]];
 
 export { TIERRA_LEVELS, TIERRA_ANIMS };

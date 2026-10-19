@@ -14,6 +14,16 @@ function checkQuestion(q, label) {
     assert.ok(q.options.length >= 2, where);
     assert.equal(new Set(q.options).size, q.options.length, `${where}: opciones repetidas`);
     assert.ok(Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.options.length, where);
+  } else if (['text', 'vf', 'sort', 'label', 'cross'].includes(q.type)) {
+    // Formatos de ficha: cada uno comprueba su propia estructura.
+    const check = {
+      text: () => assert.ok(q.answer && Array.isArray(q.accept), where),
+      vf: () => assert.ok(typeof q.truth === 'boolean' && Array.isArray(q.fixes) && (q.truth || q.fixes.length >= 2), where),
+      sort: () => assert.ok(q.items.length >= 2 && q.items.length === q.answer.length && q.answer.every((k) => k >= 0 && k < q.cols.length), where),
+      label: () => assert.ok(q.regions.some((r) => r.id === q.answer) && q.svg.includes(`data-id="${q.answer}"`), where),
+      cross: () => assert.ok(q.words.length >= 2, where),
+    };
+    check[q.type]();
   } else {
     assert.equal(q.type, 'num', where);
     assert.ok(Number.isFinite(q.answer), where);

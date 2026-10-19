@@ -1,6 +1,6 @@
 import { pick } from './data.js';
 import { hydrateStyles } from './inline.js';
-import { PRAISE, answered, isRight, lockQ, qBody, rightText, wireQ } from './question.js';
+import { PRAISE, answered, isRight, lockQ, qBody, resetQ, rightText, wireQ } from './question.js';
 import { at, dot, sk, stroke, tx } from './sketch.js';
 
 /* ---------- explicación animada con audio ---------- */
@@ -129,7 +129,7 @@ export function animPlayer(root,steps){
         btn.textContent=idx+1<steps.length?'Continuar':'Terminar';btn.focus();
         speak(ok?v:'Fíjate en la explicación.',null,null);paintControls()}
       else{fb.innerHTML=`<div class="fb ko"><span class="v">Casi. Inténtalo otra vez.</span>${q.hint||'Repasa lo que acabas de ver.'}</div>`;
-        if(q.type==='mc'){q.sel=undefined;qb.querySelectorAll('.opt').forEach(b=>b.setAttribute('aria-pressed','false'))}
+        resetQ(qb,q);
         btn.disabled=true;speak('Casi. Inténtalo otra vez.',null,null)}}}
   play.onclick=()=>{started=true;if(ended){playing=true;show(0);return}
     if(playing){playing=false;userPaused=true;silence();paintControls();return}

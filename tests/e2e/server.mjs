@@ -27,6 +27,11 @@ http
       res.writeHead(r.status, { 'Content-Type': 'application/json' });
       return res.end(JSON.stringify(r.jsonBody));
     }
+    if (url.pathname === '/__harness.html' || url.pathname === '/__harness.js') {
+      const f = url.pathname.endsWith('html') ? 'harness.html' : 'harness.mjs';
+      res.writeHead(200, { 'Content-Type': f.endsWith('html') ? types['.html'] : types['.js'], 'Content-Security-Policy': CSP });
+      return res.end(await readFile(join(ROOT, 'tests/e2e', f)));
+    }
     if (url.pathname === '/__bump') {
       build++;
       res.writeHead(204);

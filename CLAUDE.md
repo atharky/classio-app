@@ -9,6 +9,7 @@ App educativa estática (módulos ES, sin build) + API de sincronización en `ap
 - **Sin `style="…"` en las plantillas:** la CSP no admite estilos en línea. Escribe `data-s="…"` (`inline.js` lo convierte en estilo por CSSOM) o usa una clase de `styles.css`.
 - **Texto del alumno y del almacenamiento** que vaya a `innerHTML` pasa por `esc()` (`data.js`).
 - **Contenido nuevo:** cada nivel lleva lección, generadores con `explain`, relato (`ANIMS`) con un paso «En la vida real» y preguntas que se comprueban en `tests/data.test.mjs` (recálculo de respuestas). Las respuestas se calculan, no se escriben a mano.
+- **Tipos de pregunta:** `mc` y `num` (`data.js`) y los de ficha de `qtypes.js` (`txt`, `vf`, `sorting`, `labelq`, `crossword`). Un tipo nuevo define body, wire, answered, isRight, rightText, userText, lock y reset, y se prueba en `tests/e2e/types.spec.mjs`.
 - **Relatos:** un recuadro por paso, `say` es lo que se narra y se subtitula, ningún `--d` mayor de 12 s. Respetan `prefers-reduced-motion`.
 - **Estado del alumno:** `localStorage` clave `mates1eso.v1` (versión en `STATE_VERSION`). Un cambio de forma requiere migración en `migrateState` y, si se sincroniza, `sanitizeState`/`mergeState` en `api/src/sync.js` con pruebas.
 - **Mensajes y textos en español**, tono cercano para 12 años.
