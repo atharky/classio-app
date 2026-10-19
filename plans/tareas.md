@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 12 de 26 · **En curso:** 0 · **Pendientes:** 14
+**Actualizado:** 19-10-2026 · **Hechas:** 13 de 26 · **En curso:** 0 · **Pendientes:** 13
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -51,7 +51,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
-| T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
+| T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ⬜ Pendiente | — | — |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ⬜ Pendiente | — | — |
@@ -188,7 +188,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 ## Fase 3 · Calidad técnica y accesibilidad
 
 ### T12 · Dividir `app.js` en módulos
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** técnica · **Depende de:** T01
 - **Alcance:** `state.js` (estado, migración, guardado, sincronización en segundo plano), `views/home.js`, `views/module.js`, `views/level.js`, `views/sync.js`, `exam.js`, `quiz.js`, `player.js` (reproductor de relatos), `question.js` (`qBody`, `wireQ`, `lockQ`…). Sin cambio de comportamiento; actualizar `sw.js`/T02 y las pruebas.
 - **Hecho cuando:** E2E idénticas en verde; ningún fichero supera ~200 líneas.

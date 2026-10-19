@@ -31,7 +31,7 @@ El **modo profesor** (abrir todos los niveles) no se sincroniza: es de cada disp
 | Pieza | Archivo |
 |---|---|
 | Cliente: llamadas a la API y código guardado en `localStorage` (`mates1eso.sync`) | [`sync.js`](../sync.js) |
-| Vista *Sincronizar*, sincronización en segundo plano | [`app.js`](../app.js) |
+| Vista *Sincronizar* y sincronización en segundo plano | [`views/sync.js`](../views/sync.js), [`net.js`](../net.js) |
 | Lógica del servidor sin dependencias de Azure (validar, juntar, reintentar) | [`api/src/sync.js`](../api/src/sync.js) |
 | Almacén Azure Table Storage con concurrencia optimista por ETag | [`api/src/table-store.js`](../api/src/table-store.js) |
 | Funciones HTTP de Azure Functions (modelo v4: `sync/new`, `sync`, `sync/delete`) | [`api/src/functions/sync.js`](../api/src/functions/sync.js) |

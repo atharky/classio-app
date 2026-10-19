@@ -8,7 +8,7 @@ export function buildHash(root = ROOT) {
   const h = createHash('sha256');
   const walk = dir => readdirSync(dir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).forEach(e => {
     const p = dir + e.name;
-    if (e.isDirectory()) { if (['fonts/', 'audio/'].includes(e.name + '/')) walk(p + '/'); }
+    if (e.isDirectory()) { if (['fonts/', 'audio/', 'views/'].includes(e.name + '/')) walk(p + '/'); }
     else if (PUBLISHED.test(e.name) && e.name !== 'sw.js' && !e.name.startsWith('playwright.config')) { h.update(p.slice(root.length)); h.update(readFileSync(p)); }
   });
   walk(root);
