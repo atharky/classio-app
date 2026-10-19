@@ -7,6 +7,8 @@ import { CIE_LEVELS, CIE_ANIMS } from './ciencia.js';
 import { TIERRA_LEVELS, TIERRA_ANIMS } from './tierra.js';
 import { DIV_LEVELS, DIV_ANIMS } from './divis.js';
 import { ENT_LEVELS, ENT_ANIMS } from './enteros.js';
+import { PAL_LEVELS, PAL_ANIMS } from './palabras.js';
+import { CEL_LEVELS, CEL_ANIMS } from './celula.js';
 
 const SUBJECTS=[
   {id:'mates',name:'Matemáticas'},
@@ -27,15 +29,19 @@ const MODULES=[
    exams:[{id:'c1',name:'Examen del tema',sub:'Niveles 1 a 3',levels:[0,1,2],n:12}]},
   {id:'resumen',subject:'lengua',name:'El resumen',sym:'¶',desc:'Idea principal, palabras clave y cómo resumir un texto.',levels:RES_LEVELS,
    exams:[{id:'r1',name:'Examen del tema',sub:'Niveles 1 y 2',levels:[0,1],n:10}]},
+  {id:'palabras',subject:'lengua',name:'Las clases de palabras',sym:'Aa',desc:'Sustantivos, adjetivos, verbos y determinantes.',levels:PAL_LEVELS,
+   exams:[{id:'p1',name:'Examen del tema',sub:'Niveles 1 a 3',levels:[0,1,2],n:12}]},
   {id:'ciencia',subject:'bio',name:'La ciencia y el método científico',sym:'🧪',desc:'Fake news, método científico, Redi, ciencia y pseudociencia y mujeres científicas.',levels:CIE_LEVELS,
    exams:[{id:'c1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'c2',name:'Examen parcial B',sub:'Niveles 4 y 5',levels:[3,4],n:10},
      {id:'ct',name:'Examen del tema',sub:'Como el examen real: este módulo y Material de laboratorio',levels:[0,1,2,3,4,'laboratorio:0','laboratorio:1','laboratorio:2','laboratorio:3'],n:15}]},
+  {id:'celula',subject:'bio',name:'Los seres vivos y la célula',sym:'🧫',desc:'Funciones vitales, partes de la célula y los cinco reinos.',levels:CEL_LEVELS,
+   exams:[{id:'v1',name:'Examen del tema',sub:'Niveles 1 a 3',levels:[0,1,2],n:12}]},
   {id:'tierra',subject:'bio',name:'La Tierra y la geosfera',sym:'🌍',desc:'Un planeta excepcional, los subsistemas terrestres y las capas de la geosfera.',levels:TIERRA_LEVELS,
    exams:[{id:'t1',name:'Examen parcial A',sub:'Niveles 1 y 2',levels:[0,1],n:10},{id:'t2',name:'Examen parcial B',sub:'Niveles 3 y 4',levels:[2,3],n:10},{id:'tt',name:'Examen del tema',sub:'Todo el módulo',levels:[0,1,2,3],n:12}]},
   {id:'laboratorio',subject:'bio',name:'Material de laboratorio',sym:'🔬',desc:'Material de vidrio, instrumentos, microscopio y seguridad.',levels:LAB_LEVELS,
    exams:[{id:'l1',name:'Examen parcial A',sub:'Niveles 1 y 2',levels:[0,1],n:10},{id:'l2',name:'Examen parcial B',sub:'Niveles 3 y 4',levels:[2,3],n:10},{id:'lf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3],n:12}]}
 ];
 
-const ANIMS={potencias:POT_ANIMS,raices:RAI_ANIMS,comunicacion:COM_ANIMS,resumen:RES_ANIMS,laboratorio:LAB_ANIMS,ciencia:CIE_ANIMS,tierra:TIERRA_ANIMS,divis:DIV_ANIMS,enteros:ENT_ANIMS};
+const ANIMS={potencias:POT_ANIMS,raices:RAI_ANIMS,comunicacion:COM_ANIMS,resumen:RES_ANIMS,laboratorio:LAB_ANIMS,ciencia:CIE_ANIMS,tierra:TIERRA_ANIMS,divis:DIV_ANIMS,enteros:ENT_ANIMS,palabras:PAL_ANIMS,celula:CEL_ANIMS};
 
 export { SUBJECTS, MODULES, ANIMS };

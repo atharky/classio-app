@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 24 de 26 · **En curso:** 0 · **Pendientes:** 2
+**Actualizado:** 19-10-2026 · **Hechas:** 25 de 26 · **En curso:** 0 · **Pendientes:** 1
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -60,7 +60,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
+| T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⬜ Pendiente | — | — |
@@ -68,6 +68,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 **Notas de bloqueo o descarte:**
 
 - **T09**: se aplicaron las correcciones «Aplicar ya» de [`revision-didactica.md`](revision-didactica.md) y la del experimento de las plantas (error de hecho: a oscuras se ahíla) y la regla de la longitud del resumen. Quedan pendientes de decisión del profesorado **M1** (pasos del método científico: 4 o 6 según el libro) y **F2** (noticia atribuida a El País).
+- **T20**: no se recibió el temario real del curso, así que se añadieron dos temas estándar de 1.º ESO (Lengua «Las clases de palabras» y Biología «Los seres vivos y la célula», 3 niveles cada uno) con la plantilla de siempre. Conviene que el profesorado confirme qué temas faltan por añadir y revise estos dos (la revisión didáctica de T09 no los cubrió).
 - **T21** está hecha en lo técnico (informe `scripts/audio-report.mjs`, nombres de archivo, carga bajo demanda y comprobación en las pruebas), pero **no hay ningún audio grabado**: generarlos es trabajo de una voz humana o de un servicio de síntesis. Falta decidir el coste de almacenamiento (unos 45 MB para los 355 pasos actuales; ver `_etc/animaciones.md`).
 - **T24** está hecha en el código, pero siguen sin confirmar las dudas 1, 3, 4 y 5 de la sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md) (tamaño «del sol», peridotita, espesores y respuestas del crucigrama).
 - **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
@@ -247,7 +248,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Prioridad:** P3 · **Depende de:** T11 · **Modelo:** como T11. **€€€**
 
 ### T20 · Más temas de Lengua y Biología
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Depende de:** T09
 - **Alcance:** a partir del temario real (fichas o índice del libro); cada tema sigue la plantilla: plan corto → niveles y generadores → relatos → exámenes → revisión.
 - **Modelo:** **Sonnet 5.5** por tema; **Opus 5.5** si el tema exige generadores con cálculo. **€€** por tema.

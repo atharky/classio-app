@@ -55,8 +55,14 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
 | Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
 | Comunicación 3 | La publicidad: función apelativa y poética |
+| Palabras 1 | Una receta: sustantivos (ingredientes) y adjetivos (cómo deben estar) |
+| Palabras 2 | Un mensaje de móvil: llego, llegué, llegaré |
+| Palabras 3 | En la panadería: «dame este bollo» |
 | Resumen 1 | Subrayar para estudiar un examen |
 | Resumen 2 | Contar una película a un amigo en un minuto |
+| Seres vivos 1 | Una planta de interior que se nutre, crece y echa un brote |
+| Seres vivos 2 | El yogur y sus bacterias |
+| Seres vivos 3 | El pan y la levadura (un hongo) |
 | Laboratorio 1 | La cocina: jarra medidora y embudo |
 | Laboratorio 2 | La báscula de la cocina: pesar por diferencia |
 | Laboratorio 3 | Observar células de cebolla al microscopio |
