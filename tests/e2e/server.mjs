@@ -1,0 +1,20 @@
+/* Servidor de pruebas: sirve la web estática y la API de sincronización con el almacén en memoria. */
+import http from 'node:http';
+import { readFile } from 'node:fs/promises';
+import { join, extname, normalize } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { createSync } from '../../api/src/sync.js';
+import { memoryStore } from '../../api/src/memory-store.js';
+const ROOT=fileURLToPath(new URL('../../',import.meta.url));
+const sync=createSync(memoryStore());
+const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webmanifest':'application/manifest+json'};
+http.createServer(async(req,res)=>{
+  const url=new URL(req.url,'http://x');
+  if(req.method==='POST'&&(url.pathname==='/api/sync/new'||url.pathname==='/api/sync')){
+    let body='';for await(const c of req)body+=c;
+    const r=await (url.pathname.endsWith('/new')?sync.create(body):sync.sync(body));
+    res.writeHead(r.status,{'Content-Type':'application/json'});return res.end(JSON.stringify(r.jsonBody))}
+  try{const p=normalize(url.pathname==='/'?'/index.html':url.pathname);if(p.includes('..')||p.startsWith('/api/')||p.startsWith('/tests/'))throw 0;
+    const d=await readFile(join(ROOT,p));res.writeHead(200,{'Content-Type':types[extname(p)]||'application/octet-stream'});res.end(d)}
+  catch{res.writeHead(404);res.end()}
+}).listen(+process.argv[2]||8791);

@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 0 de 26 · **En curso:** 0 · **Pendientes:** 26
+**Actualizado:** 19-10-2026 · **Hechas:** 1 de 26 · **En curso:** 0 · **Pendientes:** 25
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -38,7 +38,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 | ID | Tarea | Fase | Prio | Depende de | Modelo | Estado | PR | Fecha |
 |---|---|---|---|---|---|---|---|---|
-| T01 | Pruebas E2E en el repositorio y en CI | F1 | P1 | — | Opus | ⬜ Pendiente | — | — |
+| T01 | Pruebas E2E en el repositorio y en CI | F1 | P1 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
 | T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ⬜ Pendiente | — | — |
@@ -82,7 +82,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 ## Fase 1 · Red de seguridad y deuda urgente
 
 ### T01 · Pruebas E2E en el repositorio y en CI
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha (#7)
 - **Prioridad:** P1 · **Tipo:** técnica · **Depende de:** —
 - **Por qué:** los guiones de Playwright que validan el reproductor de relatos, la sincronización con dos dispositivos, el recorrido de todos los niveles y exámenes, y la revisión visual solo existen en el scratchpad de las sesiones. Hoy una regresión en `app.js` pasaría `npm test` y llegaría a producción.
 - **Alcance:** carpeta `tests/e2e/` con `@playwright/test` como dependencia de desarrollo; migrar los cuatro guiones (reproductor con voz simulada y sin voz, humo de niveles y exámenes, sincronización contra Azurite con el almacén en memoria o un servidor de desarrollo, capturas de escenas con `reducedMotion`); servidor estático de pruebas; job en el flujo de Actions (`npx playwright test`, Chromium) antes del despliegue; capturas de referencia opcionales.
