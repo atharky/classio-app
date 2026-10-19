@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 7 de 26 · **En curso:** 0 · **Pendientes:** 19
+**Actualizado:** 19-10-2026 · **Hechas:** 8 de 26 · **En curso:** 0 · **Pendientes:** 18
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -45,7 +45,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
-| T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ⬜ Pendiente | — | — |
+| T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
@@ -142,7 +142,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`medium`). Hay plan, plantilla y pruebas que recalculan las respuestas. **€€**
 
 ### T08 · «En la vida real» en el resumen escrito
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional · **Depende de:** —
 - **Alcance:** tomar el paso `real(...)` de cada relato y mostrarlo como tarjeta al final del resumen escrito (escena en estado final, sin animación, más el texto narrado). Sin duplicar contenido: una función en `app.js` lo deriva de `ANIMS`.
 - **Modelo:** **Haiku 5.5** con la especificación anterior; **€**.

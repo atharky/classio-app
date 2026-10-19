@@ -9,6 +9,7 @@ test('recorrido de todos los niveles y exámenes de los módulos activos',async(
     for(let i=0;i<m.levels.length;i++){
       await page.click('#home-btn');await page.click(`.mod[data-id="${m.id}"]`);await page.click(`.lvl[data-i="${i}"]`);
       await expect(page.locator('#a-stage'),`${m.id} nivel ${i+1}`).toHaveCount(1);
+      await expect(page.locator('.realcard .real-tag'),`${m.id} nivel ${i+1}: tarjeta «En la vida real»`).toHaveCount(1);
       await page.click('#a-play');await page.click('#t-quiz');
       await expect(page.locator('.prompt')).toHaveCount(1)}
     for(const ex of m.exams){

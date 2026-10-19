@@ -222,3 +222,7 @@ footer{margin-top:40px;font-size:.88rem;color:var(--muted);display:flex;gap:14px
 
 .update{position:fixed;left:50%;bottom:calc(14px + env(safe-area-inset-bottom));transform:translateX(-50%);z-index:50;display:flex;gap:12px;align-items:center;max-width:calc(100% - 32px);padding:10px 14px;border-radius:12px;background:var(--ink,#173f5f);color:#fff;box-shadow:0 6px 24px rgba(0,0,0,.3)}
 .update .btn{padding:6px 12px}
+/* tarjeta «En la vida real» del resumen escrito: escena terminada, sin animación */
+.anim .stage.static{height:auto;overflow:visible;padding:14px 10px}
+.stage.static *,.stage.static *::after{animation-duration:0s!important;animation-delay:0s!important}
+.realcard p{margin:12px 0 0}
