@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 18-10-2026 · **Hechas:** 0 de 23 · **En curso:** 0 · **Pendientes:** 23
+**Actualizado:** 19-10-2026 · **Hechas:** 0 de 26 · **En curso:** 0 · **Pendientes:** 26
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -49,6 +49,8 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
+| T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ⬜ Pendiente | — | — |
+| T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ⬜ Pendiente | — | — |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ⬜ Pendiente | — | — |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
@@ -56,6 +58,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ⬜ Pendiente | — | — |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ⬜ Pendiente | — | — |
+| T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ⬜ Pendiente | — | — |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ⬜ Pendiente | — | — |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ⬜ Pendiente | — | — |
@@ -162,6 +165,20 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Alcance:** 5–6 niveles (múltiplos y divisores, criterios de divisibilidad, números primos y compuestos, descomposición factorial, m.c.m. y m.c.d., problemas), generadores con recálculo en pruebas, relatos, exámenes. Antes, un plan corto como el de Raíces.
 - **Modelo:** **Opus 5.5** (`medium`) para el plan y los generadores con sus pruebas de recálculo; **Sonnet 5.5** para lecciones y relatos. **€€€**
 
+### T24 · Módulo de Biología «La Tierra y la geosfera»
+- **Estado:** ⬜ Pendiente
+- **Prioridad:** P2 · **Tipo:** funcional (contenido) · **Depende de:** T01
+- **Alcance:** a partir de los apuntes y actividades del cuaderno (datos, respuestas y dudas en [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)): módulo `tierra` de la materia Biología con 4 niveles — Un planeta excepcional · Los subsistemas terrestres · Las capas de la geosfera · Corteza, manto y núcleo en detalle (litosfera, rocas, espesores, estados). Incluye lección, generadores con las preguntas de las fichas (etiquetar el dibujo de las capas, completar frases, verdadero o falso con corrección y las 8 pistas del crucigrama), el dibujo de la Tierra en corte, un relato «Un viaje al centro de la Tierra» por nivel con su ejemplo «En la vida real», exámenes parcial A, parcial B y del tema, y la caché del service worker.
+- **Hecho cuando:** módulo activo en el inicio, pruebas de contenido y de relatos en verde, recorrido E2E sin errores, y los datos dudosos de la sección 5 del documento de contenido confirmados.
+- **Modelo:** **Sonnet 5.5** (`medium`): `ciencia.js` y `biologia.js` sirven de plantilla y las pruebas validan preguntas y relatos. **€€**
+
+### T25 · Rehacer «Ciencia y pseudociencia» con la ficha de clase
+- **Estado:** ⬜ Pendiente
+- **Prioridad:** P2 · **Tipo:** funcional (contenido) · **Depende de:** —
+- **Alcance:** actualizar el nivel 4 del módulo `ciencia` (`ciencia.js`) con el material real: las 11 disciplinas de la ficha con su clasificación correcta, las 5 características, el caso de María y Ricardo como hilo del relato «La fiesta de fin de curso» y la comparación de los dos mensajes (Agencia Nacional de Meteorología frente a «El Horóscopo»). Sustituir las listas actuales `SCIENCE`, `PSEUDO` y `TRAITS`, que no incluyen Matemáticas, Arqueología, Psicología, Grafología, Ufología, Cienciología ni Reflexología. Añadir preguntas sobre los errores frecuentes (Arqueología y Psicología son ciencias; Homeopatía, Numerología y Cienciología, no).
+- **Hecho cuando:** pruebas de contenido y de relatos en verde; las 11 disciplinas aparecen en los generadores con la clasificación de la sección 2.2 del documento de contenido; el caso de Cienciología confirmado con la profesora.
+- **Modelo:** **Sonnet 5.5** (`medium`): contenido sobre una plantilla existente y con pruebas que lo validan. **€€**
+
 ---
 
 ## Fase 3 · Calidad técnica y accesibilidad
@@ -209,6 +226,13 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Alcance:** contador por IP y ventana en Table Storage (o Front Door si se contrata), respuesta `429` con mensaje en el cliente; Application Insights en la Static Web App para errores de las funciones; alarma básica.
 - **Modelo:** **Opus 5.5** (`medium`): decisión de diseño con seguridad; **€€**.
 
+### T26 · Nuevos tipos de pregunta: clasificar, completar y crucigrama
+- **Estado:** ⬜ Pendiente
+- **Prioridad:** P3 · **Tipo:** funcional · **Depende de:** T01, T12
+- **Alcance:** hoy solo hay opción múltiple y respuesta numérica, y las fichas de clase usan formatos que no caben (sección 4 del documento de contenido): **clasificar** elementos en dos columnas (ciencia o pseudociencia), **completar frases** con una palabra (tolerando mayúsculas y tildes), **verdadero o falso y elegir la corrección**, **crucigrama** de definiciones y **etiquetar un dibujo** tocando la capa. Diseñar el tipo de pregunta en el modelo (`type`), su interfaz accesible con teclado, la corrección y su uso en niveles, relatos y exámenes; pruebas unitarias y E2E. Después, T24 y T25 pueden pasar de opción múltiple a estos formatos.
+- **Hecho cuando:** los cinco formatos funcionan en un nivel de ejemplo, con teclado y lector de pantalla, y las pruebas de contenido los validan.
+- **Modelo:** **Opus 5.5** (`high`): toca el modelo de preguntas, la interfaz y los exámenes. **€€€**
+
 ---
 
 ## Fase 4 · Crecimiento
@@ -248,8 +272,8 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | Modelo | Tareas | Coste relativo |
 |---|---|---|
 | Haiku 5.5 | T04, T05, T06, T08, T13, T15, T17, T21 | € |
-| Sonnet 5.5 | T02, T03, T07, T14, T16, T20, T22 (+ partes de T11, T23) | €€ |
-| Opus 5.5 | T01, T09, T10, T11, T12, T18, T19, T23 | €€€ |
+| Sonnet 5.5 | T02, T03, T07, T14, T16, T20, T22, T24, T25 (+ partes de T11, T23) | €€ |
+| Opus 5.5 | T01, T09, T10, T11, T12, T18, T19, T23, T26 | €€€ |
 | Fable 5.1 | Ninguna por defecto; disponible para revisar el diseño de T12 o T23 si Opus se atasca | — |
 
 El orden de ejecución recomendado es el de `plan-ejecucion.md`: T01 → T05 → T02 → T03 → T04 → T06, y después la fase 2.

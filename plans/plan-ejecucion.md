@@ -43,7 +43,7 @@ Objetivo: que cualquier cambio posterior se valide solo.
 
 ### Fase 2 · Contenido con el examen a la vista (P2)
 
-Objetivo: cubrir lo que los alumnos necesitan ahora, con el motor ya validado.
+Objetivo: cubrir lo que los alumnos necesitan ahora, con el motor ya validado. El contenido de T24 y T25 sale de los materiales de clase recibidos el 19-10-2026 y está detallado en [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md).
 
 | # | Tarea | Depende de |
 |---|---|---|
@@ -52,6 +52,8 @@ Objetivo: cubrir lo que los alumnos necesitan ahora, con el motor ya validado.
 | T09 | Revisión didáctica de todos los contenidos (hechos, terminología del libro, nombres de los pasos del método científico) con una lista de correcciones | — |
 | T10 | Repaso de fallos: cola de preguntas falladas por alumno y «Repasar lo que fallé» en el módulo (repetición espaciada simple) | T01 |
 | T11 | Módulo de Matemáticas «Divisibilidad» (múltiplos, divisores, criterios, primos, m.c.m. y m.c.d.) | T07 |
+| T24 | Módulo de Biología «La Tierra y la geosfera» (apuntes y actividades del cuaderno) | T01 |
+| T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase (11 disciplinas, características, mensajes) | — |
 
 ### Fase 3 · Calidad técnica y accesibilidad (P2–P3)
 
@@ -66,6 +68,7 @@ Objetivo: reducir el coste de cada cambio futuro.
 | T16 | Quitar `'unsafe-inline'` de `style-src` sustituyendo los `style="…"` por clases | T12 |
 | T17 | Selector de tema claro/oscuro (el CSS ya admite `data-theme`) | — |
 | T18 | Limitación de peticiones en la API y telemetría de errores (Application Insights) | T03 |
+| T26 | Nuevos tipos de pregunta: clasificar, completar, verdadero o falso con corrección y crucigrama | T01, T12 |
 
 ### Fase 4 · Crecimiento (P3–P4)
 
@@ -82,9 +85,11 @@ Objetivo: reducir el coste de cada cambio futuro.
 ```
 T01 ─┬─> T07 ─> T11 ─> T19
      ├─> T10 ─> T22
+     ├─> T24
      └─> T12 ─┬─> T13
               ├─> T14
-              └─> T16
+              ├─> T16
+              └─> T26
 T02 ─┬─> T07
      └─> T15
 T03 ─> T04 ─> T23
@@ -100,4 +105,4 @@ T09 ─> T20
 
 ## Estimación global
 
-Con el reparto de modelos de `tareas.md`, las fases 1–2 son unas 12 sesiones de trabajo de agente, la mayoría en Sonnet 5.5; Opus 5.5 solo en las tareas de arquitectura y seguridad; Fable 5.1 únicamente en revisiones de diseño puntuales. El coste de modelo de todo el plan queda dominado por tres tareas (T01, T12 y T07); el resto son tareas de Haiku o Sonnet con pruebas que verifican el resultado.
+Con el reparto de modelos de `tareas.md`, las fases 1–2 son unas 14 sesiones de trabajo de agente, la mayoría en Sonnet 5.5; Opus 5.5 solo en las tareas de arquitectura y seguridad; Fable 5.1 únicamente en revisiones de diseño puntuales. El coste de modelo de todo el plan queda dominado por cuatro tareas (T01, T12, T26 y T07); T24 y T25, que nacen de los materiales de clase, son de Sonnet; el resto son tareas de Haiku o Sonnet con pruebas que verifican el resultado.
