@@ -46,3 +46,14 @@ test('la página de privacidad explica qué datos se guardan y cómo borrarlos',
   await page.click('#home-btn');
   await expect(page.locator('.mod').first()).toBeVisible();
 });
+
+test('los tipos de letra se cargan desde el propio sitio, sin peticiones a terceros', async ({ page }) => {
+  const external = [];
+  page.on('request', (r) => {
+    if (!r.url().startsWith('http://localhost')) external.push(r.url());
+  });
+  await page.goto('/');
+  await page.evaluate(() => document.fonts.ready);
+  expect(await page.evaluate(() => document.fonts.check('16px "Atkinson Hyperlegible"'))).toBe(true);
+  expect(external).toEqual([]);
+});

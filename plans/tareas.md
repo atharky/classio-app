@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 14 de 26 · **En curso:** 0 · **Pendientes:** 12
+**Actualizado:** 19-10-2026 · **Hechas:** 15 de 26 · **En curso:** 0 · **Pendientes:** 11
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -54,7 +54,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
-| T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ⬜ Pendiente | — | — |
+| T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ⬜ Pendiente | — | — |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ⬜ Pendiente | — | — |
@@ -207,7 +207,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`medium`); axe valida el resultado. **€€**
 
 ### T15 · Fuentes autoalojadas
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** técnica + privacidad · **Depende de:** T02
 - **Alcance:** descargar Atkinson Hyperlegible, Bricolage Grotesque y Kalam en WOFF2 a `fonts/`, `@font-face` local, quitar Google Fonts de `index.html` y de la CSP, añadir a la caché del SW.
 - **Modelo:** **Haiku 5.5**. **€**

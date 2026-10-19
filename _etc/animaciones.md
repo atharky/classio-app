@@ -18,7 +18,7 @@ La explicación de cada nivel se cuenta como una **historia que se va trazando**
 
 ### Aspecto
 
-- La pizarra es blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (Google Fonts; sin conexión, una letra manuscrita del sistema) y rotulador negro, azul, rojo y verde.
+- La pizarra es blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (autoalojada en `fonts/`) y rotulador negro, azul, rojo y verde.
 - El texto aparece «escribiéndose» (recorte animado) y los dibujos SVG se trazan con `stroke-dashoffset`; las líneas tienen un pequeño temblor de mano alzada, siempre el mismo para que las escenas no cambien entre visitas.
 - Si una escena no cabe en su recuadro, se encoge para caber.
 - Con «reducir movimiento» activado en el sistema no hay viajes de cámara ni animaciones: cada escena aparece terminada.

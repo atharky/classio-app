@@ -14,7 +14,5 @@ export function viewPrivacy(){track(viewPrivacy,[]);setCrumb('Privacidad');
     <li><b>De la nube:</b> en «Sincronizar entre dispositivos» pulsa «Borrar mis datos de la nube». El código deja de funcionar.</li></ul></section>
    <section class="card stack"><h3>Narración con voz</h3>
     <p>La voz que lee las explicaciones es la de tu propio dispositivo; el cuaderno no envía textos ni audio a ningún servicio.</p></section>
-   <section class="card stack"><h3>Tipos de letra</h3>
-    <p>Los tipos de letra se cargan desde Google Fonts, por lo que Google puede ver la dirección IP del dispositivo al abrir el cuaderno.</p></section>
    <p class="hint">Si eres menor de edad, comenta con tu familia o tu profesorado qué dispositivo usas para sincronizar.</p></div>`}
 

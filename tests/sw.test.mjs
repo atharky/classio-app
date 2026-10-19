@@ -13,7 +13,8 @@ test('sw.js lleva el marcador __BUILD__ (lo sella el despliegue)', () => {
 
 test('todos los ficheros de la caché existen y no falta ninguno de la web', () => {
   for (const a of assets) if (a !== './') assert.ok(existsSync(new URL(a, root)), `${a} no existe`);
-  const web = [...readdirSync(root), ...readdirSync(new URL('views/', root)).map(f => 'views/' + f)].filter(f => /\.(js|css|html|svg|webmanifest)$/.test(f) && !['sw.js', 'playwright.config.mjs'].includes(f));
+  const web = [...readdirSync(root), ...readdirSync(new URL('views/', root)).map(f => 'views/' + f)].filter(f => /\.(js|css|html|svg|webmanifest|woff2)$/.test(f) && !['sw.js', 'playwright.config.mjs'].includes(f));
+  web.push(...readdirSync(new URL('fonts/', root)).map(f => 'fonts/' + f));
   for (const f of web) assert.ok(assets.includes('./' + f), `${f} no está en la caché del service worker`);
 });
 
