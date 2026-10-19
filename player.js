@@ -71,7 +71,7 @@ export function animPlayer(root,steps){
   function sizeLinks(){const n=frames.length,rows=Math.ceil(n/COLS)||1;links.setAttribute('width',COLS*(G.W+G.gap));links.setAttribute('height',rows*(G.H+G.gap))}
   function place(k){const p=pos(k);Object.assign(frames[k].style,{left:p.x+'px',top:p.y+'px',width:G.W+'px',height:G.H+'px'})}
   function frameAt(k){if(frames[k])return frames[k];
-    const f=document.createElement('div');f.className='frame';f.setAttribute('aria-label',`Paso ${k+1}`);f.innerHTML=`<span class="fnum" aria-hidden="true">${k+1}</span><div class="fc"></div>`;
+    const f=document.createElement('div');f.className='frame';f.setAttribute('role','group');f.setAttribute('aria-label',`Paso ${k+1}`);f.innerHTML=`<span class="fnum" aria-hidden="true">${k+1}</span><div class="fc"></div>`;
     const go=()=>{if(ended){started=true;show(k,true)}};f.onclick=go;f.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}};
     board.appendChild(f);frames[k]=f;place(k);sizeLinks();
     if(k>0&&frames[k-1]){links.insertAdjacentHTML('beforeend',linkSvg(k));hydrateStyles(links)}return f}
@@ -115,7 +115,7 @@ export function animPlayer(root,steps){
     cap.textContent='¡Fin! Esta es toda la historia: toca un recuadro para repasarlo o haz la prueba del nivel.';
     wasPlaying?speak('¡Fin de la explicación! Aquí tienes toda la historia. Ahora puedes hacer la prueba del nivel.',null,null):silence();paintControls()}
   function askStep(q,f){let tries=0;
-    qp.innerHTML=`<div class="stack aq"><div class="prompt">${q.prompt}</div><div id="a-qb">${qBody(q)}</div><div id="a-fb"></div>
+    qp.innerHTML=`<div class="stack aq"><div class="prompt">${q.prompt}</div><div id="a-qb">${qBody(q)}</div><div id="a-fb" aria-live="polite"></div>
       <div class="row"><button class="btn" type="button" id="a-check" disabled>Comprobar</button></div></div>`;
     const qb=qp.querySelector('#a-qb'),btn=qp.querySelector('#a-check'),fb=qp.querySelector('#a-fb');
     wireQ(qb,q,()=>{if(pending)btn.disabled=!answered(q)});

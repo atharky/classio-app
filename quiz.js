@@ -16,7 +16,7 @@ export function runQuiz(pane,qs,done){let idx=0;const N=qs.length;
   function show(){const q=qs[idx];
     pane.innerHTML=`<div class="card stack pop">
       <div class="qhead"><span class="eyebrow">Pregunta ${idx+1} de ${N}</span><span class="dots">${qs.map((x,k)=>`<i class="${x.done?(x.ok?'ok':'ko'):k===idx?'cur':''}"></i>`).join('')}</span></div>
-      <div class="prompt">${q.prompt}</div><div id="qb">${qBody(q)}</div><div id="fb"></div>
+      <div class="prompt">${q.prompt}</div><div id="qb">${qBody(q)}</div><div id="fb" aria-live="polite"></div>
       <div class="row"><button class="btn" type="button" id="check" disabled>Comprobar</button></div></div>`;
     const qb=$('#qb'),btn=$('#check');
     wireQ(qb,q,()=>btn.disabled=!answered(q));

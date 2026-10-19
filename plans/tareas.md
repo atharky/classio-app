@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 17 de 26 · **En curso:** 0 · **Pendientes:** 9
+**Actualizado:** 19-10-2026 · **Hechas:** 18 de 26 · **En curso:** 0 · **Pendientes:** 8
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -53,7 +53,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
+| T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
@@ -201,7 +201,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5**. **€**
 
 ### T14 · Accesibilidad
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional · **Depende de:** T12
 - **Alcance:** pestañas con `aria-controls`, `tabpanel` y navegación con flechas/Home/End; foco al encabezado al cambiar de vista; `aria-live` para el resultado de cada pregunta; etiquetas de los dibujos de material e instrumentos; comprobación con `@axe-core/playwright` en las E2E; revisión de contraste del rotulador rojo sobre pizarra.
 - **Modelo:** **Sonnet 5.5** (`medium`); axe valida el resultado. **€€**

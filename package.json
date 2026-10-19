@@ -9,6 +9,7 @@
     "format": "prettier --check scripts tests/e2e playwright.config.mjs eslint.config.mjs"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@eslint/js": "^9.39.5",
     "@playwright/test": "^1.56.1",
     "eslint": "^9.39.5",

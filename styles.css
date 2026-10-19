@@ -226,3 +226,6 @@ footer{margin-top:40px;font-size:.88rem;color:var(--muted);display:flex;gap:14px
 .anim .stage.static{height:auto;overflow:visible;padding:14px 10px}
 .stage.static *,.stage.static *::after{animation-duration:0s!important;animation-delay:0s!important}
 .realcard p{margin:12px 0 0}
+/* contraste del texto pequeño en verde sobre fondo claro (WCAG AA) */
+.anim .stage{--good:#17692c}
+h1:focus{outline:none}
