@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 9 de 26 · **En curso:** 0 · **Pendientes:** 17
+**Actualizado:** 19-10-2026 · **Hechas:** 10 de 26 · **En curso:** 0 · **Pendientes:** 16
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -50,7 +50,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ⬜ Pendiente | — | — |
-| T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ⬜ Pendiente | — | — |
+| T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
 | T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ⬜ Pendiente | — | — |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
@@ -65,7 +65,9 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ⬜ Pendiente | — | — |
 | T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⬜ Pendiente | — | — |
 
-**Notas de bloqueo o descarte:** _ninguna_
+**Notas de bloqueo o descarte:**
+
+- **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
 
 ### Cómo se actualiza
 
@@ -173,7 +175,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`medium`): `ciencia.js` y `biologia.js` sirven de plantilla y las pruebas validan preguntas y relatos. **€€**
 
 ### T25 · Rehacer «Ciencia y pseudociencia» con la ficha de clase
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional (contenido) · **Depende de:** —
 - **Alcance:** actualizar el nivel 4 del módulo `ciencia` (`ciencia.js`) con el material real: las 11 disciplinas de la ficha con su clasificación correcta, las 5 características, el caso de María y Ricardo como hilo del relato «La fiesta de fin de curso» y la comparación de los dos mensajes (Agencia Nacional de Meteorología frente a «El Horóscopo»). Sustituir las listas actuales `SCIENCE`, `PSEUDO` y `TRAITS`, que no incluyen Matemáticas, Arqueología, Psicología, Grafología, Ufología, Cienciología ni Reflexología. Añadir preguntas sobre los errores frecuentes (Arqueología y Psicología son ciencias; Homeopatía, Numerología y Cienciología, no).
 - **Hecho cuando:** pruebas de contenido y de relatos en verde; las 11 disciplinas aparecen en los generadores con la clasificación de la sección 2.2 del documento de contenido; el caso de Cienciología confirmado con la profesora.

@@ -212,3 +212,10 @@ test('esc() neutraliza el HTML del texto del alumno',()=>{
   assert.equal(esc("a&b'c"),'a&amp;b&#39;c');
   assert.equal(esc(5),'5');
 });
+
+test('ciencia y pseudociencia: las 11 disciplinas de la ficha tienen la clasificación correcta', async () => {
+  const { DISC } = await import('../ciencia.js');
+  const expected = { Astronomía: true, Matemáticas: true, Medicina: true, Arqueología: true, Psicología: true,
+    Ufología: false, Grafología: false, Homeopatía: false, Cienciología: false, Numerología: false, Reflexología: false };
+  assert.deepEqual(Object.fromEntries(DISC.map(([n, sci]) => [n, sci])), expected);
+});

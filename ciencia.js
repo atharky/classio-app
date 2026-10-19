@@ -67,10 +67,27 @@ const REDI={hip:'Los gusanos no nacen solos de la carne: salen de los huevos que
   res:'En el bote abierto aparecieron gusanos; en el bote cubierto con tela, no.',con:'Los gusanos proceden de los huevos de las moscas: la generación espontánea es falsa.'};
 
 /* ---------- nivel 4 · ciencia y pseudociencia ---------- */
-const SCIENCE=['Astronomía','Biología','Química','Geología','Medicina','Física'];
-const PSEUDO=['Astrología (el horóscopo)','Homeopatía','Quiromancia (leer las líneas de la mano)','Numerología','Pulseras «de equilibrio» con hologramas'];
-const TRAITS=[['Sus resultados se pueden repetir y comprobar.','Ciencia'],['Otros expertos revisan los estudios antes de publicarlos.','Ciencia'],['Cambia sus ideas cuando aparecen pruebas nuevas.','Ciencia'],['Se basa en experimentos y datos.','Ciencia'],
-  ['Se basa en testimonios: “a mi primo le funcionó”.','Pseudociencia'],['No acepta las pruebas que la contradicen.','Pseudociencia'],['Promete resultados milagrosos sin presentar pruebas.','Pseudociencia'],['Usa palabras científicas para parecer ciencia, pero no hace experimentos.','Pseudociencia']];
+// Las 11 disciplinas de la ficha de clase: [nombre, ¿es ciencia?, por qué].
+const DISC=[
+  ['Astronomía',true,'estudia los astros con observaciones y medidas, y sus predicciones se cumplen'],
+  ['Matemáticas',true,'razona con rigor y demuestra sus resultados'],
+  ['Medicina',true,'sus tratamientos se prueban con estudios y ensayos'],
+  ['Arqueología',true,'estudia el pasado con restos materiales y métodos de datación'],
+  ['Psicología',true,'estudia la conducta y la mente con métodos científicos'],
+  ['Ufología',false,'no tiene pruebas que se puedan comprobar'],
+  ['Grafología',false,'pretende deducir la personalidad por la letra, sin pruebas'],
+  ['Homeopatía',false,'sus remedios no han demostrado más efecto que el placebo'],
+  ['Cienciología',false,'su nombre engaña: es un movimiento religioso sin base científica'],
+  ['Numerología',false,'atribuye significados a los números sin pruebas'],
+  ['Reflexología',false,'pretende tratar enfermedades presionando puntos de los pies, sin pruebas']];
+const SCI=DISC.filter(d=>d[1]),PSE=DISC.filter(d=>!d[1]);
+// Las que más se confunden: parecen lo contrario de lo que son.
+const TRICKY_SCI=['Arqueología','Psicología'],TRICKY_PSE=['Homeopatía','Numerología','Cienciología'];
+const TRAITS=[['Usa un vocabulario preciso.','Ciencia'],['Presenta referencias: dice de dónde saca la información.','Ciencia'],['Avanza, incorpora ideas nuevas y descarta las que se quedan obsoletas.','Ciencia'],['Sus resultados se pueden repetir y comprobar.','Ciencia'],['Otros expertos revisan los estudios antes de publicarlos.','Ciencia'],['Se basa en experimentos y datos.','Ciencia'],
+  ['Solo tiene en cuenta los resultados favorables.','Pseudociencia'],['No realiza una fase de experimentación.','Pseudociencia'],['Se basa en testimonios: “a mi primo le funcionó”.','Pseudociencia'],['No acepta las pruebas que la contradicen.','Pseudociencia'],['Promete resultados milagrosos sin presentar pruebas.','Pseudociencia'],['Usa palabras científicas para parecer ciencia, pero no hace experimentos.','Pseudociencia']];
+// Los dos mensajes de la ficha: previsión de una agencia oficial frente a un horóscopo.
+const MSG_AGENCIA='«La previsión de lluvia para el día 17 es del 40 % por la mañana, con tendencia a subir al 80 % al final de la tarde. Las temperaturas bajarán entre 2 y 3 grados. Previsión basada en el modelo numérico europeo ECMWF.» (cuenta verificada de la agencia de meteorología)';
+const MSG_HOROSCOPO='«Mercurio retrógrado augura inestabilidad. Se presentarán oportunidades inesperadas.» (cuenta «El Horóscopo»)';
 
 /* ---------- nivel 5 · mujeres científicas ---------- */
 const WOMEN=[
@@ -133,15 +150,22 @@ const CIE_LEVELS=[
   lesson:[
     ['La ciencia',`<p>La <b>ciencia</b> es el conocimiento que se obtiene con el <b>método científico</b>: se basa en <span class="hl">pruebas y experimentos</span> que cualquiera puede repetir, otros expertos revisan los estudios y <b>cambia sus ideas</b> si aparecen pruebas nuevas.</p>`],
     ['La pseudociencia',`<p>Una <b>pseudociencia</b> <span class="hl">parece ciencia, pero no lo es</span>: usa palabras científicas, pero no sigue el método científico. No se puede comprobar, se basa en <b>testimonios</b> («a mi vecina le funcionó»), no cambia aunque las pruebas la contradigan y a menudo busca <b>vender algo</b>.</p>`],
-    ['Parecidas, pero no iguales',`<div class="tbl"><table><tr><th>Ciencia</th><th>Pseudociencia</th></tr><tr><td>Astronomía (estudia los astros)</td><td>Astrología (el horóscopo)</td></tr><tr><td>Medicina (tratamientos probados)</td><td>Homeopatía, remedios milagro</td></tr><tr><td>Biología (estudia los seres vivos)</td><td>Quiromancia (leer la mano)</td></tr></table></div>`],
-    ['Error típico',`<div class="ex warn">«Si sale alguien con bata o usa palabras científicas, es ciencia»</div><p>Lo que hace que algo sea ciencia son las <b>pruebas</b>, no la apariencia.</p>`]
+    ['Once disciplinas',`<div class="tbl"><table><tr><th>Ciencia</th><th>Pseudociencia</th></tr>${SCI.map((d,i)=>`<tr><td style="text-align:left">${d[0]}</td><td style="text-align:left">${PSE[i]?PSE[i][0]:''}</td></tr>`).join('')}</table></div>
+     <p class="muted">Ojo: <b>Arqueología</b> y <b>Psicología</b> son ciencias aunque suenen raro. <b>Homeopatía</b>, <b>Numerología</b> y <b>Cienciología</b> no lo son, aunque su nombre parezca científico.</p>`],
+    ['Cinco características',`<div class="tbl"><table><tr><th>Característica</th><th>Es de…</th></tr>${TRAITS.slice(0,3).concat(TRAITS.slice(6,8)).sort((x,y)=>x[1]<y[1]?-1:1).map(([t,k])=>`<tr><td style="text-align:left">${t}</td><td>${k}</td></tr>`).join('')}</table></div>`],
+    ['Comparar dos mensajes',`<p>Dos mensajes sobre el tiempo: la <b>agencia de meteorología</b> da datos medibles (porcentajes y grados), <b>cita su fuente</b> (un modelo numérico) y se puede comprobar. «El Horóscopo» es vago, no cita ninguna fuente y no se puede comprobar. Fíate del primero. Usa las mismas claves de las fake news: la fuente, los datos y si se puede contrastar.</p>`],
+    ['¿Sirven las pseudociencias?',`<p>No son útiles para <b>decidir cosas importantes</b>, porque no se basan en pruebas. Pueden hacerte <b>perder dinero o salud</b> (por ejemplo, dejar un tratamiento médico por un remedio que no funciona). Como juego o entretenimiento no hacen daño, pero no son una guía.</p>`],
+    ['Error típico',`<div class="ex warn">«Si usa palabras científicas o lleva bata, es ciencia»</div><p>Lo que hace que algo sea ciencia son las <b>pruebas</b>, no la apariencia ni el nombre.</p>`]
   ],
   gens:[
-    ()=>{const sc=Math.random()<.5,x=pick(sc?SCIENCE:PSEUDO);return mc(`¿Ciencia o pseudociencia?<br><b>${x}</b>`,sc?'Ciencia':'Pseudociencia',['Ciencia','Pseudociencia'],sc?`${x} es una ciencia: se basa en pruebas y experimentos.`:`${x} es una pseudociencia: no se ha comprobado con el método científico.`)},
+    ()=>{const [x,sc,why]=pick(DISC);return mc(`¿Ciencia o pseudociencia?<br><b>${x}</b>`,sc?'Ciencia':'Pseudociencia',['Ciencia','Pseudociencia'],`${x} ${sc?'es una ciencia':'es una pseudociencia'}: ${why}.`)},
     ()=>{const [t,k]=pick(TRAITS);return mc(`«${t}»<br>¿Es propio de la ciencia o de una pseudociencia?`,k,['Ciencia','Pseudociencia'],`Es propio de ${k==='Ciencia'?'la ciencia':'una pseudociencia'}.`)},
-    ()=>{const [q,a,ws]=pick([['¿Qué ciencia estudia los astros?','Astronomía',['Astrología','Quiromancia','Numerología']],['¿Qué hace la astrología?','Pretende adivinar el carácter o el futuro por la posición de los astros, sin pruebas',['Estudia los planetas con telescopios','Fabrica cohetes','Mide terremotos']],['¿Cuál de estas es una ciencia?',pick(SCIENCE),PSEUDO.slice(0,3)]]);return mc(q,a,ws,`${a}.`)},
+    ()=>{const sci=Math.random()<.5;if(sci){const n=pick(TRICKY_SCI),d=DISC.find(x=>x[0]===n);return mc('¿Cuál de estas disciplinas <b>sí</b> es una ciencia?',d[0],TRICKY_PSE,`${d[0]} es una ciencia: ${d[2]}.`)}
+      const n=pick(TRICKY_PSE),d=DISC.find(x=>x[0]===n);return mc('¿Cuál de estas disciplinas <b>no</b> es una ciencia?',d[0],shuffle(SCI.map(x=>x[0])).slice(0,3),`${d[0]} no es una ciencia: ${d[2]}.`)},
     ()=>mc('Un anuncio vende una pulsera que «mejora el equilibrio y la energía», con testimonios de famosos. ¿Por qué desconfiar?','No presenta pruebas científicas, solo testimonios',['Porque es muy cara','Porque la llevan famosos','Porque es de colores'],'Un testimonio no es una prueba: la ciencia necesita experimentos que se puedan repetir.'),
-    ()=>{const [t,ok,why]=pick([['La ciencia cambia sus ideas si aparecen pruebas nuevas.',true],['El horóscopo es una ciencia porque usa los planetas.',false,'la astrología es una pseudociencia: sus predicciones no se cumplen cuando se comprueban.'],['Un testimonio de alguien famoso es una prueba científica.',false,'las pruebas son experimentos y datos que se pueden repetir.'],['Las pseudociencias a menudo intentan vender algo.',true]]);return tf(t,ok,why)}
+    ()=>{const ag=Math.random()<.5;return mc(`Para organizar una fiesta al aire libre, ¿de qué mensaje te fías más?<br><br><b>A.</b> ${ag?MSG_AGENCIA:MSG_HOROSCOPO}<br><br><b>B.</b> ${ag?MSG_HOROSCOPO:MSG_AGENCIA}`,ag?'De A, porque da datos medibles y cita su fuente':'De B, porque da datos medibles y cita su fuente',[ag?'De B, porque es más misterioso':'De A, porque es más misterioso',ag?'De B, porque habla de los planetas':'De A, porque habla de los planetas','De los dos por igual'],'El mensaje de la agencia da porcentajes y grados, cita el modelo numérico en que se basa y se puede comprobar. El horóscopo es vago y no cita ninguna fuente.')},
+    ()=>mc('¿Por qué no conviene guiarse por una pseudociencia para decisiones importantes?','Porque no se basa en pruebas y puede hacerte perder dinero o salud',['Porque es aburrida','Porque solo la usan los famosos','Porque siempre está prohibida'],'Sin pruebas no hay garantía: dejar un tratamiento médico por un remedio sin eficacia puede ser peligroso. Como juego, no hace daño.'),
+    ()=>{const [t,ok,why]=pick([['La ciencia cambia sus ideas si aparecen pruebas nuevas.',true],['El horóscopo es una ciencia porque usa los planetas.',false,'la astrología es una pseudociencia: sus predicciones no se cumplen cuando se comprueban.'],['Un testimonio de alguien famoso es una prueba científica.',false,'las pruebas son experimentos y datos que se pueden repetir.'],['Las pseudociencias a menudo intentan vender algo.',true],['La Psicología es una pseudociencia.',false,'estudia la conducta y la mente con métodos científicos.'],['La Homeopatía es una ciencia porque tiene un nombre científico.',false,'sus remedios no han demostrado más efecto que el placebo.']]);return tf(t,ok,why)}
   ]},
 { title:'Mujeres científicas', sub:'Descubrimientos que cambiaron la ciencia',
   lesson:[
@@ -161,6 +185,7 @@ const CIE_LEVELS=[
 ];
 
 /* ---------- relatos animados ---------- */
+export { DISC };
 const CIE_ANIMS=[
 [ // Fake news: Marta y el mensaje del «maridiamante»
   {say:'Marta recibe un mensaje en el móvil: científicos descubren un mineral que se convierte en diamante con agua de mar. ¡Compártelo con todos!',
@@ -211,18 +236,26 @@ const CIE_ANIMS=[
    show:real('tapar la comida',sk(260,110,ell(130,90,80,14,0)+stroke('M60 88Q60 30 130 26Q200 30 200 88',.6,{c:'blue',t:.7})+fly(220,30,1.6)+ln(206,20,234,44,2,{c:'red',t:.2})))},
   {say:'¿Por qué usó una tela y no una tapa?',ask:()=>CIE_LEVELS[2].gens[2]()}
 ],
-[ // Ciencia y pseudociencia: el horóscopo de Sara y el eclipse
-  {say:'Sara lee su horóscopo: hoy tendrás un día lleno de sorpresas. Le sirve a cualquiera, y nadie puede comprobar si se cumple. Es astrología, una pseudociencia.',
-   show:sk(280,130,person(40,36,0,'Sara')+box(80,20,160,70,.9,{t:.6})+tx(160,46,'Hoy tendrás un día',1.5,{s:14})+tx(160,68,'lleno de sorpresas',2,{s:14})+tx(160,118,'¿se puede comprobar? ✗',2.8,{s:14,c:'red'}))},
-  {say:'En cambio, la astronomía predice un eclipse al minuto, años antes. Llega el día y ocurre justo cuando se dijo. Es ciencia: se puede comprobar.',
-   show:sk(260,120,circ(110,60,34,0,{c:'red',t:.6})+dot(132,56,30,1,'ink')+tx(210,52,'12:34',1.6,{s:20})+tx(210,80,'✓',2.2,{s:26,c:'green'}))},
-  {say:'¿Ciencia o pseudociencia?',ask:()=>CIE_LEVELS[3].gens[0]()},
-  {say:'La ciencia se basa en experimentos que cualquiera puede repetir y cambia si aparecen pruebas nuevas. La pseudociencia usa testimonios y no acepta las pruebas.',
-   show:line(at(0,'<b>Ciencia:</b> pruebas · se repite · cambia','good'))+line(at(1.8,'<b>Pseudociencia:</b> testimonios · no se comprueba','bad'))},
-  {say:'¿Es propio de la ciencia o de una pseudociencia?',ask:()=>CIE_LEVELS[3].gens[1]()},
-  {say:'En la vida real: hay anuncios de pulseras o productos milagro que usan palabras científicas y testimonios de famosos, pero ninguna prueba. Sospecha siempre.',
-   show:real('los productos milagro',sk(260,110,ell(80,60,40,30,0,{t:.6})+ell(80,60,30,20,.5,{t:.5})+tx(80,66,'✦',1,{s:18,c:'red'})+bubble(140,20,110,34,'¡Funciona!',1.4,{s:14})+tx(195,90,'¿pruebas? ✗',2.4,{s:15,c:'red'})))},
-  {say:'¿Por qué desconfiar de este anuncio?',ask:()=>CIE_LEVELS[3].gens[3]()}
+[ // Ciencia y pseudociencia: «La fiesta de fin de curso»
+  {say:'María y Ricardo organizan la fiesta de fin de curso, al aire libre. Todo depende del tiempo, pero cada previsión que encuentran dice una cosa distinta.',
+   show:sk(280,130,person(40,26,0,'María')+person(110,26,.4,'Ricardo')+sun(200,36,1.2)+stroke('M170 84Q166 66 186 66Q192 52 212 58Q236 56 234 76Q244 86 228 90L184 90Q166 92 170 84',1.8,{c:'blue',t:.6}))},
+  {say:'María propone preguntar a un astrólogo. Ricardo prefiere a un meteorólogo: la astrología no le parece fiable. ¿Cuál de los dos caminos es el bueno?',
+   show:sk(280,130,tx(140,16,'¿quién nos dice el tiempo?',0,{s:15})+ln(140,26,70,66,.8,{t:.3})+ln(140,26,210,66,1,{t:.3})+box(20,70,100,40,1.4,{t:.5})+tx(70,96,'astrólogo',1.9,{s:15,c:'red'})+box(160,70,100,40,2.2,{t:.5})+tx(210,96,'meteorólogo',2.7,{s:15,c:'green'}))},
+  {say:'La madre de María lo explica: la astrología no es una ciencia, es una pseudociencia, porque no sigue el método científico. ¿Y estas otras disciplinas?',
+   show:line(at(0,'Astrología → <b>pseudociencia</b>','bad'))+line(at(1.2,'no sigue el método científico'))},
+  {say:'Clasifica esta disciplina.',ask:()=>CIE_LEVELS[3].gens[0]()},
+  {say:'Hay disciplinas que engañan. La arqueología y la psicología sí son ciencias. La homeopatía, la numerología y la cienciología no lo son, aunque su nombre suene científico.',
+   show:line(at(0,'<b>Ciencia:</b> Arqueología · Psicología','good'))+line(at(1.4,'<b>No:</b> Homeopatía · Numerología · Cienciología','bad'))},
+  {say:'¿Cuál de estas es una ciencia?',ask:()=>CIE_LEVELS[3].gens[2]()},
+  {say:'La ciencia usa un vocabulario preciso, presenta sus fuentes, experimenta y descarta las ideas obsoletas. La pseudociencia solo cuenta los aciertos y no experimenta.',
+   show:line(at(0,'<b>Ciencia:</b> vocabulario preciso · fuentes · avanza','good'))+line(at(1.6,'<b>Pseudociencia:</b> solo aciertos · no experimenta','bad'))},
+  {say:'¿De quién es esta característica?',ask:()=>CIE_LEVELS[3].gens[1]()},
+  {say:'Ricardo compara dos mensajes. La agencia de meteorología da porcentajes y grados y dice en qué modelo se basa. El horóscopo habla de Mercurio y de oportunidades, sin datos.',
+   show:sk(290,130,box(6,8,132,100,0,{t:.7})+tx(72,30,'Agencia',.7,{s:13,c:'green'})+tx(72,56,'40 % lluvia',1.2,{s:13})+tx(72,76,'−2 °C',1.6,{s:13})+tx(72,98,'fuente ✓',2,{s:13,c:'green'})+box(152,8,132,100,2.4,{t:.7})+tx(218,30,'El Horóscopo',3.1,{s:13,c:'red'})+tx(218,60,'«Mercurio…»',3.6,{s:13})+tx(218,98,'fuente ✗',4.2,{s:13,c:'red'}))},
+  {say:'¿De cuál se fían y por qué?',ask:()=>CIE_LEVELS[3].gens[4]()},
+  {say:'En la vida real: la aplicación del tiempo de tu móvil usa modelos numéricos como el de la agencia. Por eso acierta mucho más que cualquier horóscopo.',
+   show:real('la aplicación del tiempo',sk(260,120,phone(95,6,0,104,64)+tx(127,52,'☀',.8,{s:26,c:'red'})+tx(127,84,'40 %',1.2,{s:14})+tx(200,60,'modelo numérico',1.8,{s:13,c:'green'})+arrow(188,60,164,60,2.2,'green')))},
+  {say:'Para terminar: ¿por qué no conviene guiarse por una pseudociencia?',ask:()=>CIE_LEVELS[3].gens[5]()}
 ],
 [ // Mujeres científicas: una línea del tiempo
   {say:'Viajamos por la historia de la ciencia de la mano de científicas que cambiaron lo que sabemos. Empezamos en la Antigüedad, con Hipatia de Alejandría: matemática y astrónoma.',
