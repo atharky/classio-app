@@ -82,7 +82,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 ## Fase 1 · Red de seguridad y deuda urgente
 
 ### T01 · Pruebas E2E en el repositorio y en CI
-- **Estado:** ✅ Hecha (#7)
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** técnica · **Depende de:** —
 - **Por qué:** los guiones de Playwright que validan el reproductor de relatos, la sincronización con dos dispositivos, el recorrido de todos los niveles y exámenes, y la revisión visual solo existen en el scratchpad de las sesiones. Hoy una regresión en `app.js` pasaría `npm test` y llegaría a producción.
 - **Alcance:** carpeta `tests/e2e/` con `@playwright/test` como dependencia de desarrollo; migrar los cuatro guiones (reproductor con voz simulada y sin voz, humo de niveles y exámenes, sincronización contra Azurite con el almacén en memoria o un servidor de desarrollo, capturas de escenas con `reducedMotion`); servidor estático de pruebas; job en el flujo de Actions (`npx playwright test`, Chromium) antes del despliegue; capturas de referencia opcionales.
