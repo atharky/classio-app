@@ -5,7 +5,8 @@ import { createHash, randomInt } from 'node:crypto';
 export const ALPHABET='23456789ABCDEFGHJKMNPQRSTVWXYZ';
 export const CODE_LEN=10; // 30^10 ≈ 2^49 combinaciones
 export const MAX_BODY=32*1024;
-const MAX_MODS=50,MAX_LEVELS=50,MAX_EXAMS=10,RETRIES=5;
+const MAX_MODS=50,MAX_LEVELS=50,MAX_EXAMS=10,MAX_MISSES=300,RETRIES=5;
+const MISS_KEY=/^[a-z0-9-]{1,40}:\d{1,2}:\d{1,2}$/;
 const ID=/^[a-z0-9-]{1,40}$/;
 const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
 
@@ -17,7 +18,7 @@ export const codeId=code=>createHash('sha256').update(code).digest('hex');
 
 // Solo se sincroniza el progreso (niveles y notas). El modo profesor (open) es de cada dispositivo.
 export function sanitizeState(raw){
-  const out={mods:{},exams:{}};
+  const out={mods:{},exams:{},misses:{}};
   if(!raw||typeof raw!=='object')return out;
   if(raw.mods&&typeof raw.mods==='object')for(const [id,m] of Object.entries(raw.mods).slice(0,MAX_MODS)){
     if(!ID.test(id)||!m||typeof m!=='object')continue;
@@ -27,11 +28,14 @@ export function sanitizeState(raw){
     const parts=key.split(':');if(parts.length!==2||!parts.every(p=>ID.test(p))||!Array.isArray(list))continue;
     const items=list.filter(x=>x&&typeof x.g==='number'&&x.g>=0&&x.g<=10&&int(x.d,0,8.64e15)).map(x=>({g:x.g,d:x.d}));
     if(items.length)out.exams[key]=items.slice(-MAX_EXAMS)}
+  // Repaso de fallos: «módulo:nivel:generador» → última vez que falló (d) y aciertos seguidos desde entonces (ok; con 2 está curado).
+  if(raw.misses&&typeof raw.misses==='object')for(const [key,m] of Object.entries(raw.misses).slice(0,MAX_MISSES))
+    if(MISS_KEY.test(key)&&m&&typeof m==='object'&&int(m.d,0,8.64e15)&&int(m.ok,0,2))out.misses[key]={d:m.d,ok:m.ok};
   return out}
 
 // Unión sin pérdidas: lo mejor de cada nivel, el desbloqueo más alto y todas las notas (últimas 10).
 export function mergeState(a,b){
-  const out={mods:{},exams:{}},blank={unlocked:1,best:{}};
+  const out={mods:{},exams:{},misses:{}},blank={unlocked:1,best:{}};
   for(const id of new Set([...Object.keys(a.mods),...Object.keys(b.mods)])){
     const x=a.mods[id]||blank,y=b.mods[id]||blank,best={...x.best};
     for(const [k,v] of Object.entries(y.best))best[k]=Math.max(best[k]??0,v);
@@ -39,6 +43,10 @@ export function mergeState(a,b){
   for(const key of new Set([...Object.keys(a.exams),...Object.keys(b.exams)])){
     const seen=new Map();for(const e of [...(a.exams[key]||[]),...(b.exams[key]||[])])seen.set(`${e.d}:${e.g}`,e);
     out.exams[key]=[...seen.values()].sort((p,q)=>p.d-q.d).slice(-MAX_EXAMS)}
+  // Gana el último fallo; con el mismo fallo, los aciertos más altos (así una curación no se deshace al sincronizar).
+  const ma=a.misses||{},mb=b.misses||{};
+  for(const key of new Set([...Object.keys(ma),...Object.keys(mb)])){const x=ma[key],y=mb[key];
+    out.misses[key]=!x?y:!y?x:x.d!==y.d?(x.d>y.d?x:y):{d:x.d,ok:Math.max(x.ok,y.ok)}}
   return out}
 
 const fail=(status,error)=>({status,jsonBody:{error}});

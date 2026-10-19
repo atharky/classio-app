@@ -50,4 +50,4 @@ Cada push a `main` y cada PR contra `main` ejecutan `.github/workflows/azure-sta
 
 ## Privacidad
 
-No hay cuentas ni datos personales. Solo se guardan niveles superados y notas, en el navegador y, si el alumno lo activa, en Table Storage bajo la huella de un código. Se puede borrar todo (ver la página «Privacidad» de la app).
+No hay cuentas ni datos personales. Solo se guardan niveles superados, notas y tipos de pregunta pendientes de repasar, en el navegador y, si el alumno lo activa, en Table Storage bajo la huella de un código. Se puede borrar todo (ver la página «Privacidad» de la app).

@@ -8,7 +8,8 @@ Permite continuar el progreso en otro ordenador, tablet o móvil **sin cuentas n
 2. **Vincular** otro dispositivo escribiendo el código (da igual mayúsculas, espacios o guion). El progreso de los dos dispositivos se **junta**, no se reemplaza:
    - por nivel, la mejor puntuación;
    - por módulo, el desbloqueo más alto;
-   - por examen, todas las notas (se guardan las 10 últimas).
+   - por examen, todas las notas (se guardan las 10 últimas);
+   - por tipo de pregunta fallada (`misses`, usado por «Repasar lo que fallé»), gana el último fallo y, si es el mismo, los aciertos más altos: así una curación hecha en un dispositivo no se deshace al sincronizar.
 3. A partir de ahí, cada vez que se guarda progreso se sincroniza en segundo plano (2 s después) y también al abrir la app. Si no hay conexión, el progreso sigue en el navegador y se avisa en el pie de página.
 4. **Desvincular** deja el progreso en el dispositivo y deja de sincronizarlo. **Borrar progreso** también desvincula el dispositivo; si no, la nube lo volvería a traer.
 5. **Borrar mis datos de la nube** (en la misma vista, con confirmación) elimina la fila del código en Table Storage y desvincula el dispositivo, que conserva su progreso local. Después el código responde `unknown_code`.
@@ -17,7 +18,7 @@ El **modo profesor** (abrir todos los niveles) no se sincroniza: es de cada disp
 
 ## Privacidad y seguridad
 
-- No se pide ni se guarda nombre, correo, contraseña ni ningún dato personal; solo niveles superados y notas.
+- No se pide ni se guarda nombre, correo, contraseña ni ningún dato personal; solo niveles superados, notas y los tipos de pregunta pendientes de repasar.
 - El código es la única credencial: quien lo tenga puede ver y cambiar ese progreso. La app lo explica al alumno.
 - La tabla guarda el **hash SHA-256** del código, no el código: un acceso a la tabla no permite usar los códigos.
 - El código viaja en el cuerpo de la petición (POST), no en la URL, para que no aparezca en registros de acceso.

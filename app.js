@@ -17,11 +17,11 @@ if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').th
 
 /* ---------- progreso ---------- */
 const KEY='mates1eso.v1';
-const STATE_VERSION=2;
-const emptyState=()=>({v:STATE_VERSION,mods:{},exams:{},open:false});
+const STATE_VERSION=3;
+const emptyState=()=>({v:STATE_VERSION,mods:{},exams:{},misses:{},open:false});
 function migrateState(raw){
   if(!raw||typeof raw!=='object')return emptyState();
-  if(raw.v===1)return {v:STATE_VERSION,mods:raw.mods&&typeof raw.mods==='object'?raw.mods:{},exams:raw.exams&&typeof raw.exams==='object'?raw.exams:{},open:Boolean(raw.open)};
+  if(raw.v===1||raw.v===2)return {v:STATE_VERSION,mods:raw.mods&&typeof raw.mods==='object'?raw.mods:{},exams:raw.exams&&typeof raw.exams==='object'?raw.exams:{},misses:{},open:Boolean(raw.open)};
   if(raw.v===STATE_VERSION)return {...emptyState(),...raw};
   return emptyState();
 }
@@ -35,7 +35,7 @@ const QUIZ_N=5,PASS=4;
 
 /* ---------- sincronización ---------- */
 let link=loadLink(),syncStatus='',syncTimer=null,syncing=false;
-const progressJSON=st=>JSON.stringify({mods:st.mods,exams:st.exams});
+const progressJSON=st=>JSON.stringify({mods:st.mods,exams:st.exams,misses:st.misses||{}});
 function setSyncStatus(t){syncStatus=t;const m=$('#sync-msg');m?m.textContent=t:renderFoot()}
 function scheduleSync(){if(!link)return;clearTimeout(syncTimer);syncTimer=setTimeout(syncNow,2000)}
 async function syncNow(){if(!link)return;if(syncing){scheduleSync();return}
@@ -46,7 +46,7 @@ async function syncNow(){if(!link)return;if(syncing){scheduleSync();return}
     // Si hubo progreso nuevo mientras viajaba la petición, no se pisa: se envía en la siguiente.
     if(progressJSON(S)!==sent){scheduleSync();renderFoot();return}
     const changed=progressJSON(r.state)!==sent;
-    if(changed){S.mods=r.state.mods;S.exams=r.state.exams;persist()}
+    if(changed){S.mods=r.state.mods;S.exams=r.state.exams;S.misses=r.state.misses||{};persist()}
     if(changed||currentView.fn===viewSync)refresh();else renderFoot()}
   catch(e){setSyncStatus(syncMessage(e))}
   finally{syncing=false}}
@@ -55,8 +55,17 @@ function refresh(){if([viewHome,viewModule,viewSync].includes(currentView.fn))cu
 
 function makeSet(gens,n,tag){const out=[],seen=new Set();let order=shuffle(gens.map((g,i)=>i));let k=0;
   while(out.length<n){const gi=order[k%order.length];k++;if(k%order.length===0)order=shuffle(order);
-    let q,tries=0;do{q=gens[gi]();tries++}while(seen.has(q.prompt)&&tries<15);seen.add(q.prompt);if(tag!==undefined)q.level=tag;out.push(q)}
+    let q,tries=0;do{q=gens[gi]();tries++}while(seen.has(q.prompt)&&tries<15);seen.add(q.prompt);q.gi=gi;if(tag!==undefined)q.level=tag;out.push(q)}
   return out}
+
+/* ---------- repaso de fallos ---------- */
+// «módulo:nivel:generador» → {d: último fallo, ok: aciertos seguidos desde entonces}; con CURE aciertos queda curado.
+const CURE=2,REVIEW_N=8;
+const missKey=(modId,li,gi)=>`${modId}:${li}:${gi}`;
+function recordResult(modId,li,gi,ok){if(gi===undefined)return;const key=missKey(modId,li,gi),m=S.misses[key];
+  if(!ok)S.misses[key]={d:Date.now(),ok:0};
+  else if(m&&m.ok<CURE)m.ok++}
+const pendingMisses=modId=>Object.entries(S.misses).filter(([k,m])=>k.startsWith(modId+':')&&m.ok<CURE).map(([k])=>k.split(':').map((x,n)=>n?+x:x));
 
 /* ---------- vistas ---------- */
 const app=$('#app');
@@ -97,6 +106,7 @@ function viewModule(mod){track(viewModule,[mod]);setCrumb(mod.name);const p=mp(m
      return `<button type="button" class="lvl ${done?'done':''} ${cur?'cur':''}" data-i="${i}" ${open?'':'disabled'} aria-label="Nivel ${i+1}: ${lv.title}${open?'':' (bloqueado)'}">
       <span class="n">${done?'✓':i+1}</span><span class="t"><b>${lv.title}</b><small>${lv.sub}</small></span>
       <span class="stars">${open?(best!==undefined?`Mejor: ${best}/${QUIZ_N}`:'Nuevo'):'🔒 Aprueba el anterior'}</span></button>`}).join('')}</div>
+   ${pendingMisses(mod.id).length?`<div class="card row" style="justify-content:space-between"><span><b>Repasa lo que fallaste.</b> Tienes ${pendingMisses(mod.id).length} tipo${pendingMisses(mod.id).length===1?'':'s'} de pregunta pendiente${pendingMisses(mod.id).length===1?'':'s'}.</span><button class="btn" type="button" id="review">Repasar lo que fallé</button></div>`:''}
    <h2 style="margin-top:14px">Exámenes de prueba</h2>
    <p class="muted">Preguntas al azar, sin pistas hasta el final. Puedes repetirlos todas las veces que quieras: cada vez salen preguntas distintas.</p>
    <div class="exams">${mod.exams.map(ex=>{const h=(S.exams[mod.id+':'+ex.id]||[]);const last=h[h.length-1];
@@ -105,6 +115,7 @@ function viewModule(mod){track(viewModule,[mod]);setCrumb(mod.name);const p=mp(m
       <button class="btn ${last?'ghost':''}" type="button" data-ex="${ex.id}">${last?'Repetir':'Empezar'}</button></div>`}).join('')}</div>
   </div>`;
   app.querySelectorAll('.lvl:not([disabled])').forEach(b=>b.onclick=()=>go(viewLevel,mod,+b.dataset.i,'learn'));
+  $('#review')&&($('#review').onclick=()=>go(viewReview,mod));
   app.querySelectorAll('[data-ex]').forEach(b=>b.onclick=()=>go(viewExam,mod,mod.exams.find(e=>e.id===b.dataset.ex)))}
 
 // Tarjeta «En la vida real» del resumen escrito: el paso del relato, ya terminado y sin animación.
@@ -131,9 +142,9 @@ function viewPrivacy(){track(viewPrivacy,[]);setCrumb('Privacidad');
    <div><p class="eyebrow">Tus datos</p><h1>Privacidad y uso de datos</h1></div>
    <section class="card stack"><h3>Qué guarda este cuaderno</h3>
     <p>No pedimos nombre, correo, edad, centro ni contraseña. No hay cuentas. El cuaderno no usa cookies ni publicidad ni analítica.</p>
-    <p>En tu navegador se guardan tus <b>niveles superados</b>, tus <b>notas</b> de los exámenes, si tienes el sonido activado y, si lo usas, el código de sincronización. Todo queda en este dispositivo.</p></section>
+    <p>En tu navegador se guardan tus <b>niveles superados</b>, tus <b>notas</b> de los exámenes, los <b>tipos de pregunta que has fallado</b> (para el repaso), si tienes el sonido activado y, si lo usas, el código de sincronización. Todo queda en este dispositivo.</p></section>
    <section class="card stack"><h3>Si usas la sincronización</h3>
-    <p>Al crear un código se guardan en un servidor de Microsoft Azure solo tus niveles y notas, asociados a un identificador que sale del código. El servidor no guarda el código, sino una huella irreversible de él. Como en cualquier servicio web, el proveedor puede registrar datos técnicos de la conexión.</p>
+    <p>Al crear un código se guardan en un servidor de Microsoft Azure solo tus niveles, notas y tipos de pregunta pendientes de repasar, asociados a un identificador que sale del código. El servidor no guarda el código, sino una huella irreversible de él. Como en cualquier servicio web, el proveedor puede registrar datos técnicos de la conexión.</p>
     <p>Quien tenga tu código puede ver y cambiar tu progreso. No lo compartas con nadie que no quieras.</p></section>
    <section class="card stack"><h3>Cómo borrar tus datos</h3>
     <ul><li><b>De este dispositivo:</b> «Borrar progreso» en el pie de página.</li>
@@ -177,7 +188,7 @@ function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
     $('#link-form').onsubmit=async e=>{e.preventDefault();const inp=$('#code-in'),b=$('#link-btn'),code=normalizeCode(inp.value);
       if(!code){setSyncStatus(syncMessage({kind:'invalid_code'}));inp.focus();return}
       busy(b,true,'Vinculando…');
-      try{const r=await pushState(code,S);link={code,at:Date.now()};saveLink(link);S.mods=r.state.mods;S.exams=r.state.exams;persist();syncStatus='';stay()}
+      try{const r=await pushState(code,S);link={code,at:Date.now()};saveLink(link);S.mods=r.state.mods;S.exams=r.state.exams;S.misses=r.state.misses||{};persist();syncStatus='';stay()}
       catch(err){busy(b,false,'Vincular');setSyncStatus(syncMessage(err));inp.focus()}}}}
 
 /* ---------- pregunta ---------- */
@@ -341,22 +352,26 @@ function animPlayer(root,steps){
   show(0)}
 
 /* ---------- prueba de nivel ---------- */
-function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,QUIZ_N);let idx=0;
+// Cuestionario de una pregunta cada vez con corrección inmediata; al terminar llama a done(qs).
+function runQuiz(pane,qs,done){let idx=0;const N=qs.length;
   function show(){const q=qs[idx];
     pane.innerHTML=`<div class="card stack pop">
-      <div class="qhead"><span class="eyebrow">Pregunta ${idx+1} de ${QUIZ_N}</span><span class="dots">${qs.map((x,k)=>`<i class="${x.done?(x.ok?'ok':'ko'):k===idx?'cur':''}"></i>`).join('')}</span></div>
+      <div class="qhead"><span class="eyebrow">Pregunta ${idx+1} de ${N}</span><span class="dots">${qs.map((x,k)=>`<i class="${x.done?(x.ok?'ok':'ko'):k===idx?'cur':''}"></i>`).join('')}</span></div>
       <div class="prompt">${q.prompt}</div><div id="qb">${qBody(q)}</div><div id="fb"></div>
       <div class="row"><button class="btn" type="button" id="check" disabled>Comprobar</button></div></div>`;
     const qb=$('#qb'),btn=$('#check');
     wireQ(qb,q,()=>btn.disabled=!answered(q));
     const inp=qb.querySelector('#ans');if(inp){inp.focus();inp.onkeydown=e=>{if(e.key==='Enter'&&!btn.disabled)btn.click()}}
-    btn.onclick=()=>{if(q.done){idx++;idx<QUIZ_N?show():finish();return}
+    btn.onclick=()=>{if(q.done){idx++;idx<N?show():done(qs);return}
       q.done=true;q.ok=isRight(q);
       lockQ(qb,q,q.ok);
       $('#fb').innerHTML=`<div class="fb ${q.ok?'ok':'ko'}"><span class="v">${q.ok?pick(PRAISE):`No es correcto. La respuesta es ${rightText(q)}.`}</span>${q.explain}</div>`;
-      btn.textContent=idx+1<QUIZ_N?'Siguiente':'Ver resultado';btn.focus()}}
-  function finish(){const ok=qs.filter(q=>q.ok).length,pass=ok>=PASS,p=mp(mod.id);
-    p.best[i]=Math.max(p.best[i]??0,ok);
+      btn.textContent=idx+1<N?'Siguiente':'Ver resultado';btn.focus()}}
+  show()}
+
+function levelQuiz(pane,mod,i){const lv=mod.levels[i];
+  runQuiz(pane,makeSet(lv.gens,QUIZ_N),qs=>{const ok=qs.filter(q=>q.ok).length,pass=ok>=PASS,p=mp(mod.id);
+    p.best[i]=Math.max(p.best[i]??0,ok);qs.forEach(q=>recordResult(mod.id,i,q.gi,q.ok));
     let unlockedNow=false;if(pass&&p.unlocked<=i+1&&i+1<mod.levels.length){p.unlocked=i+2;unlockedNow=true}save();
     const last=i+1>=mod.levels.length;
     pane.innerHTML=`<div class="card stack pop">
@@ -369,8 +384,21 @@ function levelQuiz(pane,mod,i){const lv=mod.levels[i];const qs=makeSet(lv.gens,Q
     $('#again').onclick=()=>go(viewLevel,mod,i,'quiz');
     $('#next')&&($('#next').onclick=()=>go(viewLevel,mod,i+1,'learn'));
     $('#relearn')&&($('#relearn').onclick=()=>go(viewLevel,mod,i,'learn'));
-    $('#exams')&&($('#exams').onclick=()=>go(viewModule,mod))}
-  show()}
+    $('#exams')&&($('#exams').onclick=()=>go(viewModule,mod))})}
+
+// «Repasar lo que fallé»: preguntas nuevas de los mismos tipos que el alumno falló; con dos aciertos seguidos se curan.
+function viewReview(mod){track(viewReview,[mod]);setCrumb(`${mod.name} · Repaso`);
+  const picks=shuffle(pendingMisses(mod.id)).filter(([,li,gi])=>mod.levels[li]&&mod.levels[li].gens[gi]).slice(0,REVIEW_N);
+  app.innerHTML=`<div class="stack"><div><p class="eyebrow">${mod.name}</p><h1>Repasar lo que fallé</h1></div><div id="pane"></div></div>`;
+  const pane=$('#pane');
+  if(!picks.length){pane.innerHTML=`<div class="card stack"><p>¡No tienes nada pendiente de repasar en este módulo!</p><div class="row"><button class="btn" type="button" id="back">Volver al módulo</button></div></div>`;$('#back').onclick=()=>go(viewModule,mod);return}
+  const qs=picks.map(([,li,gi])=>{const q=mod.levels[li].gens[gi]();q.gi=gi;q.li=li;return q});
+  runQuiz(pane,qs,qs=>{qs.forEach(q=>recordResult(mod.id,q.li,q.gi,q.ok));save();
+    const ok=qs.filter(q=>q.ok).length,left=pendingMisses(mod.id).length;
+    pane.innerHTML=`<div class="card stack pop"><div class="row" style="gap:18px"><span class="score">${ok}/${qs.length}</span><div style="flex:1;min-width:200px"><h2>${ok===qs.length?'¡Muy bien!':'Sigue practicando'}</h2>
+      <p class="muted">${left?`Te quedan ${left} tipo${left===1?'':'s'} de pregunta por repasar. Con ${CURE} aciertos seguidos de cada uno, quedan superados.`:'Has repasado todo lo que tenías pendiente.'}</p></div></div>
+      <div class="row">${left?`<button class="btn" type="button" id="again">Seguir repasando</button>`:''}<button class="btn ${left?'ghost':''}" type="button" id="back">Volver al módulo</button></div></div>`;
+    $('#again')&&($('#again').onclick=()=>go(viewReview,mod));$('#back').onclick=()=>go(viewModule,mod)})}
 
 /* ---------- examen ---------- */
 function viewExam(mod,ex){track(viewExam,[mod,ex]);setCrumb(`${mod.name} · ${ex.name}`);
@@ -400,6 +428,7 @@ function viewExam(mod,ex){track(viewExam,[mod,ex]);setCrumb(`${mod.name} · ${ex
         $('#sub2').onclick=finish;$('#cancel').onclick=show}else finish()}}
   function finish(){clearInterval(timerId);const time=clock();qs.forEach(q=>q.ok=answered(q)&&isRight(q));
     const ok=qs.filter(q=>q.ok).length,g=Math.round(ok/qs.length*100)/10;
+    qs.forEach(q=>{const r=refs[q.level];recordResult(r.m.id,r.li,q.gi,q.ok)});
     const key=mod.id+':'+ex.id;(S.exams[key]=S.exams[key]||[]).push({g,d:Date.now()});S.exams[key]=S.exams[key].slice(-10);save();
     const verdict=g>=9?'Sobresaliente':g>=7?'Notable':g>=6?'Bien':g>=5?'Suficiente':'Insuficiente';
     const by=refs.map((r,k)=>{const sub=qs.filter(q=>q.level===k);return {k,ok:sub.filter(q=>q.ok).length,n:sub.length}});

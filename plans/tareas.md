@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 8 de 26 · **En curso:** 0 · **Pendientes:** 18
+**Actualizado:** 19-10-2026 · **Hechas:** 9 de 26 · **En curso:** 0 · **Pendientes:** 17
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -47,7 +47,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
-| T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ⬜ Pendiente | — | — |
+| T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ⬜ Pendiente | — | — |
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ⬜ Pendiente | — | — |
@@ -154,7 +154,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`high`) para la revisión (hace falta criterio y conocimiento del currículo); **Haiku 5.5** para aplicar la lista de correcciones resultante. La aprobación final es de un docente. **€€**
 
 ### T10 · Repaso de fallos (repetición espaciada simple)
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional · **Depende de:** T01
 - **Alcance:** guardar en el estado los generadores/niveles fallados con fecha; botón «Repasar lo que fallé» en el módulo que genera una prueba con preguntas de esos niveles; el fallo se «cura» tras dos aciertos; sincronizar el campo nuevo (ampliar `sanitizeState` y `mergeState` con pruebas); migración de estado `v3`.
 - **Modelo:** **Opus 5.5** (`medium`) por tocar el modelo de estado y la fusión en la nube; **€€€**.

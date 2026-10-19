@@ -28,8 +28,8 @@ test('sanitizeState conserva el progreso y descarta el resto', () => {
   const s=sanitizeState({v:2,open:true,extra:'x',
     mods:{potencias:{unlocked:3,best:{0:5,1:4,foo:3,2:-1,3:1.5}},'MAL ID':{unlocked:2,best:{}},raices:{unlocked:'9',best:null}},
     exams:{'potencias:p1':[{g:7.5,d:1},{g:11,d:2},{g:5,d:'x'},null],'potencias':[{g:5,d:1}],'a:b:c':[{g:5,d:1}],'raices:r1':[]}});
-  assert.deepEqual(s,{mods:{potencias:{unlocked:3,best:{0:5,1:4}},raices:{unlocked:1,best:{}}},exams:{'potencias:p1':[{g:7.5,d:1}]}});
-  assert.deepEqual(sanitizeState(null),{mods:{},exams:{}});
+  assert.deepEqual(s,{mods:{potencias:{unlocked:3,best:{0:5,1:4}},raices:{unlocked:1,best:{}}},exams:{'potencias:p1':[{g:7.5,d:1}]},misses:{}});
+  assert.deepEqual(sanitizeState(null),{mods:{},exams:{},misses:{}});
 });
 
 test('mergeState se queda con lo mejor de los dos lados', () => {
@@ -37,7 +37,7 @@ test('mergeState se queda con lo mejor de los dos lados', () => {
   const b=sanitizeState({mods:{potencias:{unlocked:4,best:{1:4,2:5}},raices:{unlocked:2,best:{0:4}}},exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2}],'potencias:pf':[{g:8,d:5}]}});
   assert.deepEqual(mergeState(a,b),{
     mods:{potencias:{unlocked:4,best:{0:5,1:4,2:5}},raices:{unlocked:2,best:{0:4}}},
-    exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2},{g:7,d:3}],'potencias:pf':[{g:8,d:5}]}});
+    exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2},{g:7,d:3}],'potencias:pf':[{g:8,d:5}]},misses:{}});
 });
 
 test('mergeState guarda solo las 10 últimas notas de cada examen', () => {
@@ -105,4 +105,26 @@ test('remove valida el cuerpo y el código', async () => {
   const sync=createSync(memoryStore());
   assert.equal((await sync.remove('no es json')).jsonBody.error,'invalid_body');
   assert.equal((await sync.remove(body({code:'abc'}))).jsonBody.error,'invalid_code');
+});
+
+test('misses: se validan y se limitan', () => {
+  const s=sanitizeState({misses:{'potencias:0:3':{d:5,ok:1},'potencias:0':{d:5,ok:0},'Potencias:0:3':{d:5,ok:0},'raices:1:2':{d:5,ok:3},'raices:2:2':{d:-1,ok:0},'raices:3:2':'x'}});
+  assert.deepEqual(s.misses,{'potencias:0:3':{d:5,ok:1}});
+  const many=Object.fromEntries(Array.from({length:500},(_,i)=>[`m:${i%50}:${Math.floor(i/50)}`,{d:1,ok:0}]));
+  assert.ok(Object.keys(sanitizeState({misses:many}).misses).length<=300);
+});
+
+test('mergeState de misses: gana el último fallo y no se deshace una curación', () => {
+  const a=sanitizeState({misses:{'p:0:1':{d:10,ok:2},'p:0:2':{d:10,ok:0},'p:0:3':{d:5,ok:2}}});
+  const b=sanitizeState({misses:{'p:0:1':{d:10,ok:0},'p:0:2':{d:20,ok:0},'p:0:4':{d:7,ok:1}}});
+  assert.deepEqual(mergeState(a,b).misses,{'p:0:1':{d:10,ok:2},'p:0:2':{d:20,ok:0},'p:0:3':{d:5,ok:2},'p:0:4':{d:7,ok:1}});
+  assert.deepEqual(mergeState(b,a).misses,mergeState(a,b).misses);
+  assert.deepEqual(mergeState({mods:{},exams:{}},{mods:{},exams:{}}).misses,{});
+});
+
+test('un cliente antiguo sin misses no borra los de la nube', async () => {
+  const sync=createSync(memoryStore());
+  const {jsonBody:{code}}=await sync.create(body({state:{...progress({0:5},2),misses:{'potencias:0:1':{d:5,ok:0}}}}));
+  const r=await sync.sync(body({code,state:progress({0:5},2)}));
+  assert.deepEqual(r.jsonBody.state.misses,{'potencias:0:1':{d:5,ok:0}});
 });
