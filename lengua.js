@@ -35,7 +35,7 @@ const FUN={
   Expresiva:['¡Qué alegría verte!','Estoy muy cansado.','¡Ay, qué dolor!','Me encanta esta canción.'],
   Apelativa:['Cierra la puerta, por favor.','¿Me prestas tu goma?','Compra ya el nuevo patinete.','No corras por el pasillo.'],
   Fática:['¿Me oyes? ¿Hola?','Bueno, pues eso…','¿Sigues ahí?','Ajá, ajá, te escucho.'],
-  Poética:['Verde que te quiero verde.','Tres tristes tigres tragaban trigo.','Bebe Frescola, ¡la que mola!','Las nubes, algodón del cielo.'],
+  Poética:['Verde que te quiero verde.','Tres tristes tigres tragaban trigo.','Por una mirada, un mundo.','Las nubes, algodón del cielo.'],
   Metalingüística:['«Casa» es un sustantivo.','¿Cómo se escribe «hierba»?','¿«Feliz» lleva tilde?','«Amar» es un verbo.']};
 const FOCUS={Representativa:'el contexto (aquello de lo que se habla)',Expresiva:'el emisor',Apelativa:'el receptor',Fática:'el canal',Poética:'el mensaje',Metalingüística:'el código'};
 
@@ -119,11 +119,11 @@ const TEXTS=[
   {t:'Reciclar ayuda a cuidar el planeta. Cuando separamos el papel, el plástico y el vidrio, estos materiales pueden convertirse en productos nuevos, y así se talan menos árboles y se gasta menos energía. Además, se reduce la basura que acaba en los vertederos o en el mar. Pequeños gestos en casa tienen un gran efecto si los hace mucha gente.',
    main:'Reciclar ayuda a cuidar el planeta porque ahorra recursos y reduce la basura.',sec:'Reciclar reduce la basura que llega al mar.',
    bad:['El vidrio es un material transparente.','Reciclar gasta más energía que fabricar productos nuevos.','Los vertederos están lejos de las ciudades.'],
-   keys:'reciclar · materiales · recursos · basura',nokeys:['casa · gente · mucha · gran','así · cuando · estos · además','árboles · mar · vidrio · efecto'],title:'Por qué merece la pena reciclar',
+   keys:'reciclar · materiales · energía · basura',nokeys:['casa · gente · mucha · gran','así · cuando · estos · además','árboles · mar · vidrio · efecto'],title:'Por qué merece la pena reciclar',
    sum:'Separar papel, plástico y vidrio permite fabricar productos nuevos, ahorrar árboles y energía y reducir la basura; si mucha gente lo hace, el efecto es grande.',
    opinion:'Reciclar es un rollo, pero mis padres dicen que hay que hacerlo.',detail:'El vidrio se puede reciclar.',wrong:'Reciclar consiste en tirar toda la basura al mismo contenedor.'},
   {t:'Leer con frecuencia tiene muchos beneficios. Quien lee amplía su vocabulario y escribe con menos faltas de ortografía. La lectura también mejora la concentración y la memoria. Por último, los libros nos permiten viajar a otros lugares y épocas sin movernos de casa.',
-   main:'Leer a menudo mejora el lenguaje, la concentración y la imaginación.',sec:'Leer mejora la memoria.',
+   main:'Leer a menudo tiene muchos beneficios: mejora el vocabulario, la concentración y la memoria.',sec:'Leer mejora la memoria.',
    bad:['Los libros pesan mucho.','Leer solo sirve para aprobar exámenes.','Las bibliotecas abren por la tarde.'],
    keys:'leer · vocabulario · concentración · viajar',nokeys:['último · otros · sin · casa','quien · también · por · muchos','faltas · épocas · lugares · nos'],title:'Los beneficios de la lectura',
    sum:'Leer con frecuencia amplía el vocabulario, mejora la ortografía, la concentración y la memoria, y nos permite conocer otros lugares y épocas.',
@@ -157,13 +157,13 @@ const RES_LEVELS=[
 { title:'Cómo se hace un resumen', sub:'Breve, con tus palabras y sin opiniones',
   lesson:[
     ['Los pasos',`<div class="ex">1. Lee el texto entero y entiéndelo → 2. Subraya la idea principal y las palabras clave → 3. Haz un pequeño esquema → 4. Redacta el resumen con tus palabras</div>`],
-    ['Las reglas de un buen resumen',`<p>Un resumen debe ser:</p><p>· <b>Breve</b>: más o menos una <span class="hl">cuarta parte</span> del texto original.<br>· <b>Fiel</b>: recoge las ideas del autor, sin añadir nada.<br>· <b>Objetivo</b>: sin opiniones personales («yo creo», «me gusta»).<br>· <b>Redactado con tus palabras</b> y en tercera persona, sin copiar frases enteras.<br>· <b>Ordenado</b>: con la idea principal y las secundarias más importantes.</p>`],
+    ['Las reglas de un buen resumen',`<p>Un resumen debe ser:</p><p>· <b>Breve</b>: mucho más corto que el original (en textos largos, más o menos una <span class="hl">cuarta parte</span>).<br>· <b>Fiel</b>: recoge las ideas del autor, sin añadir nada.<br>· <b>Objetivo</b>: sin opiniones personales («yo creo», «me gusta»).<br>· <b>Redactado con tus palabras</b> y en tercera persona, sin copiar frases enteras.<br>· <b>Ordenado</b>: con la idea principal y las secundarias más importantes.</p>`],
     ['Error típico',`<div class="ex warn">Copiar las primeras frases del texto</div><p>Eso no es resumir: suele quedar demasiado largo y se pierden ideas del final. Un resumen se escribe después de entender <b>todo</b> el texto.</p>`]
   ],
   gens:[
     ()=>{const x=pick(TEXTS);return mc(`${TXT(x)}¿Cuál es el <b>mejor resumen</b>?`,x.sum,[x.opinion,x.detail,x.wrong],`«${x.sum.replace(/\.$/,'')}» es breve, fiel, objetivo y recoge las ideas importantes. Los demás opinan, se quedan en un detalle o cambian el texto.`)},
     ()=>{const x=pick(TEXTS),k=ri(0,2),bad=[x.opinion,x.detail,x.wrong][k],why=['Incluye una opinión personal','Solo recoge un detalle','Dice algo que no aparece en el texto o lo contradice'][k];
-      return mc(`${TXT(x)}Este resumen está mal: <b>«${bad}»</b>. ¿Qué falla?`,why,['Incluye una opinión personal','Solo recoge un detalle','Dice algo que no aparece en el texto o lo contradice','Es demasiado objetivo'].filter(w=>w!==why),`${why}.`)},
+      return mc(`${TXT(x)}Este resumen está mal: <b>«${bad}»</b>. ¿Qué falla?`,why,['Incluye una opinión personal','Solo recoge un detalle','Dice algo que no aparece en el texto o lo contradice','Es demasiado objetivo'].filter(w=>w!==why&&!(k===0&&w.startsWith('Dice algo'))),`${why}.`)},
     ()=>{const w=4*ri(20,120);return num(`Un texto tiene ${w} palabras. Si el resumen debe ocupar más o menos una cuarta parte, ¿cuántas palabras debería tener?`,w/4,`Una cuarta parte de ${w} es ${w} : 4 = ${w/4} palabras.`)},
     ()=>{const [q,a,ws]=pick([['¿Qué se hace primero al resumir un texto?','Leerlo entero hasta entenderlo',['Copiar la primera frase','Escribir tu opinión','Contar las palabras']],['¿En qué persona se escribe un resumen?','En tercera persona',['En primera persona («yo»)','En segunda persona («tú»)','Da igual']],['¿Qué NO debe tener un resumen?','Opiniones personales',['La idea principal','Las ideas secundarias importantes','Palabras clave del texto']]]);
       return mc(q,a,ws,`${a}.`)},
@@ -193,7 +193,7 @@ const COM_ANIMS=[
   {say:'Ahora tú: busca ese elemento en otra situación.',ask:COM_LEVELS[0].gens[0]},
   {say:'Para entenderse usan el mismo código, el español escrito. El mensaje viaja por un canal, la pantalla del móvil. Y el contexto es la situación: dos amigos que organizan la tarde.',
    show:sk(300,130,tx(50,62,'Aa',0,{s:36})+tag(50,104,'código',.6)+tag(50,122,'el español',.9,'blue')+mobile(128,14,1.4)+tag(150,104,'canal',2)+tag(150,122,'la pantalla',2.3,'blue')
-     +circ(250,48,28,2.8)+ln(250,48,250,28,3.2,{t:.2})+ln(250,48,264,56,3.3,{t:.2})+tag(250,104,'contexto',3.6)+tag(250,122,'quedar la tarde',3.9,'blue'))},
+     +circ(250,48,28,2.8)+ln(250,48,250,28,3.2,{t:.2})+ln(250,48,264,56,3.3,{t:.2})+tag(250,104,'contexto',3.6)+tag(250,122,'organizar la tarde',3.9,'blue'))},
   {say:'Marcos contesta: ¡vale! Ahora él es el emisor y Lucía, la receptora. El emisor y el receptor pueden intercambiar sus papeles.',
    show:sk(290,145,pair(0)+bubble(188,2,74,30,'¡Vale!',.4,{s:15})+arrow(220,70,70,70,1,'red')+tag(40,126,'RECEPTORA',1.8)+tag(250,126,'EMISOR',2.4))},
   {say:'Su amiga Ana lee la conversación y dice: el canal es el español. ¡Error! El español es el código. El canal es el medio físico: aquí, la pantalla.',
@@ -211,7 +211,7 @@ const COM_ANIMS=[
   {say:'¿Qué tipo de comunicación es esta?',ask:COM_LEVELS[1].gens[0]},
   {say:'Marcos mira al cielo: nubes negras. Nadie se lo ha dicho, pero sabe que va a llover. Las nubes son un indicio: tienen una relación natural con la lluvia.',
    show:sk(260,130,stroke('M90 70Q70 70 72 54Q74 38 94 42Q100 22 124 24Q148 22 156 42Q176 38 180 56Q182 70 162 70Z',0,{t:.8})+ln(100,80,94,96,1,{c:'blue',t:.15})+ln(128,80,122,96,1.2,{c:'blue',t:.15})+ln(156,80,150,96,1.4,{c:'blue',t:.15})+tag(130,122,'indicio → va a llover',2.2))},
-  {say:'En el paso de peatones, la señal muestra a una persona caminando: se parece a lo que representa, es un icono. El semáforo en rojo significa para porque lo hemos acordado: es un símbolo.',
+  {say:'En el paso de peatones, la señal muestra a una persona caminando: se parece a lo que representa, es un icono. El semáforo en rojo significa que hay que parar porque lo hemos acordado: es un símbolo.',
    show:sk(290,140,box(30,18,80,82,0,{c:'blue',t:.6})+person(70,34,.7)+tag(70,126,'icono',1.6)+semaforo(190,24,2)+tag(203,126,'símbolo',2.8))},
   {say:'En una tienda, un cartel tiene el dibujo de un teléfono y la palabra teléfono. El dibujo se parece a un teléfono: es un icono. La palabra no se parece: es un símbolo.',
    show:sk(290,130,box(20,10,250,90,0,{t:.6})+stroke('M50 40Q50 30 60 30L66 30L70 44L62 48Q66 60 76 66L82 58L94 62L94 70Q94 80 84 80Q50 76 50 40Z',.8,{t:.6})+tx(190,62,'TELÉFONO',1.6,{s:22})+tag(72,122,'icono',2.4)+tag(190,122,'símbolo',2.8))},
@@ -251,7 +251,7 @@ const RES_ANIMS=[
    show:page(0,ln(35,33,255,33,0,{c:'blue',t:.6})+ln(35,63,255,63,.8,{c:'green',t:.5})+ln(35,93,255,93,1.4,{c:'green',t:.5})+tag(145,140,'ideas secundarias',2,'green'))},
   {say:'Su amigo Leo subraya como idea principal que las abejas producen miel. Es verdad, pero es solo un detalle: el texto no trata de eso.',
    show:sk(290,130,person(40,40,0,'Leo')+bubble(62,6,200,32,'Lo importante: dan miel',.8,{s:13})+ln(72,22,252,22,2,{c:'red',t:.4})+tag(165,86,'es solo un detalle',2.6))},
-  {say:'Por último, Carla rodea las palabras clave: abejas, polen, plantas, alimentos. Son sustantivos y verbos importantes, no palabras como además o porque.',
+  {say:'Por último, Carla rodea las palabras clave: abejas, polen, plantas, alimentos. Son sustantivos importantes, no palabras como además o porque.',
    show:line(seq(['abejas','polen','plantas','alimentos'].map(w=>`<span class="chip">${w}</span>`),0,.6))+line(at(2.8,'además · muy · porque → no son clave','bad'))},
   {say:'¿Qué palabras clave elegirías?',ask:RES_LEVELS[0].gens[2]},
   {say:'En la vida real: cuando lees una noticia o un folleto, buscar la idea principal te dice en segundos de qué trata y si te interesa seguir leyendo.',
@@ -264,8 +264,8 @@ const RES_ANIMS=[
   {say:'En el esquema pone arriba la idea principal y debajo, unidas con flechas, las ideas secundarias más importantes.',
    show:sk(290,130,box(85,6,120,34,0,{c:'blue',t:.5})+tx(145,28,'polinizan',.5,{s:15})+arrow(120,42,70,84,1)+arrow(170,42,220,84,1.3)+box(20,88,100,34,1.6,{t:.4})+tx(70,110,'miel y cera',2,{s:14})+box(170,88,100,34,2.2,{t:.4})+tx(220,110,'alimentos',2.6,{s:14}))},
   {say:'¿Qué se hace en cada paso?',ask:RES_LEVELS[1].gens[3]},
-  {say:'Ahora redacta: con sus palabras, en tercera persona y sin dar su opinión. El resumen ocupa más o menos una cuarta parte del texto original.',
-   show:sk(260,110,box(20,10,100,90,0)+textLines(5,.4,{x:30,w:80,y0:25,gap:15})+arrow(130,55,165,55,1.6,'blue')+box(175,40,50,30,2.2)+ln(183,55,217,55,2.6))+line(at(2.8,'≈ una cuarta parte'))},
+  {say:'Ahora redacta: con sus palabras, en tercera persona y sin dar su opinión. El resumen es mucho más corto que el texto original.',
+   show:sk(260,110,box(20,10,100,90,0)+textLines(5,.4,{x:30,w:80,y0:25,gap:15})+arrow(130,55,165,55,1.6,'blue')+box(175,40,50,30,2.2)+ln(183,55,217,55,2.6))+line(at(2.8,'mucho más corto'))},
   {say:'Calcula cuánto debe ocupar un resumen.',ask:RES_LEVELS[1].gens[2]},
   {say:'Leo, en cambio, copia las primeras frases del texto: le queda largo y se pierde el final. Además añade: me encantan las abejas. Eso es una opinión.',
    show:sk(290,140,person(40,40,0,'Leo')+box(90,8,180,124,.8,{t:.6})+textLines(6,1.2,{x:105,w:150,y0:28,gap:15})+tx(180,124,'«Me encantan…»',2.4,{s:13,c:'red'})+ln(96,14,264,128,3,{c:'red',t:.5}))},

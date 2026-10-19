@@ -30,11 +30,11 @@ const CLUES=[
   ['¿Está en medios serios o solo en redes?','Si solo está en una cuenta de TikTok o un blog desconocido, ojo.'],
   ['¿Puedes comprobarla en otras webs?','Contrastar es clave.'],
   ['¿Quién gana si te la crees?','Pensar a quién beneficia ayuda a detectar la intención.']];
-const CLUE_CASES=[
-  ['La noticia no dice quién la ha escrito ni de dónde sale.',0],['El titular dice «¡¡INCREÍBLE!! Los cientificos lo confirman» con varias faltas de ortografía.',1],
-  ['Asegura que un mineral se convierte en diamante al tocar el agua del mar.',2],['Solo aparece en una cuenta de TikTok con pocos seguidores.',3],
-  ['La buscas en Google y no aparece en ningún periódico.',4],['La publica una marca que vende justo el producto del que habla la noticia.',5],
-  ['Promete que un zumo cura todas las enfermedades «en tres días».',2],['Te llega por WhatsApp como «reenviado muchas veces», sin enlace a ningún medio.',0]];
+const CLUE_CASES=[ // [caso, pista correcta, otras pistas que también valen (no salen como distractores)]
+  ['La noticia no dice quién la ha escrito ni de dónde sale.',0,[]],['El titular dice «¡¡INCREÍBLE!! Los cientificos lo confirman» con varias faltas de ortografía.',1,[2]],
+  ['Asegura que un mineral se convierte en diamante al tocar el agua del mar.',2,[1]],['Solo aparece en una cuenta de TikTok con pocos seguidores.',3,[0,4]],
+  ['La buscas en Google y no aparece en ningún periódico.',4,[3]],['La publica una marca que vende justo el producto del que habla la noticia.',5,[]],
+  ['Promete que un zumo cura todas las enfermedades «en tres días».',2,[1]],['Te llega por WhatsApp como «reenviado muchas veces», sin enlace a ningún medio.',0,[3,4]]];
 const NEWS=[
   ['«España suma más de 4.500 kilómetros de cuevas y cada año se descubren 50 más.» (El País)',true,'la publica un periódico conocido, no exagera y no tiene faltas.'],
   ['«La Agencia Estatal de Meteorología avisa de lluvias fuertes en Galicia este fin de semana.»',true,'viene de un organismo oficial y se puede comprobar en su web.'],
@@ -50,8 +50,8 @@ const STEP_DEF={'Observación':'Fijarse en un hecho y hacerse una pregunta sobre
   'Experimentación':'Comprobar la hipótesis con un experimento, cambiando una sola cosa','Análisis de datos':'Ordenar los datos en tablas y gráficas para estudiarlos',
   'Conclusiones':'Decidir si la hipótesis se confirma o se rechaza','Comunicación de resultados':'Dar a conocer lo descubierto a otras personas'};
 const CASES=[
-  {t:'las plantas',obs:'Las plantas de la ventana crecen más que las del pasillo.',hip:'Quizá las plantas crecen más cuando reciben más luz.',exp:'Pongo dos plantas iguales, con la misma agua: una al sol y otra a oscuras.',dat:'Tras dos semanas, la planta al sol mide 12 cm y la otra, 4 cm.',con:'La luz ayuda a que las plantas crezcan.'},
-  {t:'el moho del pan',obs:'El pan que guardo en una bolsa cerrada se llena de moho antes.',hip:'Quizá el moho crece más rápido con humedad.',exp:'Pongo una rebanada mojada y otra seca en dos bolsas iguales.',dat:'A los cinco días, la rebanada mojada tiene mucho moho y la seca, casi nada.',con:'La humedad favorece que crezca el moho.'},
+  {t:'las plantas',obs:'Las plantas de la ventana crecen más que las del pasillo.',hip:'Quizá las plantas crecen más sanas cuando reciben más luz.',exp:'Pongo dos plantas iguales, con la misma tierra y la misma agua: una junto a la ventana y otra dentro de un armario.',dat:'Tras dos semanas, la planta de la ventana tiene 6 hojas nuevas y está verde; la del armario no tiene hojas nuevas y está amarillenta.',con:'Las plantas necesitan luz para crecer sanas.'},
+  {t:'el moho del pan',obs:'El pan que guardo en una bolsa cerrada se llena de moho antes que el que dejo al aire.',hip:'Quizá el moho crece más rápido con humedad.',exp:'Pongo una rebanada mojada y otra seca en dos bolsas iguales.',dat:'A los cinco días, la rebanada mojada tiene mucho moho y la seca, casi nada.',con:'La humedad favorece que crezca el moho.'},
   {t:'el hielo',obs:'En invierno echan sal en las carreteras heladas.',hip:'Quizá la sal hace que el hielo se derrita antes.',exp:'Pongo dos cubitos iguales: uno con sal y otro sin sal.',dat:'El cubito con sal se derrite en 10 minutos y el otro, en 25.',con:'La sal acelera que el hielo se derrita.'}];
 const PART={obs:'Observación',hip:'Hipótesis',exp:'Experimentación',dat:'Datos (resultados)',con:'Conclusión'};
 const METHOD_QA=[
@@ -64,7 +64,7 @@ const METHOD_QA=[
 /* ---------- nivel 3 · Redi ---------- */
 const REDI={hip:'Los gusanos no nacen solos de la carne: salen de los huevos que ponen las moscas.',
   exp:'Puso carne en dos botes de vidrio: uno abierto y otro cubierto con una tela fina que deja pasar el aire, pero no las moscas.',
-  res:'En el bote abierto aparecieron gusanos; en el bote cubierto con tela, no.',con:'Los gusanos proceden de los huevos de las moscas: la generación espontánea es falsa.'};
+  res:'En el bote abierto aparecieron gusanos; en el bote cubierto con tela, no.',con:'Los gusanos proceden de los huevos de las moscas: no nacen por generación espontánea.'};
 
 /* ---------- nivel 4 · ciencia y pseudociencia ---------- */
 // Las 11 disciplinas de la ficha de clase: [nombre, ¿es ciencia?, por qué].
@@ -109,7 +109,7 @@ const CIE_LEVELS=[
     ['Error típico',`<div class="ex warn">«Si lo ha compartido mucha gente, será verdad»</div><p>Un bulo puede tener miles de «me gusta». Lo que cuenta es la <b>fuente</b> y si se puede <b>contrastar</b> en medios serios. Las fotos también pueden estar retocadas o sacadas de contexto.</p>`]
   ],
   gens:[
-    ()=>{const [c,i]=pick(CLUE_CASES);return mc(`${c}<br>¿Qué pista te hace sospechar?`,CLUES[i][0],shuffle(CLUES.filter((_,j)=>j!==i)).slice(0,3).map(x=>x[0]),`${CLUES[i][0]} ${CLUES[i][1]}`)},
+    ()=>{const [c,i,also]=pick(CLUE_CASES);return mc(`${c}<br>¿Qué pista te hace sospechar?`,CLUES[i][0],shuffle(CLUES.filter((_,j)=>j!==i&&!also.includes(j))).slice(0,3).map(x=>x[0]),`${CLUES[i][0]} ${CLUES[i][1]}`)},
     ()=>{const [t,ok,why]=pick(NEWS);return mc(`${t}<br>¿Qué te parece esta noticia?`,ok?'Parece fiable':'Probablemente es un bulo',['Parece fiable','Probablemente es un bulo'],`${ok?'Parece fiable':'Probablemente es un bulo'}: ${why}`)},
     ()=>mc('¿Por qué hay personas interesadas en difundir noticias falsas?','Para ganar dinero con las visitas o influir en lo que piensa la gente',['Porque así las noticias son más verdaderas','Porque la ley les obliga','Para que la gente aprenda a contrastar'],'Los bulos dan visitas (y dinero) o sirven para influir en las opiniones.'),
     ()=>mc('¿Qué palabra en español significa lo mismo que <i>fake news</i>?','Bulo',['Titular','Reportaje','Editorial'],'En español, una noticia falsa es un bulo.'),
@@ -126,14 +126,14 @@ const CIE_LEVELS=[
   ],
   gens:[
     ()=>{const [q,a,ws]=pick(METHOD_QA);return mc(q,a,ws,`${a}.`)},
-    ()=>{const s=pick(STEPS);return mc(`¿Qué paso del método científico consiste en <b>${STEP_DEF[s].toLowerCase()}</b>?`,s,shuffle(STEPS.filter(x=>x!==s)).slice(0,3),`Es la ${s.toLowerCase()}.`)},
+    ()=>{const s=pick(STEPS);return mc(`¿Qué paso del método científico consiste en <b>${STEP_DEF[s].toLowerCase()}</b>?`,s,shuffle(STEPS.filter(x=>x!==s)).slice(0,3),`Es ${({'Análisis de datos':'el','Conclusiones':'las'})[s]||'la'} ${s.toLowerCase()}.`)},
     ()=>{const c=pick(CASES),k=pick(Object.keys(PART));return mc(`Investigación sobre ${c.t}:<br>«${c[k]}»<br>¿A qué parte del método científico corresponde?`,PART[k],Object.values(PART).filter(x=>x!==PART[k]),`Es ${PART[k]==='Datos (resultados)'?'un dato (resultado del experimento)':'la '+PART[k].toLowerCase()}.`)},
     ()=>{const i=Math.floor(Math.random()*4);return mc(`¿Qué paso va justo después de la <b>${STEPS[i].toLowerCase()}</b>?`,STEPS[i+1],shuffle(STEPS.filter((_,j)=>j!==i+1&&j!==i)).slice(0,3),`El orden es: ${STEPS.join(' → ')}.`)},
     ()=>{const [t,ok,why]=pick([['Una hipótesis es una posible respuesta que se puede comprobar.',true],['En un experimento conviene cambiar muchas cosas a la vez.',false,'se cambia una sola cosa para saber qué causa el resultado.'],['Si la hipótesis se rechaza, se plantea otra nueva.',true],['Las conclusiones se escriben antes de experimentar.',false,'se sacan después de analizar los datos.'],['El método científico enseña a no creer todo lo que vemos o escuchamos.',true]]);return tf(t,ok,why)}
   ]},
 { title:'El experimento de Redi', sub:'Hipótesis, experimento, resultados y conclusión',
   lesson:[
-    ['La pregunta',`<p>Hace siglos, mucha gente creía en la <b>generación espontánea</b>: que algunos seres vivos, como los gusanos, nacían solos de la carne podrida. En <b>1668</b>, el italiano <b>Francesco Redi</b> quiso comprobarlo.</p>`],
+    ['La pregunta',`<p>Hace siglos, mucha gente creía en la <b>generación espontánea</b>: que algunos seres vivos, como los gusanos (en realidad, larvas de mosca), nacían solos de la carne podrida. En <b>1668</b>, el italiano <b>Francesco Redi</b> quiso comprobarlo.</p>`],
     ['Hipótesis y experimento',`<p><b>Hipótesis:</b> ${REDI.hip}</p><p><b>Experimento:</b> ${REDI.exp} Así, lo único que cambiaba entre los botes era si las moscas podían llegar a la carne.</p>`],
     ['Resultados y conclusión',`<p><b>Resultados:</b> ${REDI.res}</p><p><b>Conclusión:</b> ${REDI.con}</p>`],
     ['Error típico',`<div class="ex warn">«La tela impide que entre el aire»</div><p>No: la tela es fina y deja pasar el aire. Por eso el experimento es justo: la <b>única diferencia</b> entre los dos botes es que las moscas no pueden posarse en la carne del bote cubierto.</p>`]
@@ -170,9 +170,9 @@ const CIE_LEVELS=[
 { title:'Mujeres científicas', sub:'Descubrimientos que cambiaron la ciencia',
   lesson:[
     ['Científicas que hay que conocer',`<div class="tbl"><table><tr><th>Científica</th><th>¿Qué hizo?</th></tr>${WOMEN.map(w=>`<tr><td style="text-align:left"><b>${w.n}</b></td><td style="text-align:left">${w.k}</td></tr>`).join('')}</table></div>`],
-    ['¿Por qué se conocen menos?',`<p>Durante siglos se impidió a muchas mujeres <b>estudiar</b> o trabajar en ciencia, y a veces sus descubrimientos se atribuyeron a hombres. Por ejemplo, Rosalind Franklin no recibió el premio Nobel por el ADN.</p>
+    ['¿Por qué se conocen menos?',`<p>Durante siglos se impidió a muchas mujeres <b>estudiar</b> o trabajar en ciencia, y a veces sus descubrimientos se atribuyeron a hombres. Por ejemplo, la «Fotografía 51» de Rosalind Franklin se enseñó a otros investigadores sin que ella lo supiera y les ayudó a descubrir la forma del ADN. Ella murió en 1958 y no compartió el premio Nobel de 1962.</p>
      <p>El <span class="hl">11 de febrero</span> es el <b>Día Internacional de la Mujer y la Niña en la Ciencia</b>.</p>`],
-    ['Error típico',`<div class="ex warn">Pensar que la ciencia es «cosa de hombres»</div><p>Mujeres como Marie Curie o Margarita Salas hicieron descubrimientos fundamentales. Hoy hay tantas chicas como chicos que pueden dedicarse a la ciencia.</p>`]
+    ['Error típico',`<div class="ex warn">Pensar que la ciencia es «cosa de hombres»</div><p>Mujeres como Marie Curie o Margarita Salas hicieron descubrimientos fundamentales. Hoy chicas y chicos pueden dedicarse a la ciencia por igual.</p>`]
   ],
   gens:[
     ()=>{const w=pick(WOMEN);return mc(`¿Qué científica es conocida por <b>${w.a}</b>?`,w.n,shuffle(WOMEN.filter(x=>x!==w)).slice(0,3).map(x=>x.n),`${w.n}: ${w.k}`)},
@@ -205,15 +205,15 @@ const CIE_ANIMS=[
 [ // Método científico: las plantas de Leo
   {say:'Leo observa que las plantas de su ventana crecen más que las del pasillo, y se pregunta por qué. Así empieza el método científico: con una observación y una pregunta.',
    show:sk(280,150,box(20,20,90,80,0,{t:.6})+ln(65,20,65,100,.6,{t:.2})+ln(20,60,110,60,.7,{t:.2})+plant(65,118,60,1)+plant(200,118,20,2)+tx(65,148,'ventana',2.6,{s:13})+tx(200,148,'pasillo',2.8,{s:13})+tx(250,60,'¿?',3.4,{s:28,c:'red'}))},
-  {say:'Leo propone una hipótesis: una posible respuesta que se puede comprobar. Las plantas crecen más cuando reciben más luz.',
-   show:sk(260,90,stroke('M110 60Q90 40 110 20Q130 4 150 20Q170 40 150 60L146 72L114 72Z',0,{c:'red',t:.6})+ln(118,80,142,80,.6,{t:.12}))+line(at(1.2,'<b>Hipótesis:</b> más luz → más crecimiento'))},
+  {say:'Leo propone una hipótesis: una posible respuesta que se puede comprobar. Las plantas crecen más sanas cuando reciben más luz.',
+   show:sk(260,90,stroke('M110 60Q90 40 110 20Q130 4 150 20Q170 40 150 60L146 72L114 72Z',0,{c:'red',t:.6})+ln(118,80,142,80,.6,{t:.12}))+line(at(1.2,'<b>Hipótesis:</b> más luz → plantas más sanas'))},
   {say:'Ahora tú: ¿qué paso es este?',ask:()=>CIE_LEVELS[1].gens[1]()},
   {say:'Para comprobarla, experimenta con dos plantas iguales, la misma tierra y la misma agua. Solo cambia una cosa: una recibe luz y la otra está a oscuras.',
    show:sk(280,150,sun(60,26,0)+plant(60,120,30,.6)+box(160,40,90,90,1.6,{t:.6})+fill(163,43,84,84,2.2,'ink')+tx(70,148,'con luz',2.6,{s:13})+tx(205,148,'a oscuras',2.8,{s:13}))+line(at(3.2,'solo cambia <b>una cosa</b>: la luz'))},
   {say:'Durante dos semanas mide las plantas y apunta los datos. Para analizarlos, los ordena en una tabla y en una gráfica.',
-   show:`<div class="row instrow">${sk(150,100,box(5,10,140,80,0,{t:.6})+ln(75,10,75,90,.6,{t:.15})+ln(5,36,145,36,.7,{t:.15})+tx(40,30,'luz',1,{s:12})+tx(110,30,'oscuras',1.1,{s:12})+tx(40,68,'12 cm',1.6,{s:16})+tx(110,68,'4 cm',1.9,{s:16}))}${sk(110,100,chart(10,5,2.4,[72,24]))}</div>`},
-  {say:'¿Qué sabes de los datos y las conclusiones?',ask:()=>CIE_LEVELS[1].gens[0]()},
-  {say:'Al analizar los datos saca una conclusión: la luz ayuda a crecer, la hipótesis se confirma. Si se hubiera rechazado, Leo plantearía una hipótesis nueva y volvería a experimentar.',
+   show:`<div class="row instrow">${sk(150,100,box(5,10,140,80,0,{t:.6})+ln(75,10,75,90,.6,{t:.15})+ln(5,36,145,36,.7,{t:.15})+tx(40,30,'luz',1,{s:12})+tx(110,30,'oscuras',1.1,{s:12})+tx(40,68,'6 hojas',1.6,{s:14})+tx(110,68,'0 hojas',1.9,{s:14}))}${sk(110,100,chart(10,5,2.4,[72,24]))}</div>`},
+  {say:'Responde a esta pregunta sobre el método científico.',ask:()=>CIE_LEVELS[1].gens[0]()},
+  {say:'Al analizar los datos saca una conclusión: las plantas necesitan luz para crecer sanas, la hipótesis se confirma. Si se hubiera rechazado, Leo plantearía una hipótesis nueva y volvería a experimentar.',
    show:line(seq(['observación','→','hipótesis','→','experimento','→','<b>conclusión</b>'],0,.5))+line(at(3.6,'✓ confirmada → ley o teoría si se repite','good'))+line(at(4.8,'✗ rechazada → nueva hipótesis','bad'))},
   {say:'En la vida real: los medicamentos se prueban así. Antes de venderse se experimenta con grupos de personas y se analizan los datos para comprobar que funcionan y que son seguros.',
    show:real('los medicamentos',sk(270,110,stroke('M30 50L60 20Q72 8 84 20Q96 32 84 44L54 74Q42 86 30 74Q18 62 30 50Z',0,{c:'blue',t:.8})+ln(45,35,69,59,.8,{t:.2})+chart(150,10,1.4,[30,64,50])))},
@@ -263,7 +263,7 @@ const CIE_ANIMS=[
   {say:'Marie Curie estudió la radiactividad y descubrió el polonio y el radio. Ganó dos premios Nobel, en Física y en Química.',
    show:`<div class="row instrow">${sk(90,90,face(45,46,0,'M-16 -2Q-16 -22 0 -22Q16 -22 16 -2M-16 -2L-18 10M16 -2L18 10'),'inst')}${sk(90,90,atom(45,45,1),'inst')}</div>`+line(at(2.6,'<b>Marie Curie</b> · radiactividad · dos Nobel'))},
   {say:'¿Quién es quién? Relaciona la científica con lo que hizo.',ask:()=>CIE_LEVELS[4].gens[0]()},
-  {say:'Rosalind Franklin obtuvo con rayos X la fotografía cincuenta y uno, clave para descubrir que el ADN tiene forma de doble hélice. No recibió el Nobel.',
+  {say:'Rosalind Franklin obtuvo con rayos X la fotografía cincuenta y uno, clave para descubrir que el ADN tiene forma de doble hélice. Murió joven y no llegó a recibir el Nobel.',
    show:`<div class="row instrow">${sk(90,90,face(45,46,0),'inst')}${sk(70,130,dna(35,5,1),'inst')}</div>`+line(at(2.8,'<b>Rosalind Franklin</b> · la doble hélice del ADN'))},
   {say:'La española Margarita Salas descubrió una proteína que permite copiar el ADN. Hoy se usa en laboratorios de todo el mundo.',
    show:`<div class="row instrow">${sk(90,90,face(45,46,0,'M-14 -4Q-12 -22 0 -22Q12 -22 14 -4'),'inst')}${sk(170,130,dna(35,5,.8)+arrow(70,65,100,65,1.9,'blue')+dna(135,5,2.3),'dots')}</div>`+line(at(2.8,'<b>Margarita Salas</b> · copiar el ADN'))},

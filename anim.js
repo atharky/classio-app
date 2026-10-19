@@ -39,13 +39,13 @@ const POT_ANIMS=[
   {say:'El exponente no multiplica a la base: cuenta cuántas veces se repite. Compruébalo.',ask:POT_LEVELS[0].gens[5]},
   {say:'En la vida real: una bacteria se divide en dos cada veinte minutos. Tras cinco divisiones hay dos elevado a cinco: treinta y dos bacterias. ¡Igual que los cortes de Lucía!',
    show:real('las bacterias',tree(4,0))+line(at(4.4,`1 → 2 → 4 → 8 → … → ${P(2,5)} = <b>32</b>`))},
-  {say:'¿Cuántas bacterias habrá?',ask:()=>{const n=ri(3,7);return num(`Una bacteria se divide en dos cada hora. Si empiezas con una, ¿cuántas bacterias hay después de ${n} horas?`,2**n,`Cada hora se duplican: ${P(2,n)} = ${2**n} bacterias.`)}}
+  {say:'¿Cuántas bacterias habrá?',ask:()=>{const n=ri(3,7);return num(`Una bacteria se divide en dos cada veinte minutos. Si empiezas con una, ¿cuántas bacterias hay después de ${n} divisiones?`,2**n,`Cada división duplica las bacterias: ${P(2,n)} = ${2**n} bacterias.`)}}
 ],
 [ // 2 · Cuadrados, cubos y casos especiales — relato: «Carla y las baldosas»
   {say:'Carla va a poner baldosas en un patio cuadrado de cuatro baldosas de lado. Necesita cuatro filas de cuatro: cuatro al cuadrado, dieciséis baldosas.',
    show:`<div class="row instrow">${sk(110,140,person(30,30,0,'Carla'),'inst')}${grid(4,.6,{size:110})}</div>`+line(at(2.6,`${P(4,2)} = 4 · 4 = <b>16</b> baldosas`))},
   {say:'Ahora tú: ¿cuántas baldosas hacen falta?',ask:POT_LEVELS[1].gens[0]},
-  {say:'Con las baldosas que sobran, su hermano monta un cubo de tres por tres por tres. Tres al cubo: veintisiete cubitos.',
+  {say:'Mientras tanto, su hermano monta con cubitos de madera un cubo de tres por tres por tres. Tres al cubo: veintisiete cubitos.',
    show:`<div class="row instrow">${cube(0)}</div>`+line(at(2,`${P(3,3)} = 3 · 3 · 3 = <b>27</b>`))},
   {say:'Carla apila baldosas: ocho, luego la mitad, cuatro, luego dos y luego una. Cada paso divide entre la base. Por eso dos elevado a cero vale uno.',
    show:sk(300,110,stack(8,92,8,0,{w:36,h:18})+tx(28,108,'2³ = 8',1,{s:13})
@@ -71,7 +71,7 @@ const POT_ANIMS=[
    show:sk(280,110,person(40,30,0,'Eva')+bubble(64,4,120,32,'−3² = 9',.7,{s:16,c:'red'})+ln(80,10,170,32,1.6,{c:'red',t:.3}))
      +line(at(2,`${P(-3,2)} = 9`,'good'))+line(at(3,'−3<sup>2</sup> = −(3 · 3) = −9','bad'))},
   {say:'Calcula esta, sin paréntesis.',ask:POT_LEVELS[2].gens[2]},
-  {say:'En la vida real: las calculadoras siguen la misma regla. Si tecleas menos tres al cuadrado sin paréntesis, te da menos nueve. Con paréntesis, nueve.',
+  {say:'En la vida real: las calculadoras científicas siguen la misma regla. Si tecleas menos tres al cuadrado sin paréntesis, te da menos nueve. Con paréntesis, nueve.',
    show:real('la calculadora',sk(260,130,box(70,6,120,120,0,{t:.7})+box(84,16,92,30,.6,{t:.4})+tx(130,38,'−3² = −9',1.2,{s:14,c:'red'})
      +[0,1,2].map(r=>[0,1,2].map(c=>box(88+c*30,56+r*22,22,16,1.6+r*.2+c*.06,{t:.15})).join('')).join(''))+line(at(2.8,'(−3)² = 9 · −3² = −9')))},
   {say:'Calcula la potencia.',ask:POT_LEVELS[2].gens[0]}
@@ -178,7 +178,7 @@ const RAI_ANIMS=[
   {say:'Su hermana dice que el resto podría ser doce. ¡Imposible! Con once ya serían treinta y seis y el cuadrado crecería a seis. El resto nunca pasa del doble de la raíz.',
    show:line(strike(at(0,'resto = 12','bad'),1))+line(at(1.8,'resto ≤ 2 · 5 = <b>10</b>','good'))},
   {say:'Calcula el resto.',ask:RAI_LEVELS[2].gens[1]},
-  {say:'Para afinar, Lucas prueba con décimas: cinco con cuatro al cuadrado da veintinueve con dieciséis, y cinco con cinco, treinta con veinticinco. Raíz de treinta es casi cinco con cuatro.',
+  {say:'Para afinar, Lucas prueba con décimas: cinco con cuatro al cuadrado da veintinueve con dieciséis, y cinco con cinco, treinta con veinticinco. Raíz de treinta es algo más de cinco con cuatro.',
    show:line(at(0,'5,4 · 5,4 = 29,16'))+line(at(1.4,'5,5 · 5,5 = 30,25'))+line(at(2.8,`${R(30)} ≈ <b>5,4</b>`),'big')},
   {say:'En la vida real: un jardinero tiene semillas para cincuenta metros cuadrados de césped en forma de cuadrado. El lado será raíz de cincuenta: algo más de siete metros.',
    show:real('el césped',sk(240,120,box(70,10,100,100,0,{t:.8})+tx(120,66,'50 m²',1.2,{s:18})+tx(200,64,'≈ 7 m',1.8,{s:15,c:'red'})))+line(at(2.4,`7 &lt; ${R(50)} &lt; 8`))},
@@ -216,7 +216,7 @@ const RAI_ANIMS=[
   {say:'En una operación combinada, la raíz se hace igual que las potencias: primero los paréntesis, luego raíces y potencias, y después multiplicar y dividir.',
    show:line(at(0,`3 + ${R(49)} : 7 − ${P(2,2)}`),'big')+line(at(1.4,'3 + 7 : 7 − 4'))+line(at(2.4,'3 + 1 − 4 = <b>0</b>'))},
   {say:'Ahora, una operación combinada.',ask:RAI_LEVELS[4].gens[3]},
-  {say:'En la vida real: un carpintero apoya una escalera en la pared. Si la base está a tres metros y la pared a cuatro metros de altura, la escalera mide cinco metros.',
+  {say:'En la vida real: un carpintero apoya una escalera en la pared. Si el pie de la escalera está a tres metros de la pared y llega a cuatro metros de altura, mide raíz de nueve más dieciséis: cinco metros.',
    show:real('la escalera del carpintero',sk(240,130,stroke('M60 110L60 14L180 110Z',0,{t:.8})+tx(30,66,'4 m',1.2,{s:14})+tx(120,126,'3 m',1.6,{s:14})+tx(140,50,'? m',2.2,{s:16,c:'red'})))+line(at(2.6,`${R('9 + 16')} = 5`))},
   {say:'Elige el valor correcto.',ask:RAI_LEVELS[4].gens[5]}
 ]];

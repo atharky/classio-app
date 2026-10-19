@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 11 de 26 · **En curso:** 0 · **Pendientes:** 15
+**Actualizado:** 19-10-2026 · **Hechas:** 12 de 26 · **En curso:** 0 · **Pendientes:** 14
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -46,7 +46,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
+| T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
@@ -67,6 +67,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 **Notas de bloqueo o descarte:**
 
+- **T09**: se aplicaron las correcciones «Aplicar ya» de [`revision-didactica.md`](revision-didactica.md) y la del experimento de las plantas (error de hecho: a oscuras se ahíla) y la regla de la longitud del resumen. Quedan pendientes de decisión del profesorado **M1** (pasos del método científico: 4 o 6 según el libro) y **F2** (noticia atribuida a El País).
 - **T24** está hecha en el código, pero siguen sin confirmar las dudas 1, 3, 4 y 5 de la sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md) (tamaño «del sol», peridotita, espesores y respuestas del crucigrama).
 - **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
 
@@ -151,7 +152,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5** con la especificación anterior; **€**.
 
 ### T09 · Revisión didáctica de todos los contenidos
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** contenido · **Depende de:** —
 - **Alcance:** lista de comprobación por nivel: hechos, terminología del libro de texto (p. ej. los «cuatro pasos» del método científico de las páginas 10–11), redacción adecuada a 12 años, coherencia entre lección, preguntas y relato, el aviso sobre la ficha de Redi. Salida: informe con correcciones propuestas y PR con las que no requieran decisión.
 - **Modelo:** **Opus 5.5** (`high`) para la revisión (hace falta criterio y conocimiento del currículo); **Haiku 5.5** para aplicar la lista de correcciones resultante. La aprobación final es de un docente. **€€**
