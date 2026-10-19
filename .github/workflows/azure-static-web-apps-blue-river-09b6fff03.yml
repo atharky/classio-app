@@ -28,6 +28,8 @@ jobs:
         run: npm ci && npx playwright install --with-deps chromium
       - name: Run E2E tests
         run: npm run test:e2e
+      - name: Sellar la caché del service worker
+        run: node scripts/stamp-sw.mjs && rm -rf node_modules playwright-report test-results
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1

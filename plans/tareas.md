@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 2 de 26 · **En curso:** 0 · **Pendientes:** 24
+**Actualizado:** 19-10-2026 · **Hechas:** 3 de 26 · **En curso:** 0 · **Pendientes:** 23
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -39,7 +39,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | ID | Tarea | Fase | Prio | Depende de | Modelo | Estado | PR | Fecha |
 |---|---|---|---|---|---|---|---|---|
 | T01 | Pruebas E2E en el repositorio y en CI | F1 | P1 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
+| T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ⬜ Pendiente | — | — |
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
@@ -90,7 +90,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`high`) para el diseño de la suite y la integración en CI; los guiones ya existen, pero hay que convertirlos en pruebas robustas y sin tiempos fijos. **€€€**
 
 ### T02 · Versionado automático de la caché del service worker
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** técnica · **Depende de:** —
 - **Por qué:** `sw.js` es *cache-first* con un nombre de caché que se sube a mano (`v4`). Ya se olvidó una vez y los usuarios con la PWA instalada no habrían visto los cambios.
 - **Alcance:** paso en CI que calcula un hash de los ficheros publicados y lo escribe en `sw.js` (o genera `sw.js` desde una plantilla); estrategia *stale-while-revalidate* para los recursos propios, red directa para `/api/`; aviso discreto «Hay una versión nueva, recarga» cuando el SW nuevo se activa.
