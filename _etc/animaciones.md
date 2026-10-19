@@ -40,6 +40,12 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Raíces 3 | 30 alumnos → cuadrado de 5 × 5 y sobran 5 (el resto) |
 | Raíces 4 | El área de un cuadrado nunca es negativa: no hay raíz de −9 |
 | Raíces 5 | Escalera del carpintero: 3 m de base y 4 m de pared → 5 m (√(9+16)) |
+| Divisibilidad 1 | Repartir 12 onzas de chocolate: sus divisores |
+| Divisibilidad 2 | Repartir 120 caramelos entre 3 amigos con el criterio del 3 |
+| Divisibilidad 3 | Claves de seguridad con primos enormes |
+| Divisibilidad 4 | Engranajes y descomposición en factores primos |
+| Divisibilidad 5 | Cortar cintas en trozos iguales (m.c.d.) |
+| Divisibilidad 6 | Semáforos coordinados («ola verde», m.c.m.) |
 | Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
 | Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
 | Comunicación 3 | La publicidad: función apelativa y poética |

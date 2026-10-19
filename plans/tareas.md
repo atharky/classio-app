@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 20 de 26 · **En curso:** 0 · **Pendientes:** 6
+**Actualizado:** 19-10-2026 · **Hechas:** 21 de 26 · **En curso:** 0 · **Pendientes:** 5
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -48,7 +48,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T10 | Repaso de fallos (repetición espaciada simple) | F2 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ⬜ Pendiente | — | — |
+| T11 | Módulo «Divisibilidad» | F2 | P2 | T07 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
@@ -164,7 +164,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`medium`) por tocar el modelo de estado y la fusión en la nube; **€€€**.
 
 ### T11 · Módulo «Divisibilidad»
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P2 · **Tipo:** funcional · **Depende de:** T07
 - **Alcance:** 5–6 niveles (múltiplos y divisores, criterios de divisibilidad, números primos y compuestos, descomposición factorial, m.c.m. y m.c.d., problemas), generadores con recálculo en pruebas, relatos, exámenes. Antes, un plan corto como el de Raíces.
 - **Modelo:** **Opus 5.5** (`medium`) para el plan y los generadores con sus pruebas de recálculo; **Sonnet 5.5** para lecciones y relatos. **€€€**

@@ -229,3 +229,54 @@ test('ciencia y pseudociencia: las 11 disciplinas de la ficha tienen la clasific
     Ufología: false, Grafología: false, Homeopatía: false, Cienciología: false, Numerología: false, Reflexología: false };
   assert.deepEqual(Object.fromEntries(DISC.map(([n, sci]) => [n, sci])), expected);
 });
+
+// ---- Divisibilidad: se recalcula cada respuesta con cuentas de fuerza bruta, sin usar las funciones del módulo.
+const bDivs = (n) => Array.from({ length: n }, (_, i) => i + 1).filter((d) => n % d === 0);
+const bPrime = (n) => n > 1 && bDivs(n).length === 2;
+const bGcd = (...xs) => { for (let g = Math.min(...xs); g >= 1; g--) if (xs.every((x) => x % g === 0)) return g; };
+const bLcm = (...xs) => { for (let m = Math.max(...xs); ; m++) if (xs.every((x) => m % x === 0)) return m; };
+const SUP = { '²': 2, '³': 3, '⁴': 4, '⁵': 5, '⁶': 6 };
+const factorsOf = (s) => s.split(' · ').flatMap((t) => { const m = t.match(/^(\d+)([²³⁴⁵⁶])?$/); return Array(m[2] ? SUP[m[2]] : 1).fill(Number(m[1])); });
+const textOf = (q) => q.prompt.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ');
+const mcAns = (q) => q.options[q.answer];
+const only = (q, pred) => q.options.every((o, k) => pred(Number(o)) === (k === q.answer));
+const DIV_NUM = [
+  [/^Escribe el múltiplo de/, (q) => { const [m, k] = ints(q); return q.answer === m * k; }],
+  [/^¿Cuántos divisores tiene/, (q) => q.answer === bDivs(ints(q)[0]).length],
+  [/^¿Cuál es la menor cifra/, (q) => { const [a, d] = ints(q); const c = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9].find((x) => (a * 10 + x) % d === 0); return q.answer === c; }],
+  [/^¿Cuántos números primos hay entre/, (q) => { const [a, b] = ints(q); return q.answer === Array.from({ length: b - a - 1 }, (_, i) => a + 1 + i).filter(bPrime).length; }],
+  [/^¿Cuál es el menor número primo mayor que/, (q) => { const n = ints(q)[0]; let p = n + 1; while (!bPrime(p)) p++; return q.answer === p; }],
+  [/^¿Cuál es el mayor factor primo de/, (q) => q.answer === Math.max(...bDivs(ints(q)[0]).filter(bPrime))],
+  [/^Calcula el número cuya descomposición es/, (q) => q.answer === factorsOf(textOf(q).match(/es ([\d²³⁴⁵⁶ ·]+)\./)[1].trim()).reduce((a, b) => a * b, 1)],
+  [/^¿Cuántos factores primos distintos/, (q) => q.answer === bDivs(ints(q)[0]).filter(bPrime).length],
+  [/contando los repetidos/, (q) => { let n = ints(q)[0], c = 0; for (let p = 2; n > 1; p++) while (n % p === 0) { n /= p; c++; } return q.answer === c; }],
+  [/^Calcula el m\.c\.d\. de/, (q) => q.answer === bGcd(...ints(q))],
+  [/^Tienes \d+ caramelos/, (q) => q.answer === bGcd(...ints(q))],
+  [/^Calcula el m\.c\.m\. de/, (q) => q.answer === bLcm(...ints(q))],
+  [/vuelven a salir juntos|vuelven a coincidir/, (q) => q.answer === bLcm(...ints(q))],
+];
+const DIV_MC = [
+  [/^¿Cuál de estos números es múltiplo de \d+\?/, (q) => only(q, (x) => x % ints(q)[0] === 0)],
+  [/^¿Cuál de estos números es divisor de/, (q) => only(q, (x) => ints(q)[0] % x === 0)],
+  [/^¿Es \d+ un divisor de/, (q) => { const [d, n] = ints(q); return (mcAns(q) === 'Sí') === (n % d === 0); }],
+  [/^¿Es \d+ divisible por/, (q) => { const [n, d] = ints(q); return (mcAns(q) === 'Sí') === (n % d === 0); }],
+  [/^¿Por cuál de estos números es divisible/, (q) => only(q, (x) => ints(q)[0] % x === 0)],
+  [/^¿Qué criterio permite|^Un número acaba en 0|único número primo que es par/, () => true],
+  [/^¿Cuál de estos números es primo\?/, (q) => only(q, bPrime)],
+  [/^¿Cuál de estos números es compuesto\?/, (q) => only(q, (x) => x > 1 && !bPrime(x))],
+  [/^¿Es \d+ un número primo/, (q) => (mcAns(q) === 'Sí') === bPrime(ints(q)[0])],
+  [/^¿Cuál es la descomposición en factores primos de/, (q) => { const n = ints(q)[0]; return q.options.every((o, k) => { const f = factorsOf(o); return (f.every(bPrime) && f.reduce((a, b) => a * b, 1) === n) === (k === q.answer); }); }],
+  [/^¿Cuál es el m\.c\.d\. de|^¿Cuánto vale el m\.c\.d\. de/, (q) => Number(mcAns(q)) === bGcd(...ints(q))],
+  [/^¿Cuál es el m\.c\.m\. de/, (q) => Number(mcAns(q)) === bLcm(...ints(q))],
+  [/múltiplo de \d+ y de \d+ a la vez/, (q) => { const [a, b] = ints(q); return only(q, (x) => x % a === 0 && x % b === 0); }],
+];
+test('divisibilidad: las respuestas son matemáticamente correctas', () => {
+  const mod = MODULES.find((m) => m.id === 'divis');
+  for (const [i, level] of mod.levels.entries()) for (const [g, gen] of level.gens.entries()) for (let r = 0; r < RUNS; r++) {
+    const q = gen();
+    const found = (q.type === 'num' ? DIV_NUM : DIV_MC).find(([re]) => re.test(textOf(q)));
+    const where = `nivel ${i + 1} gen ${g + 1}: ${textOf(q)}`;
+    assert.ok(found, `${where}: no hay comprobación para este enunciado`);
+    assert.ok(found[1](q), `${where} → ${q.type === 'num' ? q.answer : mcAns(q)} (${q.options ?? ''})`);
+  }
+});
