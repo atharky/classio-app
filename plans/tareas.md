@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 22 de 26 · **En curso:** 0 · **Pendientes:** 4
+**Actualizado:** 19-10-2026 · **Hechas:** 23 de 26 · **En curso:** 0 · **Pendientes:** 3
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -61,13 +61,14 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
-| T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ⬜ Pendiente | — | — |
+| T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ⬜ Pendiente | — | — |
 | T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⬜ Pendiente | — | — |
 
 **Notas de bloqueo o descarte:**
 
 - **T09**: se aplicaron las correcciones «Aplicar ya» de [`revision-didactica.md`](revision-didactica.md) y la del experimento de las plantas (error de hecho: a oscuras se ahíla) y la regla de la longitud del resumen. Quedan pendientes de decisión del profesorado **M1** (pasos del método científico: 4 o 6 según el libro) y **F2** (noticia atribuida a El País).
+- **T21** está hecha en lo técnico (informe `scripts/audio-report.mjs`, nombres de archivo, carga bajo demanda y comprobación en las pruebas), pero **no hay ningún audio grabado**: generarlos es trabajo de una voz humana o de un servicio de síntesis. Falta decidir el coste de almacenamiento (unos 45 MB para los 355 pasos actuales; ver `_etc/animaciones.md`).
 - **T24** está hecha en el código, pero siguen sin confirmar las dudas 1, 3, 4 y 5 de la sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md) (tamaño «del sol», peridotita, espesores y respuestas del crucigrama).
 - **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
 
@@ -252,7 +253,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** por tema; **Opus 5.5** si el tema exige generadores con cálculo. **€€** por tema.
 
 ### T21 · Narraciones grabadas
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P4 · **Depende de:** T07
 - **Alcance:** generar un audio por paso (`audio: 'audio/<modulo>-<nivel>-<paso>.mp3'`) con un servicio TTS de calidad o grabación humana; script que detecta pasos sin audio; añadir a la caché del SW o cargar bajo demanda. Decidir coste de almacenamiento.
 - **Modelo:** **Haiku 5.5** para el script y el cableado; la generación de audio no es tarea de modelo de lenguaje. **€**

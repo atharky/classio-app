@@ -11,7 +11,7 @@ self.addEventListener('fetch', event => {
   // Stale-while-revalidate: responde al instante desde la caché y la refresca en segundo plano.
   event.respondWith(caches.open(CACHE).then(async cache => {
     const cached = await cache.match(event.request);
-    const fresh = fetch(event.request).then(res => { if (res.ok && new URL(event.request.url).origin === location.origin) cache.put(event.request, res.clone()); return res; }).catch(() => cached);
+    const fresh = fetch(event.request).then(res => { if (res.status === 200 && new URL(event.request.url).origin === location.origin) cache.put(event.request, res.clone()); return res; }).catch(() => cached);
     return cached || fresh;
   }));
 });

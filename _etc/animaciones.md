@@ -75,7 +75,12 @@ Al salir de la pantalla (cambiar de pestaña, volver a niveles…) la narración
 
 - Por defecto se usa la **voz del navegador** (Web Speech API) con la primera voz en español disponible (`es-ES` si existe). No se descarga nada ni hace falta red, y la política de seguridad (CSP) no cambia.
 - Si el navegador no tiene voz en español, se avisa y se siguen los subtítulos.
-- Para usar **grabaciones propias**, añade `audio: 'audio/pot-1-1.mp3'` al paso y sube el archivo al mismo sitio. Si la grabación falla, se vuelve a los subtítulos. Recuerda añadir los archivos a `ASSETS` en `sw.js` si deben funcionar sin conexión.
+- Para usar **grabaciones propias** (voz humana o de un servicio de síntesis de calidad):
+  1. `node scripts/audio-report.mjs --write` crea `audio/manifest.json` con la ruta y el texto de cada paso sin audio (`audio/<módulo>-<nivel>-<paso>.mp3`).
+  2. Graba o genera cada texto y guarda el archivo en su ruta.
+  3. Añade `audio: 'audio/<módulo>-<nivel>-<paso>.mp3'` al paso. Si la grabación falla, se vuelve a los subtítulos y a la voz del navegador.
+  `npm test` comprueba que cada audio declarado existe y que el nombre es el esperado. `node scripts/audio-report.mjs --strict` falla si falta alguno (para activarlo en CI cuando estén todos).
+- **Sin conexión:** los audios se cargan **bajo demanda** y el service worker los guarda al reproducirlos por primera vez (solo respuestas completas; los audios solo se precargan si se añaden a `ASSETS`). Para precargar todos hay que sumarlos a `ASSETS`: cada narración de 10 a 20 s en MP3 mono a 64 kbit/s pesa unos 100–150 KB, así que los 355 pasos actuales rondan los 45 MB. **Decisión pendiente:** si ese peso es aceptable en la Static Web App y en los móviles del alumnado, o si solo se graban los niveles con más uso.
 
 ## Cómo se escribe una animación
 

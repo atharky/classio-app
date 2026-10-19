@@ -38,6 +38,7 @@ npm run test:e2e         # navegador: reproductor, recorrido de niveles y exáme
 | `catalog.js` | Materias (`SUBJECTS`), módulos (`MODULES`) y relatos (`ANIMS`) |
 | `sync.js`, `api/` | Cliente de sincronización y API (Azure Functions + Table Storage) |
 | `sw.js`, `scripts/stamp-sw.mjs` | Service worker (PWA) y sello de versión de la caché |
+| `scripts/audio-report.mjs` | Informe y manifiesto de narraciones grabadas (ver `_etc/animaciones.md`) |
 | `tests/`, `api/test/` | Pruebas unitarias; `tests/e2e/` las de navegador |
 | `plans/` | Plan de mejoras, detalle de tareas con control de estado |
 | `_etc/` | Documentación de diseño: [materias](_etc/materias.md), [animaciones](_etc/animaciones.md), [sincronización](_etc/sincronizacion.md), [plan de Raíces](_etc/plan-modulo-raices.md) |
