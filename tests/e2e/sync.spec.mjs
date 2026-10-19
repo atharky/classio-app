@@ -48,3 +48,19 @@ test('dos dispositivos se sincronizan por código sin perder progreso',async({br
   await expect(A.locator('.mod.on .chip').first()).toHaveText('0 de 6 niveles');
   expect(A.errors).toEqual([]);expect(B.errors).toEqual([]);
 });
+
+test('borrar los datos de la nube elimina el código y desvincula el dispositivo',async({browser})=>{
+  const A=await device(browser,state({0:5},2));
+  await A.click('#sync');await A.click('#create');
+  const code=(await A.locator('.code').textContent()).trim();
+  await A.click('#wipe');await expect(A.locator('#sync-actions')).toContainText('no se podrá recuperar');
+  await A.click('#w-no');await expect(A.locator('.code')).toHaveText(code);
+  await A.click('#wipe');await A.click('#w-yes');
+  await expect(A.locator('#create')).toBeVisible();
+  await expect(A.locator('#sync-msg')).toContainText('Datos borrados de la nube');
+  expect((await stored(A)).mods.potencias.best).toEqual({0:5});
+  const B=await device(browser);
+  await B.click('#sync');await B.fill('#code-in',code);await B.click('#link-btn');
+  await expect(B.locator('#sync-msg')).toContainText('no existe');
+  expect(A.errors).toEqual([]);
+});

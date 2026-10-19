@@ -11,6 +11,7 @@ Permite continuar el progreso en otro ordenador, tablet o móvil **sin cuentas n
    - por examen, todas las notas (se guardan las 10 últimas).
 3. A partir de ahí, cada vez que se guarda progreso se sincroniza en segundo plano (2 s después) y también al abrir la app. Si no hay conexión, el progreso sigue en el navegador y se avisa en el pie de página.
 4. **Desvincular** deja el progreso en el dispositivo y deja de sincronizarlo. **Borrar progreso** también desvincula el dispositivo; si no, la nube lo volvería a traer.
+5. **Borrar mis datos de la nube** (en la misma vista, con confirmación) elimina la fila del código en Table Storage y desvincula el dispositivo, que conserva su progreso local. Después el código responde `unknown_code`.
 
 El **modo profesor** (abrir todos los niveles) no se sincroniza: es de cada dispositivo.
 
@@ -32,7 +33,7 @@ El **modo profesor** (abrir todos los niveles) no se sincroniza: es de cada disp
 | Vista *Sincronizar*, sincronización en segundo plano | [`app.js`](../app.js) |
 | Lógica del servidor sin dependencias de Azure (validar, juntar, reintentar) | [`api/src/sync.js`](../api/src/sync.js) |
 | Almacén Azure Table Storage con concurrencia optimista por ETag | [`api/src/table-store.js`](../api/src/table-store.js) |
-| Funciones HTTP de Azure Functions (modelo v4) | [`api/src/functions/sync.js`](../api/src/functions/sync.js) |
+| Funciones HTTP de Azure Functions (modelo v4: `sync/new`, `sync`, `sync/delete`) | [`api/src/functions/sync.js`](../api/src/functions/sync.js) |
 
 API (mismo dominio, así que la CSP `connect-src 'self'` no cambia):
 
@@ -40,6 +41,7 @@ API (mismo dominio, así que la CSP `connect-src 'self'` no cambia):
 |---|---|---|
 | `POST /api/sync/new` | `{state}` | `201 {code, state}` |
 | `POST /api/sync` | `{code, state}` | `200 {code, state}` con el progreso ya juntado |
+| `POST /api/sync/delete` | `{code}` | `200 {deleted:true}` o `404 unknown_code` |
 
 Errores: `400 invalid_body` · `400 invalid_code` · `404 unknown_code` · `409 conflict` · `500/503 server`.
 

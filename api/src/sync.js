@@ -44,7 +44,7 @@ export function mergeState(a,b){
 const fail=(status,error)=>({status,jsonBody:{error}});
 const parse=text=>{if(typeof text!=='string'||text.length>MAX_BODY)return null;try{const b=JSON.parse(text);return b&&typeof b==='object'?b:null}catch{return null}};
 
-/* store: get(id)→{state,etag}|null · create(id,state)→false si ya existe · update(id,state,etag)→false si hubo otra escritura */
+/* store: get(id)→{state,etag}|null · create(id,state)→false si ya existe · update(id,state,etag)→false si hubo otra escritura · remove(id)→false si no existía */
 export function createSync(store){
   return {
     async create(text){const body=parse(text);if(!body)return fail(400,'invalid_body');const state=sanitizeState(body.state);
@@ -56,5 +56,8 @@ export function createSync(store){
       for(let i=0;i<RETRIES;i++){const cur=await store.get(id);if(!cur)return fail(404,'unknown_code');
         const merged=mergeState(cur.state,local);
         if(JSON.stringify(merged)===JSON.stringify(cur.state)||await store.update(id,merged,cur.etag))return {status:200,jsonBody:{code,state:merged}}}
-      return fail(409,'conflict')}
+      return fail(409,'conflict')},
+    async remove(text){const body=parse(text);if(!body)return fail(400,'invalid_body');
+      const code=normalizeCode(body.code);if(!code)return fail(400,'invalid_code');
+      return await store.remove(codeId(code))?{status:200,jsonBody:{deleted:true}}:fail(404,'unknown_code')}
   }}

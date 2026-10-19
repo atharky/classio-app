@@ -11,9 +11,9 @@ let build=1; // POST /__bump simula un despliegue nuevo: cambia el sello de sw.j
 const types={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.svg':'image/svg+xml','.webmanifest':'application/manifest+json'};
 http.createServer(async(req,res)=>{
   const url=new URL(req.url,'http://x');
-  if(req.method==='POST'&&(url.pathname==='/api/sync/new'||url.pathname==='/api/sync')){
+  if(req.method==='POST'&&['/api/sync/new','/api/sync','/api/sync/delete'].includes(url.pathname)){
     let body='';for await(const c of req)body+=c;
-    const r=await (url.pathname.endsWith('/new')?sync.create(body):sync.sync(body));
+    const r=await (url.pathname.endsWith('/new')?sync.create(body):url.pathname.endsWith('/delete')?sync.remove(body):sync.sync(body));
     res.writeHead(r.status,{'Content-Type':'application/json'});return res.end(JSON.stringify(r.jsonBody))}
   if(url.pathname==='/__bump'){build++;res.writeHead(204);return res.end()}
   if(url.pathname==='/sw.js'){const d=(await readFile(join(ROOT,'sw.js'),'utf8')).replace("'cuaderno-__BUILD__'","'cuaderno-e2e"+build+"'");res.writeHead(200,{'Content-Type':'text/javascript','Cache-Control':'no-store'});return res.end(d)}

@@ -1,7 +1,7 @@
 import { $, esc, fmt, parseNum, pick, shuffle } from './data.js';
 import { SUBJECTS, MODULES, ANIMS } from './catalog.js';
 import { at, sk, stroke, dot, tx } from './sketch.js';
-import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
+import { loadLink, saveLink, normalizeCode, createCode, pushState, deleteCode, syncMessage } from './sync.js';
 
 /* Aviso de versión nueva: el service worker nuevo espera hasta que el alumno pulse «Recargar». */
 function offerUpdate(worker){
@@ -129,7 +129,7 @@ function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
      <p class="muted">Tu código de sincronización es:</p><p class="code">${esc(link.code)}</p>
      <p>Apúntalo en un lugar seguro: es la única forma de recuperar tu progreso en otro dispositivo. Quien tenga el código puede ver y cambiar tu progreso, así que no lo compartas.</p>
      <p class="hint">${link.at?`Última sincronización: ${new Date(link.at).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}`:'Aún sin sincronizar'}</p>
-     <div class="row" id="sync-actions"><button class="btn" type="button" id="sync-now">Sincronizar ahora</button><button class="btn ghost" type="button" id="unlink">Desvincular este dispositivo</button></div></section>`
+     <div class="row" id="sync-actions"><button class="btn" type="button" id="sync-now">Sincronizar ahora</button><button class="btn ghost" type="button" id="unlink">Desvincular este dispositivo</button><button class="btn ghost" type="button" id="wipe">Borrar mis datos de la nube</button></div></section>`
    :`<section class="card stack"><h3>Continúa en otro dispositivo</h3>
      <p>Ahora tu progreso solo está en este navegador. Crea un código para seguir en otro ordenador, tablet o móvil. No pedimos nombre, correo ni contraseña.</p>
      <div class="row"><button class="btn" type="button" id="create">Crear código</button></div></section>
@@ -142,7 +142,12 @@ function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
   if(link){
     $('#sync-now').onclick=async e=>{busy(e.target,true,'Sincronizando…');await syncNow();const b=$('#sync-now');b&&busy(b,false,'Sincronizar ahora')};
     $('#unlink').onclick=()=>{$('#sync-actions').innerHTML=`<span>¿Seguro? Apunta antes tu código: sin él no podrás recuperar el progreso en otro dispositivo.</span><button class="btn" type="button" id="u-yes">Sí, desvincular</button><button class="btn ghost" type="button" id="u-no">Cancelar</button>`;
-      $('#u-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';go(viewSync)};$('#u-no').onclick=()=>go(viewSync)}}
+      $('#u-yes').onclick=()=>{link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='';go(viewSync)};$('#u-no').onclick=()=>go(viewSync)};
+    $('#wipe').onclick=()=>{$('#sync-actions').innerHTML=`<span>¿Seguro? Se borra de la nube el progreso de este código y no se podrá recuperar con él. En este dispositivo se conserva.</span><button class="btn" type="button" id="w-yes">Sí, borrar de la nube</button><button class="btn ghost" type="button" id="w-no">Cancelar</button>`;
+      $('#w-no').onclick=()=>go(viewSync);
+      $('#w-yes').onclick=async e=>{busy(e.target,true,'Borrando…');
+        try{await deleteCode(link.code)}catch(err){if(!err||err.kind!=='unknown_code'){busy(e.target,false,'Sí, borrar de la nube');setSyncStatus(syncMessage(err));return}}
+        link=null;saveLink(null);clearTimeout(syncTimer);syncStatus='Datos borrados de la nube. Este dispositivo conserva su progreso.';go(viewSync)}}}
   else{
     $('#create').onclick=async e=>{busy(e.target,true,'Creando…');
       try{const r=await createCode(S);link={code:r.code,at:Date.now()};saveLink(link);syncStatus='';stay()}

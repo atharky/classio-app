@@ -12,4 +12,5 @@ const handle=pick=>async(request,context)=>{
   catch(e){context.error(e);return {status:500,headers,jsonBody:{error:'server'}}}};
 
 app.http('syncCreate',{methods:['POST'],authLevel:'anonymous',route:'sync/new',handler:handle(s=>s.create)});
+app.http('syncDelete',{methods:['POST'],authLevel:'anonymous',route:'sync/delete',handler:handle(s=>s.remove)});
 app.http('sync',{methods:['POST'],authLevel:'anonymous',route:'sync',handler:handle(s=>s.sync)});

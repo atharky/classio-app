@@ -18,6 +18,9 @@ export function tableStore(connectionString,table='progreso'){
     async create(id,state){await init();
       try{await client.createEntity(entity(id,state));return true}
       catch(e){if(e.statusCode===409)return false;throw e}},
+    async remove(id){await init();
+      try{await client.deleteEntity(PK,id);return true}
+      catch(e){if(e.statusCode===404)return false;throw e}},
     async update(id,state,etag){await init();
       try{await client.updateEntity(entity(id,state),'Replace',{etag});return true}
       catch(e){if(e.statusCode===412)return false;throw e}}

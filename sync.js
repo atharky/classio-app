@@ -16,6 +16,7 @@ async function call(path,body){let r,data=null;
 // Solo viaja el progreso; el modo profesor se queda en cada dispositivo.
 const payload=S=>({mods:S.mods,exams:S.exams});
 const createCode=S=>call('sync/new',{state:payload(S)});
+const deleteCode=code=>call('sync/delete',{code});
 const pushState=(code,S)=>call('sync',{code,state:payload(S)});
 
 const MESSAGES={
@@ -25,4 +26,4 @@ const MESSAGES={
   conflict:'Otro dispositivo estaba guardando a la vez. Vuelve a intentarlo.'};
 const syncMessage=e=>MESSAGES[e&&e.kind]||'El servidor de sincronización no está disponible ahora. Inténtalo más tarde.';
 
-export { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage };
+export { loadLink, saveLink, normalizeCode, createCode, pushState, deleteCode, syncMessage };

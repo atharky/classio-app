@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 3 de 26 · **En curso:** 0 · **Pendientes:** 23
+**Actualizado:** 19-10-2026 · **Hechas:** 4 de 26 · **En curso:** 0 · **Pendientes:** 22
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -40,7 +40,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 |---|---|---|---|---|---|---|---|---|
 | T01 | Pruebas E2E en el repositorio y en CI | F1 | P1 | — | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
-| T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
+| T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ⬜ Pendiente | — | — |
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ⬜ Pendiente | — | — |
@@ -98,7 +98,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5** (`medium`). Patrón conocido; la prueba E2E valida el resultado. **€€**
 
 ### T03 · Borrado del progreso en la nube
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** funcional + legal · **Depende de:** —
 - **Por qué:** «Borrar progreso» solo desvincula el dispositivo; la fila de Table Storage queda para siempre. Para un público menor de edad hace falta poder borrar los datos.
 - **Alcance:** `POST /api/sync/delete` con `{code}` que elimina la entidad; botón «Borrar mis datos de la nube» en la vista Sincronizar, con confirmación; pruebas de la API (memoria y Azurite) y E2E; documentar en `_etc/sincronizacion.md`.

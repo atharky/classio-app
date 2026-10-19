@@ -92,3 +92,17 @@ test('sync no reescribe si no hay nada nuevo', async () => {
   await sync.sync(body({code,state:progress({0:3},1)}));
   assert.equal(writes,0);
 });
+
+test('remove borra el código y después deja de existir', async () => {
+  const sync=createSync(memoryStore());
+  const {jsonBody:{code}}=await sync.create(body({state:progress({0:5},2)}));
+  assert.deepEqual((await sync.remove(body({code}))).jsonBody,{deleted:true});
+  assert.equal((await sync.sync(body({code,state:progress({},1)}))).jsonBody.error,'unknown_code');
+  assert.equal((await sync.remove(body({code}))).status,404);
+});
+
+test('remove valida el cuerpo y el código', async () => {
+  const sync=createSync(memoryStore());
+  assert.equal((await sync.remove('no es json')).jsonBody.error,'invalid_body');
+  assert.equal((await sync.remove(body({code:'abc'}))).jsonBody.error,'invalid_code');
+});
