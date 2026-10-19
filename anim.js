@@ -1,6 +1,6 @@
-import { ri, pick, shuffle, fmt, P, R, mc, num, POT_LEVELS, RAI_LEVELS } from './data.js';
+import { ri, P, R, num, POT_LEVELS, RAI_LEVELS } from './data.js';
 
-import { at, seq, line, lab, strike, real, sk, stroke, ln, box, fill, tx, arrow, grid, dots, circ, dot, person, bubble } from './sketch.js';
+import { at, seq, line, lab, strike, real, sk, stroke, ln, box, tx, arrow, grid, dots, circ, dot, person, bubble } from './sketch.js';
 
 const factors=(b,e,start=0,step=.35)=>seq(Array(e).fill(String(b)).flatMap((x,k)=>k?['·',x]:[x]),start,step/2);
 // Montón de n trozos de papel apilados (de abajo arriba), con la esquina inferior izquierda en (x,y).

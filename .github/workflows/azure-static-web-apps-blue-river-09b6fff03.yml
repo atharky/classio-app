@@ -26,6 +26,8 @@ jobs:
         run: npm test
       - name: Install E2E dependencies
         run: npm ci && npx playwright install --with-deps chromium
+      - name: Lint y formato
+        run: npm run lint && npm run format
       - name: Run E2E tests
         run: npm run test:e2e
       - name: Sellar la caché del service worker

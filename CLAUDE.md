@@ -14,7 +14,7 @@ App educativa estática (módulos ES, sin build) + API de sincronización en `ap
 
 ## Antes de dar algo por hecho
 
-1. `npm test` en verde (incluye el control de estado del plan).
+1. `npm test` y `npm run lint` en verde (`npm test` incluye el control de estado del plan). `npm run format` comprueba Prettier solo en scripts y pruebas E2E; el contenido de una línea por generador no se reformatea.
 2. `npm run test:e2e` en verde si tocaste `main.js`, `views/`, `player.js`, estilos, el reproductor, la API o el service worker.
 3. No hace falta subir a mano la versión de la caché: la sella el despliegue (`scripts/stamp-sw.mjs`). Si añades un fichero a la web, inclúyelo en `ASSETS` de `sw.js` (una prueba lo exige).
 

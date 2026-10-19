@@ -18,6 +18,7 @@ node tests/e2e/server.mjs 8791     # web + API de sincronización en memoria
 ```bash
 npm test                 # unitarias: contenido, relatos, plan de tareas, API de sincronización, service worker
 npm ci && npx playwright install chromium
+npm run lint             # ESLint (y `npm run format` para Prettier en scripts y pruebas)
 npm run test:e2e         # navegador: reproductor, recorrido de niveles y exámenes, sincronización, service worker
 ```
 

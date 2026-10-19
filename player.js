@@ -1,8 +1,6 @@
 import { pick } from './data.js';
 import { PRAISE, answered, isRight, lockQ, qBody, rightText, wireQ } from './question.js';
 import { at, dot, sk, stroke, tx } from './sketch.js';
-import { S } from './state.js';
-import { go } from './ui.js';
 
 /* ---------- explicación animada con audio ---------- */
 let animStop=null;

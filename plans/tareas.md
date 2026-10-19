@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 13 de 26 · **En curso:** 0 · **Pendientes:** 13
+**Actualizado:** 19-10-2026 · **Hechas:** 14 de 26 · **En curso:** 0 · **Pendientes:** 12
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -52,7 +52,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T24 | Módulo de Biología «La Tierra y la geosfera» | F2 | P2 | T01 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T25 | Rehacer «Ciencia y pseudociencia» con la ficha de clase | F2 | P2 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T12 | Dividir `app.js` en módulos | F3 | P2 | T01 | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ⬜ Pendiente | — | — |
+| T13 | ESLint y Prettier | F3 | P3 | T12 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T14 | Accesibilidad | F3 | P2 | T12 | Sonnet | ⬜ Pendiente | — | — |
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ⬜ Pendiente | — | — |
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ⬜ Pendiente | — | — |
@@ -195,7 +195,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Opus 5.5** (`high`). Refactorización transversal con riesgo de regresión sutil. **€€€**
 
 ### T13 · ESLint y Prettier
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Tipo:** técnica · **Depende de:** T12
 - **Alcance:** configuración mínima (ESM, navegador + Node, reglas recomendadas, sin reformatear el estilo de una línea por generador en los ficheros de contenido o acordar uno nuevo), scripts `lint`/`format`, paso en CI.
 - **Modelo:** **Haiku 5.5**. **€**

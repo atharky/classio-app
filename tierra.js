@@ -21,7 +21,6 @@ const earthInner=(d=0,mark,labels=[])=>earthRings(d)
   +labels.map((p,k)=>pointer(...PARTS[p].from,...PARTS[p].at,d+2.8+k*.9)+tx(PARTS[p].from[0]+4,PARTS[p].from[1]+4,p,d+3.1+k*.9,{s:12,a:'start',c:'red'})).join('');
 // Con marca: solo la flecha (para preguntar «¿qué capa es?»); con etiquetas: el dibujo explicado.
 const earth=(d,mark,labels)=>sk(labels&&labels.length?340:262,200,earthInner(d,mark,labels),'earth');
-const earthScene=(left,d,labels)=>sk(420,200,left+`<g transform="translate(60,0)">${earthInner(d,null,labels)}</g>`,'earth');
 
 /* ---------- nivel 1 · un planeta excepcional ---------- */
 const COND=[['distancia adecuada del Sol','No hace ni demasiado calor ni demasiado frío para la vida.'],['tamaño adecuado','Su gravedad retiene la atmósfera y el agua.'],['agua en estado líquido','El agua líquida es imprescindible para los seres vivos.'],['presencia de atmósfera','Da el aire que respiramos y protege de la radiación y de los meteoritos.'],['campo magnético','Desvía las partículas peligrosas que llegan del Sol.']];
