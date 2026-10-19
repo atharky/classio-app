@@ -130,7 +130,7 @@ function viewPrivacy(){track(viewPrivacy,[]);setCrumb('Privacidad');
     <p>No pedimos nombre, correo, edad, centro ni contraseña. No hay cuentas. El cuaderno no usa cookies ni publicidad ni analítica.</p>
     <p>En tu navegador se guardan tus <b>niveles superados</b>, tus <b>notas</b> de los exámenes, si tienes el sonido activado y, si lo usas, el código de sincronización. Todo queda en este dispositivo.</p></section>
    <section class="card stack"><h3>Si usas la sincronización</h3>
-    <p>Al crear un código se guardan en un servidor (Microsoft Azure, en la Unión Europea) solo tus niveles y notas, asociados a un identificador que sale del código. El servidor no guarda el código, sino una huella irreversible de él, ni tu dirección IP.</p>
+    <p>Al crear un código se guardan en un servidor de Microsoft Azure solo tus niveles y notas, asociados a un identificador que sale del código. El servidor no guarda el código, sino una huella irreversible de él. Como en cualquier servicio web, el proveedor puede registrar datos técnicos de la conexión.</p>
     <p>Quien tenga tu código puede ver y cambiar tu progreso. No lo compartas con nadie que no quieras.</p></section>
    <section class="card stack"><h3>Cómo borrar tus datos</h3>
     <ul><li><b>De este dispositivo:</b> «Borrar progreso» en el pie de página.</li>
