@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 25 de 26 · **En curso:** 0 · **Pendientes:** 1
+**Actualizado:** 19-10-2026 · **Hechas:** 25 de 26 · **En curso:** 0 · **Pendientes:** 0
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -63,13 +63,14 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
-| T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⬜ Pendiente | — | — |
+| T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⛔ Bloqueada | — | — |
 
 **Notas de bloqueo o descarte:**
 
 - **T09**: se aplicaron las correcciones «Aplicar ya» de [`revision-didactica.md`](revision-didactica.md) y la del experimento de las plantas (error de hecho: a oscuras se ahíla) y la regla de la longitud del resumen. Quedan pendientes de decisión del profesorado **M1** (pasos del método científico: 4 o 6 según el libro) y **F2** (noticia atribuida a El País).
 - **T20**: no se recibió el temario real del curso, así que se añadieron dos temas estándar de 1.º ESO (Lengua «Las clases de palabras» y Biología «Los seres vivos y la célula», 3 niveles cada uno) con la plantilla de siempre. Conviene que el profesorado confirme qué temas faltan por añadir y revise estos dos (la revisión didáctica de T09 no los cubrió).
 - **T21** está hecha en lo técnico (informe `scripts/audio-report.mjs`, nombres de archivo, carga bajo demanda y comprobación en las pruebas), pero **no hay ningún audio grabado**: generarlos es trabajo de una voz humana o de un servicio de síntesis. Falta decidir el coste de almacenamiento (unos 45 MB para los 355 pasos actuales; ver `_etc/animaciones.md`).
+- **T23** está bloqueada: el propio alcance pide una decisión previa sobre los datos de menores (qué ve el profesor, con qué consentimiento de las familias y bajo qué base legal). No es una decisión técnica y no se ha tomado por el equipo. Cuando exista, el diseño propuesto es: código de clase generado por el profesor, el alumno lo introduce junto a su código de sincronización, el servidor guarda solo el vínculo (huella de ambos códigos) y la vista del grupo muestra únicamente niveles superados y notas, nunca nombres. Depende de T04 y T18, que ya están hechas.
 - **T24** está hecha en el código, pero siguen sin confirmar las dudas 1, 3, 4 y 5 de la sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md) (tamaño «del sol», peridotita, espesores y respuestas del crucigrama).
 - **T25** está hecha en el código, pero queda pendiente que la profesora confirme que **Cienciología** cuenta como pseudociencia en su ficha (ver sección 5 de [`contenido-tierra-y-pseudociencia.md`](contenido-tierra-y-pseudociencia.md)).
 
@@ -266,7 +267,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Sonnet 5.5**. **€€**
 
 ### T23 · Modo profesor real
-- **Estado:** ⬜ Pendiente
+- **Estado:** ⛔ Bloqueada
 - **Prioridad:** P4 · **Depende de:** T04, T18
 - **Alcance:** decisión previa sobre datos de menores (qué ve el profesor y con qué consentimiento). Después: código de clase, alumnos que se unen con su código de sincronización, vista del grupo. Sustituye al «modo profesor» actual, que solo abre niveles sin protección.
 - **Modelo:** **Opus 5.5** para el diseño y la API; **Sonnet 5.5** para las vistas. **€€€**
