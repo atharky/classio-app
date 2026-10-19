@@ -24,7 +24,8 @@ El **modo profesor** (abrir todos los niveles) no se sincroniza: es de cada disp
 - El código viaja en el cuerpo de la petición (POST), no en la URL, para que no aparezca en registros de acceso.
 - 30 símbolos × 10 posiciones ≈ 2⁴⁹ combinaciones (sin 0/O, 1/I/L ni U para evitar confusiones al copiar).
 - El servidor valida y limita lo que guarda (`sanitizeState`): solo módulos e identificadores con formato válido, puntuaciones en rango y cuerpo de 32 KB como máximo.
-- **Pendiente:** no hay limitación de peticiones por IP. Con 2⁴⁹ combinaciones adivinar un código no es práctico, pero si la app crece conviene añadirla (Azure Front Door/WAF o un contador en la tabla).
+- **Limitación de peticiones** (`api/src/rate-limit.js`): 60 peticiones por minuto y IP, y 10 códigos nuevos por hora y IP. Al pasarse, la API responde `429 rate_limited` con `Retry-After: 60` y la app avisa al alumno. Los contadores van en la tabla `limites` (una partición por ventana; las ventanas viejas se borran solas). No se guarda la IP, solo un hash con una sal que cambia cada día. Si el contador falla, se registra un aviso y la petición pasa (no se corta el servicio por un fallo del limitador).
+- **Telemetría de errores:** las funciones registran con `context.error`/`context.warn`. Para verlos, activa Application Insights en la Static Web App (*Configuración → Application Insights → Activar*; añade `APPLICATIONINSIGHTS_CONNECTION_STRING`). `host.json` no muestrea las excepciones. Alerta recomendada: una regla de Azure Monitor sobre `exceptions | where timestamp > ago(15m)` con más de 5 resultados, enviada al correo del responsable, y otra sobre los `429` (`requests | where resultCode == 429`) para detectar abuso.
 
 ## Arquitectura
 
@@ -44,7 +45,7 @@ API (mismo dominio, así que la CSP `connect-src 'self'` no cambia):
 | `POST /api/sync` | `{code, state}` | `200 {code, state}` con el progreso ya juntado |
 | `POST /api/sync/delete` | `{code}` | `200 {deleted:true}` o `404 unknown_code` |
 
-Errores: `400 invalid_body` · `400 invalid_code` · `404 unknown_code` · `409 conflict` · `500/503 server`.
+Errores: `400 invalid_body` · `400 invalid_code` · `404 unknown_code` · `409 conflict` · `429 rate_limited` · `500/503 server`.
 
 Si dos dispositivos escriben a la vez, el servidor detecta el conflicto por ETag, vuelve a leer, junta y reintenta (hasta 5 veces). Si al cliente le llega la respuesta después de que haya habido progreso nuevo, no la aplica y vuelve a enviar.
 

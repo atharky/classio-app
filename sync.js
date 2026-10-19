@@ -23,6 +23,7 @@ const MESSAGES={
   offline:'No hay conexión con el servidor. Tu progreso sigue guardado en este navegador.',
   unknown_code:'Ese código no existe. Revisa que esté bien escrito.',
   invalid_code:'El código no es válido: son 10 letras y números.',
+  rate_limited:'Demasiadas peticiones seguidas. Espera un minuto y vuelve a intentarlo.',
   conflict:'Otro dispositivo estaba guardando a la vez. Vuelve a intentarlo.'};
 const syncMessage=e=>MESSAGES[e&&e.kind]||'El servidor de sincronización no está disponible ahora. Inténtalo más tarde.';
 

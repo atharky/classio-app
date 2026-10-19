@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 18 de 26 · **En curso:** 0 · **Pendientes:** 8
+**Actualizado:** 19-10-2026 · **Hechas:** 19 de 26 · **En curso:** 0 · **Pendientes:** 7
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -57,7 +57,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T15 | Fuentes autoalojadas | F3 | P2 | T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T16 | CSP sin `'unsafe-inline'` en estilos | F3 | P3 | T12 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ⬜ Pendiente | — | — |
+| T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ⬜ Pendiente | — | — |
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ⬜ Pendiente | — | — |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
@@ -225,7 +225,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5**. **€**
 
 ### T18 · Limitación de peticiones y telemetría en la API
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Tipo:** técnica · **Depende de:** T03
 - **Alcance:** contador por IP y ventana en Table Storage (o Front Door si se contrata), respuesta `429` con mensaje en el cliente; Application Insights en la Static Web App para errores de las funciones; alarma básica.
 - **Modelo:** **Opus 5.5** (`medium`): decisión de diseño con seguridad; **€€**.
