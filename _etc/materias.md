@@ -5,7 +5,7 @@ La app (ahora **Cuaderno 1º ESO**) organiza el contenido en **materias → mód
 | Materia | Módulo | Niveles | Exámenes |
 |---|---|---|---|
 | Matemáticas | Potencias | 6 | Parcial A, parcial B, final |
-| Matemáticas | Raíces cuadradas (oculto, en preparación) | 3 de 5 | — |
+| Matemáticas | Raíces cuadradas (oculto, en preparación) | 3 de 5 (los niveles 4 y 5 están pendientes: tarea T07 del plan) | — |
 | Lengua Castellana y Literatura | La comunicación | 1. Elementos (emisor, receptor, mensaje, código, canal, contexto) · 2. Verbal y no verbal; indicio, icono y símbolo · 3. Funciones del lenguaje | Examen del tema |
 | Lengua Castellana y Literatura | El resumen | 1. Idea principal, secundarias y palabras clave · 2. Cómo se hace un resumen | Examen del tema |
 | Biología y Geología | La ciencia y el método científico | 1. Fake news o bulos · 2. El método científico · 3. El experimento de Redi · 4. Ciencia y pseudociencia · 5. Mujeres científicas | Parcial A, parcial B y **Examen del tema** (este módulo + Material de laboratorio) |

@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 1 de 26 · **En curso:** 0 · **Pendientes:** 25
+**Actualizado:** 19-10-2026 · **Hechas:** 2 de 26 · **En curso:** 0 · **Pendientes:** 24
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -42,7 +42,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T02 | Versionado automático de la caché del service worker | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
 | T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ⬜ Pendiente | — | — |
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ⬜ Pendiente | — | — |
-| T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ⬜ Pendiente | — | — |
+| T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ⬜ Pendiente | — | — |
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ⬜ Pendiente | — | — |
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ⬜ Pendiente | — | — |
@@ -113,7 +113,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5** para la vista y el enlace (especificación cerrada); el texto legal lo redacta o revisa una persona. **€**
 
 ### T05 · Correcciones rápidas
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** mixta · **Depende de:** —
 - **Alcance:**
   1. `data.js` nivel 2 de Potencias: «cada vez que bajamos el exponente, dividimos entre 2» → «dividimos entre la base».

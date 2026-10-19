@@ -49,7 +49,7 @@ Si dos dispositivos escriben a la vez, el servidor detecta el conflicto por ETag
 
 1. Crear una **cuenta de almacenamiento** (Storage account, StorageV2, LRS es suficiente) en la misma región que la Static Web App.
 2. En la Static Web App → *Configuración* → *Variables de entorno*, añadir `SYNC_STORAGE_CONNECTION` con la cadena de conexión de la cuenta de almacenamiento. La tabla `progreso` se crea sola en la primera petición.
-3. Desplegar: cada push a `main` lo despliega el flujo de GitHub Actions (`.github/workflows/azure-static-web-apps-*.yml`), que ejecuta antes `npm test`; cada PR contra `main` crea un entorno de vista previa. La web se publica tal cual (`skip_app_build`) y la API se compila con sus dependencias. `deploy.ps1` queda como alternativa manual con el token de implementación. El plan Free de Static Web Apps admite estas funciones administradas con `platform.apiRuntime: node:22`, la versión más nueva que admiten (Node 24 aún no está disponible para funciones administradas).
+3. Desplegar: cada push a `main` lo despliega el flujo de GitHub Actions (`.github/workflows/azure-static-web-apps-*.yml`), que ejecuta antes `npm test`; cada PR contra `main` crea un entorno de vista previa. La web se publica tal cual (`skip_app_build`) y la API se compila con sus dependencias. El plan Free de Static Web Apps admite estas funciones administradas con `platform.apiRuntime: node:22`, la versión más nueva que admiten (Node 24 aún no está disponible para funciones administradas).
 
 Sin la variable de entorno la app sigue funcionando en local; la API responde `500` y la vista de sincronización muestra que el servidor no está disponible.
 
@@ -58,4 +58,4 @@ Sin la variable de entorno la app sigue funcionando en local; la API responde `5
 - `npm test` en la raíz ejecuta también las pruebas de `api/test/` (lógica de servidor con almacén en memoria).
 - Para probar con almacenamiento real en local: `npx azurite-table --inMemoryPersistence` y `SYNC_STORAGE_CONNECTION="UseDevelopmentStorage=true"` (el almacén permite HTTP solo con el emulador).
 - Validado en esta iteración: el almacén contra Azurite (creación, duplicados, ETag obsoleto, dos escrituras simultáneas) y el flujo completo en Chromium con dos dispositivos (crear, vincular con errores, juntar, sincronización en segundo plano, recarga, modo profesor, desvincular, borrar, sin conexión).
-- No validado: `deploy.ps1` (no hay PowerShell en el entorno de desarrollo) ni el despliegue real en Azure.
+- No validado: el despliegue real en Azure.

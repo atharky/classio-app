@@ -1,6 +1,8 @@
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+// Escapa el texto que escribe el alumno (o que viene del almacenamiento) antes de meterlo con innerHTML.
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const fmt=n=>{const neg=n<0;let [s,d]=String(Math.abs(n)).split('.');if(s.length>=5)s=s.replace(/\B(?=(\d{3})+(?!\d))/g,' ');return (neg?'−':'')+s+(d?','+d:'')};
@@ -38,7 +40,7 @@ const POT_LEVELS=[
      <div class="tbl"><table><tr><th>n</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<th>${n}</th>`).join('')}</tr>
      <tr><th>n²</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<td>${n*n}</td>`).join('')}</tr>
      <tr><th>n³</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<td>${fmt(n**3)}</td>`).join('')}</tr></table></div>`],
-    ['Exponente 1 y exponente 0',`<p>Cualquier número elevado a 1 es él mismo: ${P(7,1)} = 7. Y cualquier número (distinto de 0) elevado a 0 vale <span class="hl">1</span>. Mira el patrón: cada vez que bajamos el exponente, dividimos entre 2.</p>
+    ['Exponente 1 y exponente 0',`<p>Cualquier número elevado a 1 es él mismo: ${P(7,1)} = 7. Y cualquier número (distinto de 0) elevado a 0 vale <span class="hl">1</span>. Mira el patrón: cada vez que bajamos el exponente, dividimos entre la base.</p>
      <div class="ex">${P(2,3)} = 8 → ${P(2,2)} = 4 → ${P(2,1)} = 2 → ${P(2,0)} = <b>1</b></div>`],
     ['Base 1 y base 10',`<p>El 1 multiplicado por sí mismo siempre da 1: ${P(1,50)} = 1.</p>
      <p>Las potencias de 10 llevan <span class="hl">tantos ceros como indica el exponente</span>:</p>
@@ -189,4 +191,4 @@ const RAI_LEVELS=[
 ];
 
 
-export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS };
+export { $, esc, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS };

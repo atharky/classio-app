@@ -1,3 +1,5 @@
+> **Documento histórico.** Es el análisis de la primera versión (un único `index.html`). La estructura actual está en el [README](../README.md) y el plan de mejoras en [`plans/`](../plans/plan-ejecucion.md).
+
 # Análisis de la aplicación HTML
 
 **Archivo revisado:** [`index.html`](../index.html)  

@@ -1,4 +1,4 @@
-import { $, fmt, parseNum, pick, shuffle } from './data.js';
+import { $, esc, fmt, parseNum, pick, shuffle } from './data.js';
 import { SUBJECTS, MODULES, ANIMS } from './catalog.js';
 import { at, sk, stroke, dot, tx } from './sketch.js';
 import { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage } from './sync.js';
@@ -116,7 +116,7 @@ function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
   app.innerHTML=`<div class="stack">
    <div><p class="eyebrow">Tu progreso</p><h1>Sincronizar entre dispositivos</h1></div>
    ${link?`<section class="card stack"><h3>Este dispositivo está sincronizado</h3>
-     <p class="muted">Tu código de sincronización es:</p><p class="code">${link.code}</p>
+     <p class="muted">Tu código de sincronización es:</p><p class="code">${esc(link.code)}</p>
      <p>Apúntalo en un lugar seguro: es la única forma de recuperar tu progreso en otro dispositivo. Quien tenga el código puede ver y cambiar tu progreso, así que no lo compartas.</p>
      <p class="hint">${link.at?`Última sincronización: ${new Date(link.at).toLocaleString('es-ES',{dateStyle:'short',timeStyle:'short'})}`:'Aún sin sincronizar'}</p>
      <div class="row" id="sync-actions"><button class="btn" type="button" id="sync-now">Sincronizar ahora</button><button class="btn ghost" type="button" id="unlink">Desvincular este dispositivo</button></div></section>`
@@ -126,7 +126,7 @@ function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
     <section class="card stack"><h3>Ya tengo un código</h3>
      <p class="muted">Escríbelo para traer aquí tu progreso. Se juntará con lo que ya tengas en este dispositivo: no se pierde nada.</p>
      <form class="row" id="link-form"><input id="code-in" class="codein" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="13" aria-label="Código de sincronización" placeholder="XXXXX-XXXXX"><button class="btn" type="submit" id="link-btn">Vincular</button></form></section>`}
-   <p class="storage-warning" id="sync-msg" role="alert">${syncStatus}</p></div>`;
+   <p class="storage-warning" id="sync-msg" role="alert">${esc(syncStatus)}</p></div>`;
   const busy=(b,on,text)=>{b.disabled=on;b.textContent=text};
   const stay=()=>currentView.fn===viewSync?go(viewSync):renderFoot(); // no saca al alumno de otra pantalla
   if(link){
@@ -375,7 +375,7 @@ function viewExam(mod,ex){track(viewExam,[mod,ex]);setCrumb(`${mod.name} · ${ex
       <div class="row"><button class="btn" type="button" id="again">Otro examen</button><button class="btn ghost" type="button" id="back">Volver al módulo</button></div></div>
      <h2>Corrección</h2>
      <div class="review">${qs.map((q,k)=>`<div class="rv ${q.ok?'':'ko'}"><div class="eyebrow">${k+1} · ${label(refs[q.level])} · ${q.ok?'Bien':'Mal'}</div><div class="prompt" style="font-size:1.1rem">${q.prompt}</div>
-       ${q.ok?'':`<div class="ua">Tu respuesta: ${userText(q)} · Correcta: <b>${rightText(q)}</b></div>`}<div style="font-size:.95rem">${q.explain}</div></div>`).join('')}</div></div>`;
+       ${q.ok?'':`<div class="ua">Tu respuesta: ${esc(userText(q))} · Correcta: <b>${rightText(q)}</b></div>`}<div style="font-size:.95rem">${q.explain}</div></div>`).join('')}</div></div>`;
     $('#again').onclick=()=>go(viewExam,mod,ex);$('#back').onclick=()=>go(viewModule,mod);
     pane.querySelectorAll('[data-lv]').forEach(b=>b.onclick=()=>{const r=refs[+b.dataset.lv];go(viewLevel,r.m,r.li,'learn')});window.scrollTo({top:0})}
   show()}

@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { RAI_LEVELS, parseNum, num, fmt, isqrt, R } from '../data.js';
+import { RAI_LEVELS, parseNum, num, fmt, isqrt, R, esc } from '../data.js';
 import { SUBJECTS, MODULES, ANIMS } from '../catalog.js';
 
 const ACTIVE = MODULES.filter(m => !m.soon);
@@ -182,4 +182,10 @@ test('R muestra el radicando con texto accesible', () => {
   assert.match(html, /raíz de /);
   assert.match(R(10000), /10\u202f000/);
   assert.match(R('x'), />x</);
+});
+
+test('esc() neutraliza el HTML del texto del alumno',()=>{
+  assert.equal(esc('<img src=x onerror="a()">'),'&lt;img src=x onerror=&quot;a()&quot;&gt;');
+  assert.equal(esc("a&b'c"),'a&amp;b&#39;c');
+  assert.equal(esc(5),'5');
 });
