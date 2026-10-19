@@ -6,6 +6,7 @@ import { LAB_LEVELS, LAB_ANIMS } from './biologia.js';
 import { CIE_LEVELS, CIE_ANIMS } from './ciencia.js';
 import { TIERRA_LEVELS, TIERRA_ANIMS } from './tierra.js';
 import { DIV_LEVELS, DIV_ANIMS } from './divis.js';
+import { ENT_LEVELS, ENT_ANIMS } from './enteros.js';
 
 const SUBJECTS=[
   {id:'mates',name:'Matemáticas'},
@@ -20,7 +21,8 @@ const MODULES=[
    exams:[{id:'r1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'r2',name:'Examen parcial B',sub:'Niveles 4 y 5',levels:[3,4],n:10},{id:'rf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4],n:12}]},
   {id:'divis',subject:'mates',name:'Divisibilidad',sym:'m.c.m.',desc:'Múltiplos, divisores, primos, factores, mcd y mcm.',levels:DIV_LEVELS,
    exams:[{id:'d1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'d2',name:'Examen parcial B',sub:'Niveles 4 a 6',levels:[3,4,5],n:10},{id:'df',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4,5],n:12}]},
-  {id:'enteros',subject:'mates',name:'Números enteros',sym:'ℤ',desc:'Operaciones con signo y recta numérica.',soon:true},
+  {id:'enteros',subject:'mates',name:'Números enteros',sym:'ℤ',desc:'Recta numérica, orden y operaciones con signo.',levels:ENT_LEVELS,
+   exams:[{id:'e1',name:'Examen parcial A',sub:'Niveles 1 a 3',levels:[0,1,2],n:10},{id:'e2',name:'Examen parcial B',sub:'Niveles 4 a 6',levels:[3,4,5],n:10},{id:'ef',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3,4,5],n:12}]},
   {id:'comunicacion',subject:'lengua',name:'La comunicación',sym:'E → R',desc:'Elementos de la comunicación, signos y funciones del lenguaje.',levels:COM_LEVELS,
    exams:[{id:'c1',name:'Examen del tema',sub:'Niveles 1 a 3',levels:[0,1,2],n:12}]},
   {id:'resumen',subject:'lengua',name:'El resumen',sym:'¶',desc:'Idea principal, palabras clave y cómo resumir un texto.',levels:RES_LEVELS,
@@ -34,6 +36,6 @@ const MODULES=[
    exams:[{id:'l1',name:'Examen parcial A',sub:'Niveles 1 y 2',levels:[0,1],n:10},{id:'l2',name:'Examen parcial B',sub:'Niveles 3 y 4',levels:[2,3],n:10},{id:'lf',name:'Examen final',sub:'Todo el módulo',levels:[0,1,2,3],n:12}]}
 ];
 
-const ANIMS={potencias:POT_ANIMS,raices:RAI_ANIMS,comunicacion:COM_ANIMS,resumen:RES_ANIMS,laboratorio:LAB_ANIMS,ciencia:CIE_ANIMS,tierra:TIERRA_ANIMS,divis:DIV_ANIMS};
+const ANIMS={potencias:POT_ANIMS,raices:RAI_ANIMS,comunicacion:COM_ANIMS,resumen:RES_ANIMS,laboratorio:LAB_ANIMS,ciencia:CIE_ANIMS,tierra:TIERRA_ANIMS,divis:DIV_ANIMS,enteros:ENT_ANIMS};
 
 export { SUBJECTS, MODULES, ANIMS };

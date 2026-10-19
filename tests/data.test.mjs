@@ -280,3 +280,42 @@ test('divisibilidad: las respuestas son matemáticamente correctas', () => {
     assert.ok(found[1](q), `${where} → ${q.type === 'num' ? q.answer : mcAns(q)} (${q.options ?? ''})`);
   }
 });
+
+// ---- Números enteros: cada respuesta se recalcula leyendo los números (con su signo) del enunciado.
+const sInts = (q) => (textOf(q).match(/−?\d+/g) ?? []).map((x) => Number(x.replace('−', '-')));
+const evalInts = (q) => Function(`return (${textOf(q).replace(/^.*?(Calcula|Cuánto vale) /, '').replace(/\?$/, '').replace(/−/g, '-').replace(/·/g, '*').replace(/:/g, '/')})`)();
+const toN = (o) => Number(String(o).replace('−', '-'));
+const ENT_NUM = [
+  [/^¿Qué número entero representa/, (q) => q.answer === (/bajo cero|deuda|profundidad/.test(textOf(q)) ? -1 : 1) * Math.abs(sInts(q)[0])],
+  [/^En la recta numérica, ¿qué número está a/, (q) => { const [k, a] = sInts(q); return q.answer === (/derecha/.test(textOf(q)) ? a + k : a - k); }],
+  [/^Escribe el valor absoluto de/, (q) => q.answer === Math.abs(sInts(q)[0])],
+  [/^Escribe el opuesto de/, (q) => q.answer === -sInts(q)[0]],
+  [/^¿Cuántos números enteros hay entre/, (q) => { const [a, b] = sInts(q); return q.answer === b - a - 1; }],
+  [/^Calcula /, (q) => q.answer === evalInts(q)],
+  [/^La temperatura era de/, (q) => { const [a, b] = sInts(q); return q.answer === (/subido/.test(textOf(q)) ? a + b : a - b); }],
+  [/diferencia/, (q) => { const [lo, hi] = sInts(q); return q.answer === hi - lo; }],
+  [/^Un submarino/, (q) => { const [d, u] = sInts(q); return q.answer === d + u; }],
+  [/^Un ascensor/, (q) => { const [p, k, j] = sInts(q); return q.answer === p + k - j; }],
+  [/cada hora/, (q) => { const [a, t, h] = sInts(q); return q.answer === t - a * h; }],
+  [/^Marta tiene/, (q) => { const [a, c] = sInts(q); return q.answer === a - c; }],
+];
+const ENT_MC = [
+  [/^¿Cuál de estos números es el mayor/, (q) => toN(mcAns(q)) === Math.max(...q.options.map(toN))],
+  [/^¿Cuál de estos números es el menor/, (q) => toN(mcAns(q)) === Math.min(...q.options.map(toN))],
+  [/es un número entero/, (q) => q.options.every((o, k) => /^−?\d+$/.test(o) === (k === q.answer))],
+  [/ordenada de menor a mayor/, (q) => q.options.every((o, k) => { const v = o.split(' < ').map(toN); return v.every((x, i) => i === 0 || v[i - 1] < x) === (k === q.answer); })],
+  [/^¿Qué signo va entre/, (q) => { const [a, b] = sInts(q); return mcAns(q) === (a < b ? '<' : a > b ? '>' : '='); }],
+  [/^¿Cuánto vale/, (q) => toN(mcAns(q)) === evalInts(q) && q.options.filter((o) => toN(o) === evalInts(q)).length === 1],
+  [/^¿Cuál es el signo de/, (q) => { const [a, b] = sInts(q); return mcAns(q) === (a * b > 0 ? 'Positivo' : 'Negativo'); }],
+  [/^Multiplicamos/, (q) => { const v = sInts(q); return mcAns(q) === (v.reduce((a, b) => a * b, 1) > 0 ? 'Positivo' : 'Negativo'); }],
+];
+test('enteros: las respuestas son matemáticamente correctas', () => {
+  const mod = MODULES.find((x) => x.id === 'enteros');
+  for (const [i, level] of mod.levels.entries()) for (const [g, gen] of level.gens.entries()) for (let r = 0; r < RUNS; r++) {
+    const q = gen();
+    const found = (q.type === 'num' ? ENT_NUM : ENT_MC).find(([re]) => re.test(textOf(q)));
+    const where = `nivel ${i + 1} gen ${g + 1}: ${textOf(q)}`;
+    assert.ok(found, `${where}: no hay comprobación para este enunciado`);
+    assert.ok(found[1](q), `${where} → ${q.type === 'num' ? q.answer : mcAns(q)}`);
+  }
+});

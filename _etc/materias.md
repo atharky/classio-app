@@ -6,6 +6,7 @@ La app (ahora **Cuaderno 1º ESO**) organiza el contenido en **materias → mód
 |---|---|---|---|
 | Matemáticas | Potencias | 6 | Parcial A, parcial B, final |
 | Matemáticas | Raíces cuadradas | 5 | Parcial A, parcial B, final |
+| Matemáticas | Números enteros | 1. Los enteros y la recta · 2. Valor absoluto, opuesto y orden · 3. Suma y resta · 4. Multiplicación y división · 5. Operaciones combinadas · 6. Problemas | Parcial A, parcial B, final |
 | Matemáticas | Divisibilidad | 1. Múltiplos y divisores · 2. Criterios de divisibilidad · 3. Primos y compuestos · 4. Descomposición en factores primos · 5. M.c.d. · 6. M.c.m. | Parcial A, parcial B, final |
 | Lengua Castellana y Literatura | La comunicación | 1. Elementos (emisor, receptor, mensaje, código, canal, contexto) · 2. Verbal y no verbal; indicio, icono y símbolo · 3. Funciones del lenguaje | Examen del tema |
 | Lengua Castellana y Literatura | El resumen | 1. Idea principal, secundarias y palabras clave · 2. Cómo se hace un resumen | Examen del tema |

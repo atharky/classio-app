@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 21 de 26 · **En curso:** 0 · **Pendientes:** 5
+**Actualizado:** 19-10-2026 · **Hechas:** 22 de 26 · **En curso:** 0 · **Pendientes:** 4
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -59,7 +59,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T17 | Selector de tema | F3 | P3 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T18 | Limitación de peticiones y telemetría en la API | F3 | P3 | T03 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T26 | Nuevos tipos de pregunta: clasificar, completar y crucigrama | F3 | P3 | T01, T12 | Opus | ✅ Hecha | #7 | 2026-10-19 |
-| T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ⬜ Pendiente | — | — |
+| T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ⬜ Pendiente | — | — |
 | T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ⬜ Pendiente | — | — |
@@ -242,7 +242,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 ## Fase 4 · Crecimiento
 
 ### T19 · Módulo «Números enteros»
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Depende de:** T11 · **Modelo:** como T11. **€€€**
 
 ### T20 · Más temas de Lengua y Biología

@@ -46,6 +46,12 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Divisibilidad 4 | Engranajes y descomposición en factores primos |
 | Divisibilidad 5 | Cortar cintas en trozos iguales (m.c.d.) |
 | Divisibilidad 6 | Semáforos coordinados («ola verde», m.c.m.) |
+| Enteros 1 | El termómetro: −5 °C es más frío que −2 °C |
+| Enteros 2 | Las puntuaciones negativas de un juego |
+| Enteros 3 | La temperatura que sube de −4 °C a 2 °C |
+| Enteros 4 | Las deudas a cuatro amigos: 4 · (−3) = −12 € |
+| Enteros 5 | La calculadora y la jerarquía de operaciones |
+| Enteros 6 | La montaña: temperatura y altitud |
 | Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
 | Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
 | Comunicación 3 | La publicidad: función apelativa y poética |

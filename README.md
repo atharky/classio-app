@@ -2,7 +2,7 @@
 
 Aplicación web educativa y estática para 1º de ESO: explicaciones animadas en pizarra con narración, pruebas por niveles, exámenes y progreso que se puede sincronizar entre dispositivos con un código (sin cuentas ni datos personales).
 
-**Materias y módulos activos:** Matemáticas (Potencias, Raíces cuadradas, Divisibilidad), Lengua (La comunicación, El resumen) y Biología (La ciencia y el método científico, Material de laboratorio, La Tierra y la geosfera). El plan de lo que viene está en [`plans/`](plans/plan-ejecucion.md).
+**Materias y módulos activos:** Matemáticas (Potencias, Raíces cuadradas, Divisibilidad, Números enteros), Lengua (La comunicación, El resumen) y Biología (La ciencia y el método científico, Material de laboratorio, La Tierra y la geosfera). El plan de lo que viene está en [`plans/`](plans/plan-ejecucion.md).
 
 ## Ejecutar en local
 
@@ -33,7 +33,7 @@ npm run test:e2e         # navegador: reproductor, recorrido de niveles y exáme
 | `views/` | Vistas: inicio, módulo, nivel (con resumen escrito), privacidad y sincronización |
 | `quiz.js`, `exam.js`, `question.js`, `qtypes.js`, `player.js` | Pruebas de nivel y repaso, exámenes, preguntas (`question.js`: opción múltiple y número; `qtypes.js`: completar, verdadero/falso con corrección, clasificar, etiquetar un dibujo y crucigrama) y reproductor de relatos |
 | `data.js` | Utilidades y generadores de preguntas de Potencias y Raíces |
-| `anim.js`, `divis.js`, `lengua.js`, `biologia.js`, `ciencia.js`, `tierra.js` | Niveles de cada materia y los relatos animados (`ANIMS`) |
+| `anim.js`, `divis.js`, `enteros.js`, `lengua.js`, `biologia.js`, `ciencia.js`, `tierra.js` | Niveles de cada materia y los relatos animados (`ANIMS`) |
 | `sketch.js` | Piezas de dibujo de la pizarra (trazos, texto que se escribe) |
 | `catalog.js` | Materias (`SUBJECTS`), módulos (`MODULES`) y relatos (`ANIMS`) |
 | `sync.js`, `api/` | Cliente de sincronización y API (Azure Functions + Table Storage) |
