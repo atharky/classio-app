@@ -7,10 +7,11 @@ import { saveLink } from './sync.js';
 import { viewHome } from './views/home.js';
 import { viewModule } from './views/module.js';
 import { viewPrivacy } from './views/privacy.js';
+import { viewProgress } from './views/progress.js';
 import { viewSync } from './views/sync.js';
 
 // Repinta solo vistas sin ejercicios en curso, sin mover el foco ni el scroll.
-export function refresh(){if([viewHome,viewModule,viewSync].includes(ui.view.fn))ui.view.fn(...ui.view.args);renderFoot()}
+export function refresh(){if([viewHome,viewModule,viewSync,viewProgress].includes(ui.view.fn))ui.view.fn(...ui.view.args);renderFoot()}
 
 /* ---------- vistas ---------- */
 export const app=$('#app');
@@ -18,8 +19,9 @@ export function setCrumb(t){$('#crumb').textContent=t||''}
 export function go(view,...args){clearInterval(ui.timerId);stopAnim();window.scrollTo({top:0});view(...args);renderFoot();requestAnimationFrame(()=>{const h=app.querySelector('h1');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}else app.focus()})}
 $('#home-btn').onclick=()=>go(viewHome);
 
-export function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${net.link?'Sincronización activada':'Sincronizar entre dispositivos'}</button> · <button class="link" id="privacy" type="button">Privacidad</button> · <button class="link" id="theme" type="button">Tema: ${themeLabel()}</button>${ui.warning?`<span class="storage-warning" role="alert"> ${ui.warning}</span>`:''}${net.status&&ui.view.fn!==viewSync?`<span class="storage-warning" role="alert"> ${net.status}</span>`:''}`;
+export function renderFoot(){$('#foot-actions').innerHTML=`<button class="link" id="export" type="button">Exportar progreso</button> · <button class="link" id="import" type="button">Importar progreso</button> · <button class="link" id="open-all" type="button">${S.open?'Volver a bloquear niveles':'Modo profesor: abrir todos los niveles'}</button> · <button class="link" id="reset" type="button">Borrar progreso</button> · <button class="link" id="sync" type="button">${net.link?'Sincronización activada':'Sincronizar entre dispositivos'}</button> · <button class="link" id="progress" type="button">Mi progreso</button> · <button class="link" id="privacy" type="button">Privacidad</button> · <button class="link" id="theme" type="button">Tema: ${themeLabel()}</button>${ui.warning?`<span class="storage-warning" role="alert"> ${ui.warning}</span>`:''}${net.status&&ui.view.fn!==viewSync?`<span class="storage-warning" role="alert"> ${net.status}</span>`:''}`;
   $('#sync').onclick=()=>go(viewSync);
+  $('#progress').onclick=()=>go(viewProgress);
   $('#privacy').onclick=()=>go(viewPrivacy);
   $('#theme').onclick=()=>{nextTheme();renderFoot()};
   $('#export').onclick=exportProgress;

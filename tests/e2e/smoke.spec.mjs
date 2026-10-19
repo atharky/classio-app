@@ -95,3 +95,41 @@ test('con la CSP de producción no hay estilos bloqueados', async ({ page }) => 
   expect(await page.evaluate(() => document.querySelectorAll('[data-s]').length)).toBe(0);
   expect(blocked).toEqual([]);
 });
+
+test('el panel «Mi progreso» resume niveles, exámenes, repasos y racha', async ({ browser }) => {
+  const today = new Date();
+  const key = (n) => {
+    const d = new Date(today);
+    d.setDate(d.getDate() - n);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  };
+  const seed = JSON.stringify({
+    v: 4,
+    mods: { potencias: { unlocked: 3, best: { 0: 5, 1: 4 } } },
+    exams: { 'potencias:p1': [{ g: 7.5, d: 1000 }] },
+    misses: { 'potencias:1:0': { d: 5, ok: 0 } },
+    days: [key(2), key(1)],
+    open: false,
+  });
+  const ctx = await browser.newContext({ serviceWorkers: 'block', baseURL: 'http://localhost:8791/' });
+  await ctx.addInitScript(
+    ([k, v]) => {
+      if (!localStorage.getItem(k)) localStorage.setItem(k, v);
+    },
+    ['mates1eso.v1', seed],
+  );
+  const page = await ctx.newPage();
+  await page.goto('/');
+  await page.click('#progress');
+  await expect(page.getByRole('heading', { name: 'Mi progreso' })).toBeVisible();
+  await expect(page.locator('.card').first()).toContainText('2/');
+  await expect(page.locator('main')).toContainText('mejor nota 7,5');
+  await expect(page.locator('main')).toContainText('2 días seguidos');
+  await page.getByRole('button', { name: /Repasar lo que fallé \(1\)/ }).click();
+  await expect(page.getByRole('heading', { name: 'Repasar lo que fallé' })).toBeVisible();
+  await page.click('#home-btn');
+  await page.click('#progress');
+  const [download] = await Promise.all([page.waitForEvent('download'), page.click('#csv')]);
+  expect(download.suggestedFilename()).toBe('cuaderno-1eso-informe.csv');
+  await ctx.close();
+});

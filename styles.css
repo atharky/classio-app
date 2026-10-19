@@ -254,3 +254,16 @@ h1:focus{outline:none}
 .cx input{width:100%;height:100%;box-sizing:border-box;padding:6px 0 0;text-align:center;text-transform:uppercase;font:inherit;font-weight:700;border:2px solid var(--line);border-radius:6px;background:var(--card);color:var(--ink)}
 .cx input.right{border-color:var(--good);background:var(--good-soft)}.cx input.wrong{border-color:var(--bad);background:var(--bad-soft)}
 .cclues h4{margin:.6em 0 .2em}.cclues ol{margin:0;padding-left:1.6em}
+/* panel de progreso */
+.pbar{width:100%;height:12px;appearance:none;border:0;border-radius:99px;overflow:hidden;background:var(--line)}
+.pbar::-webkit-progress-bar{background:var(--line);border-radius:99px}
+.pbar::-webkit-progress-value{background:var(--good);border-radius:99px}
+.pbar::-moz-progress-bar{background:var(--good);border-radius:99px}
+.week{display:flex;gap:10px}
+.wd{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:.78rem;color:var(--muted)}
+.wd i{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);display:block}
+.wd.on i{background:var(--good);border-color:var(--good)}
+.wd.today{font-weight:700;color:var(--ink)}
+.plv{list-style:none;margin:0;padding:0;display:grid;gap:4px}
+.plv li{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed var(--line)}
+.plv li.ok span::before{content:'✓ ';color:var(--good);font-weight:700}

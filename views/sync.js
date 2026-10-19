@@ -37,6 +37,6 @@ export function viewSync(){track(viewSync,[]);setCrumb('Sincronizar');
     $('#link-form').onsubmit=async e=>{e.preventDefault();const inp=$('#code-in'),b=$('#link-btn'),code=normalizeCode(inp.value);
       if(!code){setSyncStatus(syncMessage({kind:'invalid_code'}));inp.focus();return}
       busy(b,true,'Vinculando…');
-      try{const r=await pushState(code,S);net.link={code,at:Date.now()};saveLink(net.link);S.mods=r.state.mods;S.exams=r.state.exams;S.misses=r.state.misses||{};persist();net.status='';stay()}
+      try{const r=await pushState(code,S);net.link={code,at:Date.now()};saveLink(net.link);S.mods=r.state.mods;S.exams=r.state.exams;S.misses=r.state.misses||{};S.days=r.state.days||[];persist();net.status='';stay()}
       catch(err){busy(b,false,'Vincular');setSyncStatus(syncMessage(err));inp.focus()}}}}
 

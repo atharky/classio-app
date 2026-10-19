@@ -30,7 +30,7 @@ npm run test:e2e         # navegador: reproductor, recorrido de niveles y exáme
 |---|---|
 | `index.html`, `styles.css`, `main.js` | Página, estilos y punto de entrada |
 | `state.js`, `net.js`, `ui.js`, `update.js`, `theme.js`, `inline.js` | Estado y progreso (`localStorage`), sincronización en segundo plano, marco de la página (migas, pie, navegación) y aviso de versión nueva |
-| `views/` | Vistas: inicio, módulo, nivel (con resumen escrito), privacidad y sincronización |
+| `views/`, `progress.js` | Vistas (inicio, módulo, nivel con resumen escrito, panel «Mi progreso», privacidad y sincronización) y los cálculos del panel (resumen, racha, informe CSV) |
 | `quiz.js`, `exam.js`, `question.js`, `qtypes.js`, `player.js` | Pruebas de nivel y repaso, exámenes, preguntas (`question.js`: opción múltiple y número; `qtypes.js`: completar, verdadero/falso con corrección, clasificar, etiquetar un dibujo y crucigrama) y reproductor de relatos |
 | `data.js` | Utilidades y generadores de preguntas de Potencias y Raíces |
 | `anim.js`, `divis.js`, `enteros.js`, `lengua.js`, `biologia.js`, `ciencia.js`, `tierra.js` | Niveles de cada materia y los relatos animados (`ANIMS`) |
@@ -55,4 +55,4 @@ Cada push a `main` y cada PR contra `main` ejecutan `.github/workflows/azure-sta
 
 ## Privacidad
 
-No hay cuentas ni datos personales. Solo se guardan niveles superados, notas y tipos de pregunta pendientes de repasar, en el navegador y, si el alumno lo activa, en Table Storage bajo la huella de un código. Se puede borrar todo (ver la página «Privacidad» de la app).
+No hay cuentas ni datos personales. Solo se guardan niveles superados, notas y tipos de pregunta pendientes de repasar y días de actividad, en el navegador y, si el alumno lo activa, en Table Storage bajo la huella de un código. Se puede borrar todo (ver la página «Privacidad» de la app).

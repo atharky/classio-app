@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 23 de 26 · **En curso:** 0 · **Pendientes:** 3
+**Actualizado:** 19-10-2026 · **Hechas:** 24 de 26 · **En curso:** 0 · **Pendientes:** 2
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -62,7 +62,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T19 | Módulo «Números enteros» | F4 | P3 | T11 | Opus | ✅ Hecha | #7 | 2026-10-19 |
 | T20 | Más temas de Lengua y Biología | F4 | P3 | T09 | Sonnet | ⬜ Pendiente | — | — |
 | T21 | Narraciones grabadas | F4 | P4 | T07 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ⬜ Pendiente | — | — |
+| T22 | Panel de progreso del alumno | F4 | P3 | T10 | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T23 | Modo profesor real | F4 | P4 | T04, T18 | Opus | ⬜ Pendiente | — | — |
 
 **Notas de bloqueo o descarte:**
@@ -259,7 +259,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5** para el script y el cableado; la generación de audio no es tarea de modelo de lenguaje. **€**
 
 ### T22 · Panel de progreso del alumno
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P3 · **Depende de:** T10
 - **Alcance:** vista «Mi progreso»: niveles superados por materia, mejores notas, fallos pendientes, racha; exportable.
 - **Modelo:** **Sonnet 5.5**. **€€**

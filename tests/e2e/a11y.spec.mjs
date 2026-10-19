@@ -36,6 +36,8 @@ for (const scheme of ['light', 'dark']) {
     await page.click('#home-btn');
     await page.click('#sync');
     await scan(page, 'sincronizar');
+    await page.click('#progress');
+    await scan(page, 'mi progreso');
     await page.click('#privacy');
     await scan(page, 'privacidad');
     expect([...new Set(found)]).toEqual([]);

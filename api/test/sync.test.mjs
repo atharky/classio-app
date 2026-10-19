@@ -28,8 +28,8 @@ test('sanitizeState conserva el progreso y descarta el resto', () => {
   const s=sanitizeState({v:2,open:true,extra:'x',
     mods:{potencias:{unlocked:3,best:{0:5,1:4,foo:3,2:-1,3:1.5}},'MAL ID':{unlocked:2,best:{}},raices:{unlocked:'9',best:null}},
     exams:{'potencias:p1':[{g:7.5,d:1},{g:11,d:2},{g:5,d:'x'},null],'potencias':[{g:5,d:1}],'a:b:c':[{g:5,d:1}],'raices:r1':[]}});
-  assert.deepEqual(s,{mods:{potencias:{unlocked:3,best:{0:5,1:4}},raices:{unlocked:1,best:{}}},exams:{'potencias:p1':[{g:7.5,d:1}]},misses:{}});
-  assert.deepEqual(sanitizeState(null),{mods:{},exams:{},misses:{}});
+  assert.deepEqual(s,{mods:{potencias:{unlocked:3,best:{0:5,1:4}},raices:{unlocked:1,best:{}}},exams:{'potencias:p1':[{g:7.5,d:1}]},misses:{},days:[]});
+  assert.deepEqual(sanitizeState(null),{mods:{},exams:{},misses:{},days:[]});
 });
 
 test('mergeState se queda con lo mejor de los dos lados', () => {
@@ -37,7 +37,7 @@ test('mergeState se queda con lo mejor de los dos lados', () => {
   const b=sanitizeState({mods:{potencias:{unlocked:4,best:{1:4,2:5}},raices:{unlocked:2,best:{0:4}}},exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2}],'potencias:pf':[{g:8,d:5}]}});
   assert.deepEqual(mergeState(a,b),{
     mods:{potencias:{unlocked:4,best:{0:5,1:4,2:5}},raices:{unlocked:2,best:{0:4}}},
-    exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2},{g:7,d:3}],'potencias:pf':[{g:8,d:5}]},misses:{}});
+    exams:{'potencias:p1':[{g:6,d:1},{g:9,d:2},{g:7,d:3}],'potencias:pf':[{g:8,d:5}]},misses:{},days:[]});
 });
 
 test('mergeState guarda solo las 10 últimas notas de cada examen', () => {
@@ -127,4 +127,19 @@ test('un cliente antiguo sin misses no borra los de la nube', async () => {
   const {jsonBody:{code}}=await sync.create(body({state:{...progress({0:5},2),misses:{'potencias:0:1':{d:5,ok:0}}}}));
   const r=await sync.sync(body({code,state:progress({0:5},2)}));
   assert.deepEqual(r.jsonBody.state.misses,{'potencias:0:1':{d:5,ok:0}});
+});
+
+test('days: solo fechas válidas, sin repetir, ordenadas y como máximo 90', () => {
+  const s=sanitizeState({days:['2026-10-19','2026-10-18','2026-10-19','hoy','2026-13-1','2026-10-17',5,null]});
+  assert.deepEqual(s.days,['2026-10-17','2026-10-18','2026-10-19']);
+  const many=Array.from({length:120},(_,i)=>new Date(Date.UTC(2026,0,1+i)).toISOString().slice(0,10));
+  const out=sanitizeState({days:many}).days;
+  assert.equal(out.length,90);
+  assert.equal(out[89],many[119]);
+});
+
+test('mergeState de days: unión de las fechas de los dos dispositivos', () => {
+  const a=sanitizeState({days:['2026-10-18','2026-10-19']}),b=sanitizeState({days:['2026-10-17','2026-10-19']});
+  assert.deepEqual(mergeState(a,b).days,['2026-10-17','2026-10-18','2026-10-19']);
+  assert.deepEqual(mergeState({mods:{},exams:{}},{mods:{},exams:{}}).days,[]);
 });

@@ -14,7 +14,7 @@ async function call(path,body){let r,data=null;
   if(!r.ok)throw new SyncError(data&&typeof data.error==='string'?data.error:'server');
   return data}
 // Solo viaja el progreso; el modo profesor se queda en cada dispositivo.
-const payload=S=>({mods:S.mods,exams:S.exams,misses:S.misses||{}});
+const payload=S=>({mods:S.mods,exams:S.exams,misses:S.misses||{},days:S.days||[]});
 const createCode=S=>call('sync/new',{state:payload(S)});
 const deleteCode=code=>call('sync/delete',{code});
 const pushState=(code,S)=>call('sync',{code,state:payload(S)});

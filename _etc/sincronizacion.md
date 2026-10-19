@@ -9,6 +9,7 @@ Permite continuar el progreso en otro ordenador, tablet o móvil **sin cuentas n
    - por nivel, la mejor puntuación;
    - por módulo, el desbloqueo más alto;
    - por examen, todas las notas (se guardan las 10 últimas);
+   - por día de actividad (`days`, para la racha del panel «Mi progreso»), la unión de las fechas (las 90 últimas);
    - por tipo de pregunta fallada (`misses`, usado por «Repasar lo que fallé»), gana el último fallo y, si es el mismo, los aciertos más altos: así una curación hecha en un dispositivo no se deshace al sincronizar.
 3. A partir de ahí, cada vez que se guarda progreso se sincroniza en segundo plano (2 s después) y también al abrir la app. Si no hay conexión, el progreso sigue en el navegador y se avisa en el pie de página.
 4. **Desvincular** deja el progreso en el dispositivo y deja de sincronizarlo. **Borrar progreso** también desvincula el dispositivo; si no, la nube lo volvería a traer.
