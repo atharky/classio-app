@@ -25,7 +25,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 
 ## Control de estado
 
-**Actualizado:** 19-10-2026 · **Hechas:** 5 de 26 · **En curso:** 0 · **Pendientes:** 21
+**Actualizado:** 19-10-2026 · **Hechas:** 6 de 26 · **En curso:** 0 · **Pendientes:** 20
 
 | Icono | Estado | Significa |
 |---|---|---|
@@ -43,7 +43,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 | T03 | Borrado del progreso en la nube | F1 | P1 | — | Sonnet | ✅ Hecha | #7 | 2026-10-19 |
 | T04 | Página de privacidad y uso de datos | F1 | P1 | T03 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T05 | Correcciones rápidas | F1 | P1 | — | Haiku | ✅ Hecha | #7 | 2026-10-19 |
-| T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ⬜ Pendiente | — | — |
+| T06 | README y `CLAUDE.md` | F1 | P1 | T01, T02 | Haiku | ✅ Hecha | #7 | 2026-10-19 |
 | T07 | Raíces cuadradas: niveles 4 y 5, exámenes y activación | F2 | P2 | T01, T02 | Sonnet | ⬜ Pendiente | — | — |
 | T08 | «En la vida real» en el resumen escrito | F2 | P2 | — | Haiku | ⬜ Pendiente | — | — |
 | T09 | Revisión didáctica de todos los contenidos | F2 | P2 | — | Opus | ⬜ Pendiente | — | — |
@@ -125,7 +125,7 @@ Todas las tareas terminan con `npm test` en verde y, desde T01, con las E2E en v
 - **Modelo:** **Haiku 5.5**. Cambios de una línea con instrucciones exactas. **€**
 
 ### T06 · README y `CLAUDE.md`
-- **Estado:** ⬜ Pendiente
+- **Estado:** ✅ Hecha
 - **Prioridad:** P1 · **Tipo:** técnica · **Depende de:** T01, T02
 - **Alcance:** `README.md` (qué es, cómo ejecutar en local, cómo probar, estructura de ficheros, cómo añadir un módulo o un relato, despliegue y variables); `CLAUDE.md` con las convenciones para agentes (sin frameworks, estilo de una línea por generador, reglas de narración, qué pruebas pasar, cómo subir la caché, rama + PR). Refundir el contenido útil de `_etc/*.md` y enlazar desde el README.
 - **Modelo:** **Haiku 5.5** redactando a partir de la documentación existente; revisión de una persona. **€**
