@@ -1,5 +1,7 @@
 # Plan de implementación: módulo «Raíces cuadradas»
 
+> **Ejecutado (T07):** niveles 4 y 5, exámenes y activación del módulo ya están en `main`.
+
 **Estado de partida:** `main` @ `bf54b49`  
 **Módulo objetivo:** `raices` (hoy declarado en `MODULES` con `soon:true`, en [`data.js`](../data.js))  
 **Por qué este:** es el siguiente de la lista y continúa directamente a Potencias (la raíz cuadrada es la operación inversa del cuadrado, ya trabajado en el nivel 2 de Potencias).

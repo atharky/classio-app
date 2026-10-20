@@ -86,9 +86,9 @@ const LAB_LEVELS=[
     ['Error típico',`<div class="ex warn">Medir con el vaso de precipitados</div><p>Sus marcas solo dan un volumen <b>aproximado</b>. Si necesitas una cantidad exacta, usa la <b>probeta</b> o la <b>pipeta</b>.</p>`]
   ],
   gens:[
-    ()=>{const k=pick(GLASS);return mc(`¿Cómo se llama este material?${pic(k)}`,cap(NAME[k]),fromKeys(shuffle(GLASS.filter(x=>x!==k)).slice(0,3)),`Es ${the(k)}: sirve para ${USE[k]}.`)},
-    ()=>{const k=pick(GLASS);return mc(`¿Qué material sirve para <b>${USE[k]}</b>?`,cap(NAME[k]),fromKeys(shuffle(GLASS.filter(x=>x!==k)).slice(0,3)),`${cap(NAME[k])}: sirve para ${USE[k]}.`)},
-    ()=>{const k=pick(GLASS);return mc(`¿Para qué sirve${k==='pinzas'?'n':''} <b>${the(k)}</b>?`,cap(USE[k]),shuffle(GLASS.filter(x=>x!==k)).slice(0,3).map(x=>cap(USE[x])),`${cap(NAME[k])}: sirve para ${USE[k]}.`)},
+    ()=>{const k=pick(GLASS);return mc(`¿Cómo se llama este material?${pic(k)}`,cap(NAME[k]),fromKeys(shuffle(GLASS.filter(x=>x!==k&&!(['vaso','erlen'].includes(k)&&['vaso','erlen'].includes(x)))).slice(0,3)),`Es ${the(k)}: sirve para ${USE[k]}.`)},
+    ()=>{const k=pick(GLASS);return mc(`¿Qué material sirve para <b>${USE[k]}</b>?`,cap(NAME[k]),fromKeys(shuffle(GLASS.filter(x=>x!==k&&!(['vaso','erlen'].includes(k)&&['vaso','erlen'].includes(x)))).slice(0,3)),`${cap(NAME[k])}: sirve para ${USE[k]}.`)},
+    ()=>{const k=pick(GLASS);return mc(`¿Para qué sirve${k==='pinzas'?'n':''} <b>${the(k)}</b>?`,cap(USE[k]),shuffle(GLASS.filter(x=>x!==k&&!(['vaso','erlen'].includes(k)&&['vaso','erlen'].includes(x)))).slice(0,3).map(x=>cap(USE[x])),`${cap(NAME[k])}: sirve para ${USE[k]}.`)},
     ()=>{const [s,k,ws]=pick(SITUATIONS);return mc(`${s} ¿Qué material usas?`,cap(NAME[k]),fromKeys(ws),`${cap(NAME[k])}: sirve para ${USE[k]}.`)},
     ()=>{const best=pick(['probeta','pipeta']);return mc(`¿Qué material mide el volumen de un líquido con <b>más precisión</b>?`,cap(NAME[best]),fromKeys(['vaso','erlen','embudo']),`${cap(the(best))} está graduada con precisión; las marcas del vaso o del Erlenmeyer son aproximadas.`)}
   ]},
@@ -111,10 +111,10 @@ const LAB_LEVELS=[
 { title:'El microscopio óptico', sub:'Sus partes, los aumentos y cómo enfocar',
   lesson:[
     ['¿Para qué sirve?',`<p>El <b>microscopio óptico</b> aumenta la imagen de objetos tan pequeños que no se ven a simple vista, como las <span class="hl">células</span>. Usa la luz y un juego de lentes.</p>`],
-    ['Sus partes',`<div class="row" style="justify-content:center">${micro(0,null,[['ocular'],['objetivos'],['platina'],['tornillo macrométrico'],['foco']])}</div>
+    ['Sus partes',`<div class="row" data-s="justify-content:center">${micro(0,null,[['ocular'],['objetivos'],['platina'],['tornillo macrométrico'],['foco']])}</div>
      <p>Parte <b>óptica</b> (la que forma la imagen): ocular, objetivos, foco o lámpara y diafragma (regula la luz). Parte <b>mecánica</b> (el soporte): base, brazo, platina, revólver y tornillos macrométrico y micrométrico.</p>`],
     ['Los aumentos',`<p>Los aumentos totales se calculan <span class="hl">multiplicando</span> los del ocular por los del objetivo:</p><div class="ex">ocular 10× · objetivo 40× = <b>400 aumentos</b></div>`],
-    ['Cómo enfocar',`<p>1. Empieza con el objetivo de <b>menor</b> aumento. 2. Coloca la preparación en la platina. 3. Acerca el objetivo con el <b>macrométrico</b> mirando de lado. 4. Mira por el ocular y afina con el <b>micrométrico</b>. 5. Para más aumento, gira el revólver y enfoca solo con el micrométrico.</p>`],
+    ['Cómo enfocar',`<p>1. Empieza con el objetivo de <b>menor</b> aumento. 2. Coloca la preparación en la platina. 3. Acerca la platina al objetivo con el <b>macrométrico</b>, mirando de lado. 4. Mira por el ocular y afina con el <b>micrométrico</b>. 5. Para más aumento, gira el revólver y enfoca solo con el micrométrico.</p>`],
     ['Error típico',`<div class="ex warn">Usar el macrométrico con el objetivo de 40× o de 100×</div><p>Con esos objetivos la lente está casi tocando la muestra: un giro brusco puede romper la preparación o la lente. Usa el <b>micrométrico</b>.</p>`]
   ],
   gens:[
@@ -122,7 +122,7 @@ const LAB_LEVELS=[
     ()=>{const p=pick(Object.keys(PARTS));return mc(`¿Qué parte del microscopio es esta?<br><b>${PARTS[p].fn}</b>`,cap(p),shuffle(Object.keys(PARTS).filter(x=>x!==p)).slice(0,3).map(cap),`Es ${p==='platina'||p==='base'?'la':p==='objetivos'?'los':'el'} ${p}.`)},
     ()=>{const o=pick([5,10,15]),b=pick([4,10,40,100]);return num(`Un microscopio tiene un ocular de ${o}× y estás usando el objetivo de ${b}×. ¿Cuántos aumentos totales tiene la imagen?`,o*b,`Se multiplican: ${o} · ${b} = ${o*b} aumentos.`)},
     ()=>{const o=pick([10,15]),b=pick([4,10,40]);return num(`Ves una muestra a ${o*b} aumentos con un ocular de ${o}×. ¿De cuántos aumentos es el objetivo?`,b,`Aumentos totales = ocular · objetivo, así que objetivo = ${o*b} : ${o} = ${b}.`)},
-    ()=>{const p=pick(Object.keys(PARTS));return mc(`¿El <b>${p}</b> forma parte de la parte óptica o de la parte mecánica del microscopio?`,cap(PARTS[p].kind),['Óptica','Mecánica'],`${cap(p)}: parte ${PARTS[p].kind}. ${PARTS[p].fn}`)},
+    ()=>{const p=pick(Object.keys(PARTS));return mc(`¿${p==='platina'||p==='base'?'La':p==='objetivos'?'Los':'El'} <b>${p}</b> ${p==='objetivos'?'forman':'forma'} parte de la parte óptica o de la parte mecánica del microscopio?`,cap(PARTS[p].kind),['Óptica','Mecánica'],`${cap(p)}: parte ${PARTS[p].kind}. ${PARTS[p].fn}`)},
     ()=>mc('Al empezar a observar una preparación, ¿qué objetivo hay que usar?','El de menor aumento',['El de mayor aumento','Cualquiera','Ninguno, se mira sin objetivo'],'Se empieza por el de menor aumento: se ve más superficie y es más fácil encontrar y enfocar la muestra.')
   ]},
 { title:'Seguridad en el laboratorio', sub:'Normas y pictogramas de peligro',
@@ -176,7 +176,7 @@ const LAB_ANIMS=[
   {say:'Va a coger el tubo con la mano, pero la profesora la para: el vidrio caliente parece frío y quema. Se sujeta con pinzas de madera, con la boca hacia otro lado.',
    show:line(at(0,'✗ con la mano','bad'))+labeled(['pinzas'],.8)+line(at(2.6,'✓ pinzas de madera, la boca lejos de las personas','good'))},
   {say:'¿Qué instrumento sirve para esto?',ask:LAB_LEVELS[1].gens[1]},
-  {say:'Mientras el agua se calienta, deja los tubos en la gradilla y tritura unos granos de sal gorda en el mortero.',
+  {say:'Cuando el agua ya está caliente, apaga el mechero y deja el tubo en la gradilla. Después tritura unos granos de sal gorda en el mortero.',
    show:labeled(['gradilla','mortero'],0,1.8)},
   {say:'Ahora toca medir. La balanza mide la masa, en gramos. El termómetro mide la temperatura del agua, en grados Celsius.',
    show:labeled(['balanza','termometro'],0,1.6)+line(`${at(3.4,'masa → g')} &nbsp; ${at(4,'temperatura → °C')}`)},

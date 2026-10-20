@@ -5,10 +5,15 @@ La app (ahora **Cuaderno 1º ESO**) organiza el contenido en **materias → mód
 | Materia | Módulo | Niveles | Exámenes |
 |---|---|---|---|
 | Matemáticas | Potencias | 6 | Parcial A, parcial B, final |
-| Matemáticas | Raíces cuadradas (oculto, en preparación) | 3 de 5 | — |
+| Matemáticas | Raíces cuadradas | 5 | Parcial A, parcial B, final |
+| Matemáticas | Números enteros | 1. Los enteros y la recta · 2. Valor absoluto, opuesto y orden · 3. Suma y resta · 4. Multiplicación y división · 5. Operaciones combinadas · 6. Problemas | Parcial A, parcial B, final |
+| Matemáticas | Divisibilidad | 1. Múltiplos y divisores · 2. Criterios de divisibilidad · 3. Primos y compuestos · 4. Descomposición en factores primos · 5. M.c.d. · 6. M.c.m. | Parcial A, parcial B, final |
 | Lengua Castellana y Literatura | La comunicación | 1. Elementos (emisor, receptor, mensaje, código, canal, contexto) · 2. Verbal y no verbal; indicio, icono y símbolo · 3. Funciones del lenguaje | Examen del tema |
+| Lengua Castellana y Literatura | Las clases de palabras | 1. Sustantivos y adjetivos · 2. El verbo · 3. Los determinantes | Examen del tema |
 | Lengua Castellana y Literatura | El resumen | 1. Idea principal, secundarias y palabras clave · 2. Cómo se hace un resumen | Examen del tema |
-| Biología y Geología | La ciencia y el método científico | 1. Fake news o bulos · 2. El método científico · 3. El experimento de Redi · 4. Ciencia y pseudociencia · 5. Mujeres científicas | Parcial A, parcial B y **Examen del tema** (este módulo + Material de laboratorio) |
+| Biología y Geología | La ciencia y el método científico | 1. Fake news o bulos · 2. El método científico · 3. El experimento de Redi · 4. Ciencia y pseudociencia (11 disciplinas y 5 características de la ficha de clase) · 5. Mujeres científicas | Parcial A, parcial B y **Examen del tema** (este módulo + Material de laboratorio) |
+| Biología y Geología | Los seres vivos y la célula | 1. Los seres vivos · 2. La célula · 3. Los cinco reinos | Examen del tema |
+| Biología y Geología | La Tierra y la geosfera | 1. Un planeta excepcional · 2. Los subsistemas terrestres · 3. Las capas de la geosfera · 4. Corteza, manto y núcleo en detalle | Parcial A, parcial B, Examen del tema |
 | Biología y Geología | Material de laboratorio | 1. Material de vidrio · 2. Otros instrumentos · 3. El microscopio óptico · 4. Seguridad y pictogramas | Parcial A, parcial B, final |
 
 ## Dónde está cada cosa

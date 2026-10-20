@@ -5,7 +5,9 @@ import { createHash, randomInt } from 'node:crypto';
 export const ALPHABET='23456789ABCDEFGHJKMNPQRSTVWXYZ';
 export const CODE_LEN=10; // 30^10 ≈ 2^49 combinaciones
 export const MAX_BODY=32*1024;
-const MAX_MODS=50,MAX_LEVELS=50,MAX_EXAMS=10,RETRIES=5;
+const MAX_MODS=50,MAX_LEVELS=50,MAX_EXAMS=10,MAX_MISSES=300,RETRIES=5;
+const DAY=/^\d{4}-\d{2}-\d{2}$/,MAX_DAYS=90;
+const MISS_KEY=/^[a-z0-9-]{1,40}:\d{1,2}:\d{1,2}$/;
 const ID=/^[a-z0-9-]{1,40}$/;
 const int=(v,min,max)=>Number.isInteger(v)&&v>=min&&v<=max;
 
@@ -17,7 +19,7 @@ export const codeId=code=>createHash('sha256').update(code).digest('hex');
 
 // Solo se sincroniza el progreso (niveles y notas). El modo profesor (open) es de cada dispositivo.
 export function sanitizeState(raw){
-  const out={mods:{},exams:{}};
+  const out={mods:{},exams:{},misses:{},days:[]};
   if(!raw||typeof raw!=='object')return out;
   if(raw.mods&&typeof raw.mods==='object')for(const [id,m] of Object.entries(raw.mods).slice(0,MAX_MODS)){
     if(!ID.test(id)||!m||typeof m!=='object')continue;
@@ -27,11 +29,16 @@ export function sanitizeState(raw){
     const parts=key.split(':');if(parts.length!==2||!parts.every(p=>ID.test(p))||!Array.isArray(list))continue;
     const items=list.filter(x=>x&&typeof x.g==='number'&&x.g>=0&&x.g<=10&&int(x.d,0,8.64e15)).map(x=>({g:x.g,d:x.d}));
     if(items.length)out.exams[key]=items.slice(-MAX_EXAMS)}
+  // Repaso de fallos: «módulo:nivel:generador» → última vez que falló (d) y aciertos seguidos desde entonces (ok; con 2 está curado).
+  if(raw.misses&&typeof raw.misses==='object')for(const [key,m] of Object.entries(raw.misses).slice(0,MAX_MISSES))
+    if(MISS_KEY.test(key)&&m&&typeof m==='object'&&int(m.d,0,8.64e15)&&int(m.ok,0,2))out.misses[key]={d:m.d,ok:m.ok};
+  // Días con actividad (para la racha): fechas AAAA-MM-DD sin repetir, las 90 últimas.
+  if(Array.isArray(raw.days))out.days=[...new Set(raw.days.filter(d=>typeof d==='string'&&DAY.test(d)))].sort().slice(-MAX_DAYS);
   return out}
 
 // Unión sin pérdidas: lo mejor de cada nivel, el desbloqueo más alto y todas las notas (últimas 10).
 export function mergeState(a,b){
-  const out={mods:{},exams:{}},blank={unlocked:1,best:{}};
+  const out={mods:{},exams:{},misses:{},days:[]},blank={unlocked:1,best:{}};
   for(const id of new Set([...Object.keys(a.mods),...Object.keys(b.mods)])){
     const x=a.mods[id]||blank,y=b.mods[id]||blank,best={...x.best};
     for(const [k,v] of Object.entries(y.best))best[k]=Math.max(best[k]??0,v);
@@ -39,12 +46,17 @@ export function mergeState(a,b){
   for(const key of new Set([...Object.keys(a.exams),...Object.keys(b.exams)])){
     const seen=new Map();for(const e of [...(a.exams[key]||[]),...(b.exams[key]||[])])seen.set(`${e.d}:${e.g}`,e);
     out.exams[key]=[...seen.values()].sort((p,q)=>p.d-q.d).slice(-MAX_EXAMS)}
+  // Gana el último fallo; con el mismo fallo, los aciertos más altos (así una curación no se deshace al sincronizar).
+  const ma=a.misses||{},mb=b.misses||{};
+  for(const key of new Set([...Object.keys(ma),...Object.keys(mb)])){const x=ma[key],y=mb[key];
+    out.misses[key]=!x?y:!y?x:x.d!==y.d?(x.d>y.d?x:y):{d:x.d,ok:Math.max(x.ok,y.ok)}}
+  out.days=[...new Set([...(a.days||[]),...(b.days||[])])].sort().slice(-MAX_DAYS);
   return out}
 
 const fail=(status,error)=>({status,jsonBody:{error}});
 const parse=text=>{if(typeof text!=='string'||text.length>MAX_BODY)return null;try{const b=JSON.parse(text);return b&&typeof b==='object'?b:null}catch{return null}};
 
-/* store: get(id)→{state,etag}|null · create(id,state)→false si ya existe · update(id,state,etag)→false si hubo otra escritura */
+/* store: get(id)→{state,etag}|null · create(id,state)→false si ya existe · update(id,state,etag)→false si hubo otra escritura · remove(id)→false si no existía */
 export function createSync(store){
   return {
     async create(text){const body=parse(text);if(!body)return fail(400,'invalid_body');const state=sanitizeState(body.state);
@@ -56,5 +68,8 @@ export function createSync(store){
       for(let i=0;i<RETRIES;i++){const cur=await store.get(id);if(!cur)return fail(404,'unknown_code');
         const merged=mergeState(cur.state,local);
         if(JSON.stringify(merged)===JSON.stringify(cur.state)||await store.update(id,merged,cur.etag))return {status:200,jsonBody:{code,state:merged}}}
-      return fail(409,'conflict')}
+      return fail(409,'conflict')},
+    async remove(text){const body=parse(text);if(!body)return fail(400,'invalid_body');
+      const code=normalizeCode(body.code);if(!code)return fail(400,'invalid_code');
+      return await store.remove(codeId(code))?{status:200,jsonBody:{deleted:true}}:fail(404,'unknown_code')}
   }}

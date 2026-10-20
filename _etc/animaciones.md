@@ -18,7 +18,7 @@ La explicación de cada nivel se cuenta como una **historia que se va trazando**
 
 ### Aspecto
 
-- La pizarra es blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (Google Fonts; sin conexión, una letra manuscrita del sistema) y rotulador negro, azul, rojo y verde.
+- La pizarra es blanca con marco, también en modo oscuro (es un objeto, no el fondo de la página). Usa letra manuscrita **Kalam** (autoalojada en `fonts/`) y rotulador negro, azul, rojo y verde.
 - El texto aparece «escribiéndose» (recorte animado) y los dibujos SVG se trazan con `stroke-dashoffset`; las líneas tienen un pequeño temblor de mano alzada, siempre el mismo para que las escenas no cambien entre visitas.
 - Si una escena no cabe en su recuadro, se encoge para caber.
 - Con «reducir movimiento» activado en el sistema no hay viajes de cámara ni animaciones: cada escena aparece terminada.
@@ -38,11 +38,31 @@ Cada nivel incluye un paso **«En la vida real»** con su dibujo y una pregunta 
 | Raíces 1 | Huerto cuadrado de 49 m² → lado de 7 m |
 | Raíces 2 | Formar un cuadrado con 36 alumnos (con 40 no se puede) |
 | Raíces 3 | 30 alumnos → cuadrado de 5 × 5 y sobran 5 (el resto) |
+| Raíces 4 | El área de un cuadrado nunca es negativa: no hay raíz de −9 |
+| Raíces 5 | Escalera del carpintero: 3 m de base y 4 m de pared → 5 m (√(9+16)) |
+| Divisibilidad 1 | Repartir 12 onzas de chocolate: sus divisores |
+| Divisibilidad 2 | Repartir 120 caramelos entre 3 amigos con el criterio del 3 |
+| Divisibilidad 3 | Claves de seguridad con primos enormes |
+| Divisibilidad 4 | Engranajes y descomposición en factores primos |
+| Divisibilidad 5 | Cortar cintas en trozos iguales (m.c.d.) |
+| Divisibilidad 6 | Semáforos coordinados («ola verde», m.c.m.) |
+| Enteros 1 | El termómetro: −5 °C es más frío que −2 °C |
+| Enteros 2 | Las puntuaciones negativas de un juego |
+| Enteros 3 | La temperatura que sube de −4 °C a 2 °C |
+| Enteros 4 | Las deudas a cuatro amigos: 4 · (−3) = −12 € |
+| Enteros 5 | La calculadora y la jerarquía de operaciones |
+| Enteros 6 | La montaña: temperatura y altitud |
 | Comunicación 1 | El árbitro pita un penalti: emisor, receptores, código y canal |
 | Comunicación 2 | Señales de tráfico: iconos (peatón) y símbolos (prohibido) |
 | Comunicación 3 | La publicidad: función apelativa y poética |
+| Palabras 1 | Una receta: sustantivos (ingredientes) y adjetivos (cómo deben estar) |
+| Palabras 2 | Un mensaje de móvil: llego, llegué, llegaré |
+| Palabras 3 | En la panadería: «dame este bollo» |
 | Resumen 1 | Subrayar para estudiar un examen |
 | Resumen 2 | Contar una película a un amigo en un minuto |
+| Seres vivos 1 | Una planta de interior que se nutre, crece y echa un brote |
+| Seres vivos 2 | El yogur y sus bacterias |
+| Seres vivos 3 | El pan y la levadura (un hongo) |
 | Laboratorio 1 | La cocina: jarra medidora y embudo |
 | Laboratorio 2 | La báscula de la cocina: pesar por diferencia |
 | Laboratorio 3 | Observar células de cebolla al microscopio |
@@ -61,7 +81,12 @@ Al salir de la pantalla (cambiar de pestaña, volver a niveles…) la narración
 
 - Por defecto se usa la **voz del navegador** (Web Speech API) con la primera voz en español disponible (`es-ES` si existe). No se descarga nada ni hace falta red, y la política de seguridad (CSP) no cambia.
 - Si el navegador no tiene voz en español, se avisa y se siguen los subtítulos.
-- Para usar **grabaciones propias**, añade `audio: 'audio/pot-1-1.mp3'` al paso y sube el archivo al mismo sitio. Si la grabación falla, se vuelve a los subtítulos. Recuerda añadir los archivos a `ASSETS` en `sw.js` si deben funcionar sin conexión.
+- Para usar **grabaciones propias** (voz humana o de un servicio de síntesis de calidad):
+  1. `node scripts/audio-report.mjs --write` crea `audio/manifest.json` con la ruta y el texto de cada paso sin audio (`audio/<módulo>-<nivel>-<paso>.mp3`).
+  2. Graba o genera cada texto y guarda el archivo en su ruta.
+  3. Añade `audio: 'audio/<módulo>-<nivel>-<paso>.mp3'` al paso. Si la grabación falla, se vuelve a los subtítulos y a la voz del navegador.
+  `npm test` comprueba que cada audio declarado existe y que el nombre es el esperado. `node scripts/audio-report.mjs --strict` falla si falta alguno (para activarlo en CI cuando estén todos).
+- **Sin conexión:** los audios se cargan **bajo demanda** y el service worker los guarda al reproducirlos por primera vez (solo respuestas completas; los audios solo se precargan si se añaden a `ASSETS`). Para precargar todos hay que sumarlos a `ASSETS`: cada narración de 10 a 20 s en MP3 mono a 64 kbit/s pesa unos 100–150 KB, así que los 355 pasos actuales rondan los 45 MB. **Decisión pendiente:** si ese peso es aceptable en la Static Web App y en los móviles del alumnado, o si solo se graban los niveles con más uso.
 
 ## Cómo se escribe una animación
 

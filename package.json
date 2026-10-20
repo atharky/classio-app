@@ -2,5 +2,18 @@
   "name": "cuaderno-mates",
   "private": true,
   "type": "module",
-  "scripts": { "test": "node --test" }
+  "scripts": {
+    "test": "node --test",
+    "test:e2e": "playwright test",
+    "lint": "eslint .",
+    "format": "prettier --check scripts tests/e2e playwright.config.mjs eslint.config.mjs"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.56.1",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10"
+  }
 }

@@ -14,15 +14,17 @@ async function call(path,body){let r,data=null;
   if(!r.ok)throw new SyncError(data&&typeof data.error==='string'?data.error:'server');
   return data}
 // Solo viaja el progreso; el modo profesor se queda en cada dispositivo.
-const payload=S=>({mods:S.mods,exams:S.exams});
+const payload=S=>({mods:S.mods,exams:S.exams,misses:S.misses||{},days:S.days||[]});
 const createCode=S=>call('sync/new',{state:payload(S)});
+const deleteCode=code=>call('sync/delete',{code});
 const pushState=(code,S)=>call('sync',{code,state:payload(S)});
 
 const MESSAGES={
   offline:'No hay conexión con el servidor. Tu progreso sigue guardado en este navegador.',
   unknown_code:'Ese código no existe. Revisa que esté bien escrito.',
   invalid_code:'El código no es válido: son 10 letras y números.',
+  rate_limited:'Demasiadas peticiones seguidas. Espera un minuto y vuelve a intentarlo.',
   conflict:'Otro dispositivo estaba guardando a la vez. Vuelve a intentarlo.'};
 const syncMessage=e=>MESSAGES[e&&e.kind]||'El servidor de sincronización no está disponible ahora. Inténtalo más tarde.';
 
-export { loadLink, saveLink, normalizeCode, createCode, pushState, syncMessage };
+export { loadLink, saveLink, normalizeCode, createCode, pushState, deleteCode, syncMessage };

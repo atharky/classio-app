@@ -1,6 +1,8 @@
 /* ---------- utilidades ---------- */
 const $=s=>document.querySelector(s);
 const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+// Escapa el texto que escribe el alumno (o que viene del almacenamiento) antes de meterlo con innerHTML.
+const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const fmt=n=>{const neg=n<0;let [s,d]=String(Math.abs(n)).split('.');if(s.length>=5)s=s.replace(/\B(?=(\d{3})+(?!\d))/g,' ');return (neg?'−':'')+s+(d?','+d:'')};
@@ -28,7 +30,7 @@ const POT_LEVELS=[
     ()=>{let b=ri(2,9),e=ri(2,7);while(e===b)e=ri(2,7);const base=Math.random()<.5;return mc(`En ${P(b,e)}, ¿cuál es ${base?'la <b>base</b>':'el <b>exponente</b>'}?`,String(base?b:e),[String(base?e:b),String(b*e),String(b+e)],`La base es el número que se repite (${b}). El exponente dice cuántas veces se multiplica (${e}).`)},
     ()=>{const b=ri(2,9),e=ri(3,7);return num(`Escribe como potencia:<br>${expand(b,e)} = ${b}<sup>?</sup>`,e,`El ${b} aparece ${e} veces, así que el exponente es ${e}: ${P(b,e)}.`,'Escribe solo el exponente.')},
     ()=>{const [b,e]=pick([[2,3],[2,4],[2,5],[2,6],[3,2],[3,3],[3,4],[4,2],[4,3],[5,2],[5,3],[6,2],[7,2],[10,3]]);return num(`Calcula ${P(b,e)}`,b**e,`${P(b,e)} = ${expand(b,e)} = ${fmt(b**e)}`)},
-    ()=>{const b=ri(2,9),e=ri(2,6);const name=e===2?'al cuadrado':e===3?'al cubo':`elevado a ${W[e]}`;const other=e===2?'al cubo':'al cuadrado';return mc(`¿Cómo se lee ${P(b,e)}?`,`${W[b]} ${name}`,[`${W[b]} por ${W[e]}`,`${W[e]} elevado a ${W[b]}`,`${W[b]} ${other}`],`La base (${b}) se dice primero. Exponente 2 es «al cuadrado», 3 es «al cubo» y desde 4 decimos «elevado a».`)},
+    ()=>{let b=ri(2,9),e=ri(2,6);while(e===b)e=ri(2,6);const name=e===2?'al cuadrado':e===3?'al cubo':`elevado a ${W[e]}`;const other=e===2?'al cubo':'al cuadrado';return mc(`¿Cómo se lee ${P(b,e)}?`,`${W[b]} ${name}`,[`${W[b]} por ${W[e]}`,`${W[e]} elevado a ${W[b]}`,`${W[b]} ${other}`],`La base (${b}) se dice primero. Exponente 2 es «al cuadrado», 3 es «al cubo» y desde 4 decimos «elevado a».`)},
     ()=>{let b=ri(3,7),e=ri(3,5);while(b===e)e=ri(3,5);return mc(`¿Qué significa ${P(b,e)}?`,expand(b,e),[`${b} · ${e}`,expand(e,b),Array(e).fill(b).join(' + ')],`Es ${b} multiplicado por sí mismo ${e} veces: ${expand(b,e)}.`)},
     ()=>{const b=ri(2,4),e=ri(3,4);return mc(`¿Cuánto vale ${P(b,e)}?`,fmt(b**e),[fmt(b*e),fmt(e**b),fmt(b+e)],`${expand(b,e)} = ${fmt(b**e)}. Ojo: no es ${b} · ${e}.`)}
   ]},
@@ -38,7 +40,7 @@ const POT_LEVELS=[
      <div class="tbl"><table><tr><th>n</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<th>${n}</th>`).join('')}</tr>
      <tr><th>n²</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<td>${n*n}</td>`).join('')}</tr>
      <tr><th>n³</th>${[1,2,3,4,5,6,7,8,9,10].map(n=>`<td>${fmt(n**3)}</td>`).join('')}</tr></table></div>`],
-    ['Exponente 1 y exponente 0',`<p>Cualquier número elevado a 1 es él mismo: ${P(7,1)} = 7. Y cualquier número (distinto de 0) elevado a 0 vale <span class="hl">1</span>. Mira el patrón: cada vez que bajamos el exponente, dividimos entre 2.</p>
+    ['Exponente 1 y exponente 0',`<p>Cualquier número elevado a 1 es él mismo: ${P(7,1)} = 7. Y cualquier número (distinto de 0) elevado a 0 vale <span class="hl">1</span>. Mira el patrón: cada vez que bajamos el exponente, dividimos entre la base.</p>
      <div class="ex">${P(2,3)} = 8 → ${P(2,2)} = 4 → ${P(2,1)} = 2 → ${P(2,0)} = <b>1</b></div>`],
     ['Base 1 y base 10',`<p>El 1 multiplicado por sí mismo siempre da 1: ${P(1,50)} = 1.</p>
      <p>Las potencias de 10 llevan <span class="hl">tantos ceros como indica el exponente</span>:</p>
@@ -113,6 +115,7 @@ const POT_LEVELS=[
   lesson:[
     ['Orden de las operaciones',`<p>Cuando hay varias operaciones, se hacen en este orden:</p>
      <div class="ex">1. Paréntesis → 2. Potencias → 3. Multiplicaciones y divisiones → 4. Sumas y restas</div>
+     <p>Si hay varias operaciones del mismo nivel (por ejemplo, multiplicaciones y divisiones), se hacen <b>de izquierda a derecha</b>.</p>
      <p>Ejemplo: 3 + ${P(2,4)} : 8 = 3 + 16 : 8 = 3 + 2 = <b>5</b></p>`],
     ['Simplificar antes de calcular',`<p>Usa las propiedades para dejar <b>una sola potencia</b> y calcula al final:</p>
      <div class="ex">(${P(2,5)} · ${P(2,3)}) : ${P(2,6)} = ${P(2,8)} : ${P(2,6)} = ${P(2,2)} = 4</div>`],
@@ -147,7 +150,7 @@ const RAI_LEVELS=[
   ],
   gens:[
     ()=>{const n=ri(1,12);return num(`Calcula ${R(n*n)}`,n,`${n} · ${n} = ${n*n}, así que ${R(n*n)} = ${n}.`)},
-    ()=>{const n=ri(3,10);return mc(`¿Por qué ${R(n*n)} = ${n}?`,`Porque ${n} · ${n} = ${n*n}`,[`Porque ${n} · 2 = ${2*n}`,`Porque ${n} + ${n} = ${2*n}`,`Porque ${n*n} es la mitad de ${2*n*n}`],`La raíz cuadrada busca el número que multiplicado por sí mismo da el radicando: ${P(n,2)} = ${n*n}.`)},
+    ()=>{const n=ri(3,10);return mc(`¿Por qué ${R(n*n)} = ${n}?`,`Porque ${n} · ${n} = ${n*n}`,[`Porque ${n} · 2 = ${2*n}`,`Porque ${n} + ${n} = ${2*n}`,`Porque ${n} es la mitad de ${n*n}`],`La raíz cuadrada busca el número que multiplicado por sí mismo da el radicando: ${P(n,2)} = ${n*n}.`)},
     ()=>{const n=ri(3,12),q=Math.random()<.5;return mc(`En ${R(n*n)} = ${n}, ¿cuál es ${q?'el <b>radicando</b>':'la <b>raíz</b>'}?`,String(q?n*n:n),[String(q?n:n*n),'√',String(2*n)],`El radicando es el número de dentro del radical (${n*n}). La raíz es el resultado (${n}).`)},
     ()=>{const n=ri(2,12);return num(`Un cuadrado tiene un área de ${n*n} cm². ¿Cuánto mide su lado?`,n,`El lado mide ${R(n*n)} = ${n} cm, porque ${n} · ${n} = ${n*n}.`,'Escribe solo el número de centímetros.')},
     ()=>{const n=pick([4,6,8,10,12,14,16]);return mc(`¿Cuánto vale ${R(n*n)}?`,String(n),[String(n*n/2),String(n*n),String(n-1)],`${n} · ${n} = ${n*n}. Ojo: no es la mitad de ${n*n}.`)}
@@ -156,7 +159,7 @@ const RAI_LEVELS=[
   lesson:[
     ['Cuadrados perfectos',`<p>Un número es un <span class="hl">cuadrado perfecto</span> si es el cuadrado de un número natural. Su raíz cuadrada es <b>exacta</b>. Conviene saberse estos:</p>
      <div class="tbl"><table>${squaresRow(1,10)}${squaresRow(11,20)}</table></div>`],
-    ['Con ceros detrás',`<p>Si el radicando acaba en un número <b>par</b> de ceros, la raíz lleva <span class="hl">la mitad de ceros</span>:</p>
+    ['Con ceros detrás',`<p>Si el radicando acaba en un número <b>par</b> de ceros y, al quitarlos, queda un <b>cuadrado perfecto</b>, la raíz lleva <span class="hl">la mitad de ceros</span>:</p>
      <div class="ex">${R(900)} = 30 &nbsp;·&nbsp; ${R(10000)} = 100 &nbsp;·&nbsp; ${R(250000)} = 500</div>
      <p>Compruébalo: 30 · 30 = 900.</p>`],
     ['¿Es cuadrado perfecto?',`<p>Un cuadrado perfecto <b>nunca acaba en 2, 3, 7 u 8</b>. Si acaba en otra cifra, busca entre qué cuadrados de la tabla está: si no coincide con ninguno, no es cuadrado perfecto.</p>`],
@@ -185,8 +188,48 @@ const RAI_LEVELS=[
     ()=>{const n=nonSquare(10,150),r=isqrt(n),h=Math.floor(n/2);return mc(`${R(n)} está entre…`,`${r} y ${r+1}`,[`${r-1} y ${r}`,`${r+1} y ${r+2}`,`${h} y ${h+1}`],`${P(r,2)} = ${r*r} &lt; ${n} &lt; ${(r+1)**2} = ${P(r+1,2)}.`)},
     ()=>{const r=ri(3,15),s=ri(1,2*r);return num(`La raíz entera de un número es ${r} y el resto es ${s}. ¿Cuál es el número?`,r*r+s,`Radicando = raíz² + resto = ${P(r,2)} + ${s} = ${r*r} + ${s} = ${r*r+s}.`)},
     ()=>{const n=nonSquare(2,99),d=isqrt(n*100);return num(`Calcula ${R(n)} con una cifra decimal (por defecto)`,d/10,`${fmt(d/10)} · ${fmt(d/10)} = ${fmt(d*d/100)} y ${fmt((d+1)/10)} · ${fmt((d+1)/10)} = ${fmt((d+1)**2/100)}. Como ${n} está entre los dos, ${R(n)} ≈ ${fmt(d/10)}.`,'Usa la coma decimal: por ejemplo, 5,4.')}
+  ]},
+{ title:'Raíces, potencias y signos', sub:'Dos números con el mismo cuadrado y la raíz de un negativo',
+  lesson:[
+    ['Dos números, un mismo cuadrado',`<p>${P(5,2)} = 25 y también ${P(-5,2)} = 25, porque menos por menos da más. Por eso «¿qué número al cuadrado da 25?» tiene <span class="hl">dos respuestas</span>: 5 y −5.</p>`],
+    ['El radical es positivo',`<p>El símbolo ${R(25)} pide solo <b>la raíz positiva</b>: ${R(25)} = 5. Si quieres la negativa, se escribe con un menos delante:</p>
+     <div class="ex">${R(25)} = 5 &nbsp;·&nbsp; −${R(25)} = −5</div>`],
+    ['Raíz y cuadrado se deshacen',`<p>Elevar al cuadrado y hacer la raíz son operaciones <b>inversas</b>:</p>
+     <div class="ex">${R(P(7,2))} = 7 &nbsp;·&nbsp; ${P(`(${R(49)})`,2)} = 49</div>
+     <p>Funciona con cualquier número positivo, aunque la raíz no sea exacta: ${P(`(${R(10)})`,2)} = 10.</p>`],
+    ['Raíz de un número negativo',`<p>Ningún número, positivo o negativo, da un resultado negativo al elevarlo al cuadrado. Así que ${R('−9')} <span class="hl">no existe</span> entre los números que conoces.</p>
+     <div class="ex warn">${R('−9')} no es −3</div><p>Comprueba: ${P(-3,2)} = 9, no −9.</p>`]
+  ],
+  gens:[
+    ()=>{const k=ri(2,12),n=k*k;return mc(`¿Qué números elevados al cuadrado dan ${n}?`,`${k} y −${k}`,[`Solo ${k}`,`Solo −${k}`,`${k+1} y −${k+1}`],`${P(k,2)} = ${n} y ${P(-k,2)} = ${n}. Hay dos números; el radical ${R(n)} solo indica el positivo, ${k}.`)},
+    ()=>{const k=ri(2,12),n=k*k;return mc(`¿Cuánto vale ${R('−'+n)}?`,'No existe',[`−${k}`,String(k),`−${k} y ${k}`],`Ningún número elevado al cuadrado da −${n}: ${P(k,2)} = ${n} y ${P(-k,2)} = ${n}. Por eso ${R('−'+n)} no existe.`)},
+    ()=>{const n=ri(2,200);return num(`Calcula ${P(`(${R(n)})`,2)}`,n,`Elevar al cuadrado y hacer la raíz se deshacen: ${P(`(${R(n)})`,2)} = ${n}.`)},
+    ()=>{const n=ri(21,99);return num(`Calcula ${R(P(n,2))}`,n,`${R(P(n,2))} = ${n}: la raíz deshace el cuadrado, sin hacer ninguna cuenta.`)},
+    ()=>{const k=ri(2,12),n=k*k;
+      const pairs=[[`√${n} = ${k}`,true],[`(−${k})² = ${n}`,true],[`√${n} = −${k}`,false],[`(−${k})² = −${n}`,false],[`√(−${n}) = ${k}`,false]];
+      const good=pick(pairs.filter(p=>p[1])),bad=shuffle(pairs.filter(p=>!p[1])).slice(0,3);
+      return mc('¿Cuál de estas igualdades es verdadera?',good[0],bad.map(p=>p[0]),`${k}·${k} = ${n} y (−${k})·(−${k}) = ${n}. El radical solo da el valor positivo y la raíz de un negativo no existe.`)},
+    ()=>{const k=ri(2,9),m=ri(2,9);return num(`Calcula ${P(-k,2)} − ${R(m*m)}`,k*k-m,`${P(-k,2)} = ${k*k} (menos por menos da más) y ${R(m*m)} = ${m}. Entonces ${k*k} − ${m} = ${k*k-m}.`,'Si el resultado es negativo, usa el botón ±.')}
+  ]},
+{ title:'Operaciones combinadas con raíces', sub:'Jerarquía y raíz de sumas, productos y cocientes',
+  lesson:[
+    ['Orden de las operaciones',`<p>La raíz se calcula <b>igual que las potencias</b>: después de los paréntesis y antes de multiplicar y dividir.</p>
+     <div class="ex">3 + ${R(49)} : 7 − ${P(2,2)} &nbsp;→&nbsp; 3 + 7 : 7 − 4 &nbsp;→&nbsp; 3 + 1 − 4 = 0</div>`],
+    ['El radicando es un paréntesis',`<p>La barra de la raíz agrupa lo de dentro. Primero se opera dentro y luego se hace la raíz:</p>
+     <div class="ex">${R('9 + 16')} = ${R(25)} = 5</div>`],
+    ['Raíz de un producto',`<p>La raíz de un producto es el producto de las raíces:</p>
+     <div class="ex">${R('4 · 25')} = ${R(4)} · ${R(25)} = 2 · 5 = 10</div><p>Con la división pasa igual: ${R('100 : 4')} = ${R(100)} : ${R(4)} = 10 : 2 = 5.</p>`],
+    ['Error típico',`<div class="ex warn">${R('9 + 16')} no es ${R(9)} + ${R(16)}</div><p>La primera vale 5 y la segunda 3 + 4 = 7. <b>Con sumas y restas no se puede separar la raíz</b>; con productos y cocientes, sí. Es el mismo error que (2 + 3)² ≠ 2² + 3².</p>`]
+  ],
+  gens:[
+    ()=>{const a=ri(2,9),b=ri(2,9),op=pick(['+','−']);const [x,y]=op==='−'&&a<b?[b,a]:[a,b];return num(`Calcula ${R(x*x)} ${op} ${R(y*y)}`,op==='+'?x+y:x-y,`${R(x*x)} = ${x} y ${R(y*y)} = ${y}. Entonces ${x} ${op} ${y} = ${op==='+'?x+y:x-y}.`)},
+    ()=>{const [a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17]]);return num(`Calcula ${R(`${a*a} + ${b*b}`)}`,c,`Primero se suma dentro de la raíz: ${a*a} + ${b*b} = ${c*c}. Después, ${R(c*c)} = ${c}.`)},
+    ()=>{const a=ri(2,9),b=ri(2,9);return num(`Calcula ${R(`${a*a} · ${b*b}`)}`,a*b,`La raíz de un producto es el producto de las raíces: ${R(a*a)} · ${R(b*b)} = ${a} · ${b} = ${a*b}.`)},
+    ()=>{const a=ri(2,9),r=ri(2,9),b=ri(2,5),c=ri(2,4);return num(`Calcula ${a} + ${R(r*r)} · ${b} − ${P(c,2)}`,a+r*b-c*c,`Primero la raíz y la potencia: ${R(r*r)} = ${r} y ${P(c,2)} = ${c*c}. Después, ${r} · ${b} = ${r*b}. Por último: ${a} + ${r*b} − ${c*c} = ${a+r*b-c*c}.`,'Si el resultado es negativo, usa el botón ±.')},
+    ()=>{const a=ri(2,9),r=ri(2,9),c=ri(2,5);return num(`Calcula ${a*r} : ${R(r*r)} + ${P(c,2)}`,a+c*c,`Primero la raíz y la potencia: ${R(r*r)} = ${r} y ${P(c,2)} = ${c*c}. Después, ${a*r} : ${r} = ${a}. Por último: ${a} + ${c*c} = ${a+c*c}.`)},
+    ()=>{const [a,b,c]=pick([[3,4,5],[6,8,10],[5,12,13],[8,15,17]]);return mc(`¿Cuánto vale ${R(`${a*a} + ${b*b}`)}?`,String(c),[String(a+b),String(c*c),String(a*b)],`${a*a} + ${b*b} = ${c*c}, y ${R(c*c)} = ${c}. Ojo: ${a+b} sería ${R(a*a)} + ${R(b*b)}, que es otra cosa.`)}
   ]}
 ];
 
 
-export { $, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS };
+export { $, esc, ri, pick, shuffle, fmt, P, R, isqrt, expand, W, mc, num, parseNum, POT_LEVELS, RAI_LEVELS };
